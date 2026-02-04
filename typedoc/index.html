@@ -1,0 +1,132 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Badges-TS Documentation</title><meta name="description" content="Documentation for Badges-TS Documentation"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">Badges-TS Documentation</a><div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>Badges-TS Documentation</h1></div><div class="tsd-panel tsd-typography"><h1 id="jonloucksbadges-ts" class="tsd-anchor-link">@jonloucks/badges-ts<a href="#jonloucksbadges-ts" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1>
+<h2 id="badges" class="tsd-anchor-link">Badges<a href="#badges" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p><a href="https://github.com/jonloucks/badges-ts/actions"><img src="https://github.com/jonloucks/badges-ts/workflows/CI/badge.svg" alt="CI"></a>
+<a href="https://www.npmjs.com/package/@jonloucks/badges-ts"><img src="https://raw.githubusercontent.com/jonloucks/badges-ts/refs/heads/badges/main-npm.svg" alt="npm version"></a>
+<a href="https://jonloucks.github.io/badges-ts/lcov-report/"><img src="https://raw.githubusercontent.com/jonloucks/badges-ts/refs/heads/badges/main-coverage.svg" alt="Coverage Badge"></a>
+<a href="https://jonloucks.github.io/badges-ts/typedoc/"><img src="https://raw.githubusercontent.com/jonloucks/badges-ts/refs/heads/badges/main-typedoc.svg" alt="Typedoc Badge"></a></p>
+<p>Typescript badge maker</p>
+<h2 id="documentation" class="tsd-anchor-link">Documentation<a href="#documentation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<ul>
+<li><a href="LICENSE.md">License</a></li>
+<li><a href="media/CONTRIBUTING.md">Contributing</a></li>
+<li><a href="media/CODE_OF_CONDUCT.md">Code of conduct</a></li>
+<li><a href="media/CODING_STANDARDS.md">Coding standards</a></li>
+<li><a href="media/SECURITY.md">Security policy</a></li>
+<li><a href="media/PULL_REQUEST_TEMPLATE.md">Pull request template</a></li>
+<li><a href="https://jonloucks.github.io/badges-ts/typedoc/">How to use API</a></li>
+<li><a href="https://jonloucks.github.io/badges-ts/lcov-report">Test coverage report</a></li>
+</ul>
+<h2 id="installation" class="tsd-anchor-link">Installation<a href="#installation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">@jonloucks/badges-ts</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="usage" class="tsd-anchor-link">Usage<a href="#usage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<details markdown="1"><summary>Importing the Package</summary>
+<pre><code class="typescript"><span class="hl-3">import</span><span class="hl-1"> { </span><br/><span class="hl-1">  </span><span class="hl-4">createBadge</span><span class="hl-1">, </span><br/><span class="hl-1">  </span><span class="hl-4">BadgeConfig</span><span class="hl-1"> </span><br/><span class="hl-1">  } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@jonloucks/badges-ts&#39;</span><span class="hl-1">;</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Importing the Convenience Package</summary>
+<pre><code class="typescript"><span class="hl-3">import</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">createBadge</span><span class="hl-1">, </span><br/><span class="hl-1">  </span><span class="hl-4">BadgeConfig</span><span class="hl-1"> </span><br/><span class="hl-1">} </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@jonloucks/badges-ts/api/Convenience&quot;</span><span class="hl-1">;</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Creating a Contract</summary>
+<pre><code class="typescript">
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Binding a Contract</summary>
+<pre><code class="typescript">
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Using the Contract</summary>
+<pre><code class="typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">logger</span><span class="hl-1"> : </span><span class="hl-7">Logger</span><span class="hl-1"> = </span><span class="hl-0">enforce</span><span class="hl-1">&lt;</span><span class="hl-7">Logger</span><span class="hl-1">&gt;(</span><span class="hl-6">LOGGER_CONTRACT</span><span class="hl-1">);</span><br/><span class="hl-4">logger</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-2">&quot;Using the service in the test.&quot;</span><span class="hl-1">);</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<h2 id="development" class="tsd-anchor-link">Development<a href="#development" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<details markdown="1"><summary>Install dependencies</summary>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Build the project</summary>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">build</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Run tests</summary>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">test</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Run tests in watch mode</summary>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">test:watch</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Run test coverage</summary>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">test:coverage</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Lint the code</summary>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">lint</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Fix linting issues</summary>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">lint:fix</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Generate documents</summary>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">docs</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Generate badges</summary>
+<pre><code class="bash"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">badges</span>
+</code><button type="button">Copy</button></pre>
+
+</details>
+<details markdown="1"><summary>Project Structure</summary>
+<ul>
+<li>All tests must have suffix of -test.ts or -spec.ts</li>
+<li>Tests that validate supported APIs go in src/test</li>
+<li>Tests that validate internal implementation details go in src/impl</li>
+</ul>
+<pre><code><span class="hl-4">badges</span><span class="hl-1">-</span><span class="hl-4">ts</span><br/><span class="hl-1">├── .</span><span class="hl-4">github</span><br/><span class="hl-1">│   ├── </span><span class="hl-6">ISSUE_TEMPLATE</span><br/><span class="hl-1">│   │   ├── </span><span class="hl-4">bug_report</span><span class="hl-1">.</span><span class="hl-4">md</span><br/><span class="hl-1">│   │   └── </span><span class="hl-4">feature_request</span><span class="hl-1">.</span><span class="hl-4">md</span><br/><span class="hl-1">│   └── </span><span class="hl-4">workflows</span><br/><span class="hl-1">│       ├── </span><span class="hl-4">main</span><span class="hl-1">-</span><span class="hl-4">pull</span><span class="hl-1">-</span><span class="hl-4">request</span><span class="hl-1">-</span><span class="hl-4">matrix</span><span class="hl-1">.</span><span class="hl-4">yml</span><br/><span class="hl-1">│       ├── </span><span class="hl-4">main</span><span class="hl-1">-</span><span class="hl-4">pull</span><span class="hl-1">-</span><span class="hl-4">request</span><span class="hl-1">.</span><span class="hl-4">yml</span><br/><span class="hl-1">│       ├── </span><span class="hl-4">main</span><span class="hl-1">-</span><span class="hl-4">push</span><span class="hl-1">.</span><span class="hl-4">yml</span><br/><span class="hl-1">│       └── </span><span class="hl-4">main</span><span class="hl-1">-</span><span class="hl-4">release</span><span class="hl-1">.</span><span class="hl-4">yml</span><br/><span class="hl-1">├── </span><span class="hl-6">CODE_OF_CONDUCT</span><span class="hl-1">.</span><span class="hl-4">md</span><br/><span class="hl-1">├── </span><span class="hl-6">CODING_STANDARDS</span><span class="hl-1">.</span><span class="hl-4">md</span><br/><span class="hl-1">├── </span><span class="hl-6">CONTRIBUTING</span><span class="hl-1">.</span><span class="hl-4">md</span><br/><span class="hl-1">├── </span><span class="hl-4">editorconfig</span><br/><span class="hl-1">├── </span><span class="hl-4">eslint</span><span class="hl-1">.</span><span class="hl-4">config</span><span class="hl-1">.</span><span class="hl-4">mjs</span><br/><span class="hl-1">├── </span><span class="hl-4">jest</span><span class="hl-1">.</span><span class="hl-4">config</span><span class="hl-1">.</span><span class="hl-4">js</span><br/><span class="hl-1">├── </span><span class="hl-6">LICENSE</span><br/><span class="hl-1">├── </span><span class="hl-3">package</span><span class="hl-1">-</span><span class="hl-4">lock</span><span class="hl-1">.</span><span class="hl-4">json</span><br/><span class="hl-1">├── </span><span class="hl-4">package</span><span class="hl-1">.</span><span class="hl-4">json</span><br/><span class="hl-1">├── </span><span class="hl-6">PULL_REQUEST_TEMPLATE</span><span class="hl-1">.</span><span class="hl-4">md</span><br/><span class="hl-1">├── </span><span class="hl-6">README</span><span class="hl-1">.</span><span class="hl-4">md</span><br/><span class="hl-1">├── </span><span class="hl-4">scripts</span><br/><span class="hl-1">│   ├── </span><span class="hl-4">badge</span><span class="hl-1">-</span><span class="hl-4">template</span><span class="hl-1">.</span><span class="hl-4">svg</span><span class="hl-1">.</span><span class="hl-4">dat</span><br/><span class="hl-1">│   └── </span><span class="hl-4">tsconfig</span><span class="hl-1">.</span><span class="hl-4">json</span><br/><span class="hl-1">├── </span><span class="hl-6">SECURITY</span><span class="hl-1">.</span><span class="hl-4">md</span><br/><span class="hl-1">├── </span><span class="hl-4">src</span><br/><span class="hl-1">│   ├── </span><span class="hl-4">index</span><span class="hl-1">.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   ├── </span><span class="hl-4">version</span><span class="hl-1">.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   ├── </span><span class="hl-4">api</span><br/><span class="hl-1">│   │   ├── *.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   │   ├── *.</span><span class="hl-4">api</span><span class="hl-1">.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   ├── </span><span class="hl-4">auxiliary</span><br/><span class="hl-1">│   │   ├── *.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   │   ├── *.</span><span class="hl-4">impl</span><span class="hl-1">.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   │   ├── *.</span><span class="hl-4">test</span><span class="hl-1">.</span><span class="hl-4">ts</span><span class="hl-1">    </span><span class="hl-8">// internal implementation specific</span><br/><span class="hl-1">│   │   └── *.</span><span class="hl-4">api</span><span class="hl-1">.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   ├── </span><span class="hl-4">impl</span><br/><span class="hl-1">│   │   ├── *.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   │   ├── *.</span><span class="hl-4">impl</span><span class="hl-1">.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   │   ├── *.</span><span class="hl-4">test</span><span class="hl-1">.</span><span class="hl-4">ts</span><span class="hl-1">    </span><span class="hl-8">// internal implementation specific</span><br/><span class="hl-1">│   │   └── *.</span><span class="hl-4">api</span><span class="hl-1">.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   ├── </span><span class="hl-4">test</span><br/><span class="hl-1">│   │   └── *.</span><span class="hl-4">test</span><span class="hl-1">.</span><span class="hl-4">ts</span><br/><span class="hl-1">│   └── </span><span class="hl-4">never</span><span class="hl-1">-</span><span class="hl-4">publish</span><span class="hl-1">             </span><span class="hl-8">// non shippable development scripts</span><br/><span class="hl-1">│       ├── *.</span><span class="hl-4">ts</span><br/><span class="hl-1">│       ├── *.*.                  </span><span class="hl-8">// data files etc</span><br/><span class="hl-1">│       └── *.</span><span class="hl-4">test</span><span class="hl-1">.</span><span class="hl-4">ts</span><br/><span class="hl-1">├── </span><span class="hl-4">tsconfig</span><span class="hl-1">.</span><span class="hl-4">json</span><br/><span class="hl-1">└── </span><span class="hl-4">typedoc</span><span class="hl-1">.</span><span class="hl-4">json</span>
+</code><button>Copy</button></pre>
+
+</details>
+<h2 id="github-workflows" class="tsd-anchor-link">GitHub Workflows<a href="#github-workflows" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<details markdown="1"><summary>CI Workflow</summary>
+<p>The CI workflow runs on every push and pull request to <code>main</code> branch. It:</p>
+<ul>
+<li>Tests against Node.js versions 18.x, 20.x, 22.x, and 24.x</li>
+<li>Runs linting</li>
+<li>Builds the project</li>
+<li>Runs tests with coverage</li>
+<li>Uploads coverage to Codecov (optional)</li>
+</ul>
+</details>
+<details markdown="1"><summary>Publish Workflow</summary>
+<p>The GitHub publishings workflows are run to make an official release.</p>
+<ul>
+<li>If all scanning and tests pass it is published. There is no other way allowed.</li>
+<li>Publishing authentication is done using (<a href="https://docs.npmjs.com/trusted-publishers">OIDC trusted publishing</a>)</li>
+</ul>
+<p>To set up your own publishing:</p>
+<ol>
+<li>Publishing this project as is intentionally disabled</li>
+<li>You are welcome to fork this repository and publish where you want.</li>
+<li>Run <code>npm pkg delete private</code> to remove the <code>private</code> flag from the package.</li>
+<li>Change the <code>name</code> field in <code>package.json</code> to your desired package name.</li>
+</ol>
+</details>
+<h2 id="license" class="tsd-anchor-link">License<a href="#license" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p>MIT</p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#jonloucksbadges-ts"><span>@jonloucks/badges-<wbr/>ts</span></a><ul><li><a href="#badges"><span>Badges</span></a></li><li><a href="#documentation"><span>Documentation</span></a></li><li><a href="#installation"><span>Installation</span></a></li><li><a href="#usage"><span>Usage</span></a></li><li><a href="#development"><span>Development</span></a></li><li><a href="#github-workflows"><span>Git<wbr/>Hub <wbr/>Workflows</span></a></li><li><a href="#license"><span>License</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">Badges-TS Documentation</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer></footer><div class="overlay"></div></body></html>
