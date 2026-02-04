@@ -1,7 +1,7 @@
 # @jonloucks/badges-ts
 
 ## Badges
-[![CI](https://github.com/jonloucks/badges-ts/workflows/CI/badge.svg)](https://github.com/jonloucks/badges-ts/actions)
+[![CI](https://github.com/jonloucks/badges-ts/workflows/main-push/badge.svg)](https://github.com/jonloucks/badges-ts/actions)
 [![npm version](https://raw.githubusercontent.com/jonloucks/badges-ts/refs/heads/badges/main-npm.svg)](https://www.npmjs.com/package/@jonloucks/badges-ts)
 [![Coverage Badge](https://raw.githubusercontent.com/jonloucks/badges-ts/refs/heads/badges/main-coverage.svg)](https://jonloucks.github.io/badges-ts/lcov-report/)
 [![Typedoc Badge](https://raw.githubusercontent.com/jonloucks/badges-ts/refs/heads/badges/main-typedoc.svg)](https://jonloucks.github.io/badges-ts/typedoc/)
