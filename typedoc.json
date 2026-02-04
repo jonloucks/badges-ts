@@ -1,0 +1,15 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/index.ts"],
+  "out": "docs/typedoc",
+  "name": "Badges-TS Documentation",
+  "theme": "default",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "hideGenerator": true,
+  "plugin": [],
+  "compilerOptions": {
+    "skipLibCheck": true
+  }
+}

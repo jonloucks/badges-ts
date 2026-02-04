@@ -1,0 +1,84 @@
+{
+  "name": "@jonloucks/badges-ts",
+  "version": "0.0.0",
+  "description": "Typescript badge creator",
+  "private": true,
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "import": "./index.js",
+      "default": "./index.js"
+    },
+    "./api/*": {
+      "types": "./api/*.d.ts",
+      "require": "./api/*.js",
+      "import": "./api/*.js",
+      "default": "./api/*.js"
+    },
+    "./auxiliary/*": {
+      "types": "./auxiliary/*.d.ts",
+      "require": "./auxiliary/*.js",
+      "import": "./auxiliary/*.js",
+      "default": "./auxiliary/*.js"
+    }
+  },
+  "files": [
+    "*",
+    "!never-publish/**/*",
+    "!**/*.test.*",
+    "!**/*.spec.*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch --watchAll",
+    "test:coverage": "jest --coverage",
+    "test:diagnostics": "jest --detectOpenHandles",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "prepublishOnly": "npm run build",
+    "before:publish": "npm run clean && npm run compile && cp package.json dist && cp README.md dist && cd dist && npm pkg delete private",
+    "after:publish": "npm run clean",
+    "prepare": "npm run build",
+    "docs": "typedoc --options typedoc.json",
+    "badges": "npx tsx ./src/never-publish/generate-badges.ts",
+    "clean": "rm -rf dist",
+    "compile": "tsc",
+    "postversion": "npm run applyversion",
+    "applyversion": "npx tsx ./src/never-publish/apply-version.ts",
+    "pack-package": "npm run before:publish && cd dist && npm pack && npm run after:publish"
+  },
+  "keywords": [
+    "typescript",
+    "badge",
+    "workflow",
+    "status"
+  ],
+  "author": "Jon Loucks",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonloucks/badges-ts.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.53.1",
+    "eslint": "^9.39.2",
+    "jest": "^30.2.0",
+    "jest-mock-extended": "^4.0.0",
+    "ts-jest": "^29.4.6",
+    "typedoc": "^0.28.15",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@jonloucks/contracts-ts": "^1.2.1"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@jonloucks/badges-ts": ["index.ts"],
+      "@jonloucks/badges-ts/version": ["version.ts"],
+      "@jonloucks/badges-ts/auxiliary/*": ["auxiliary/*"],
+      "@jonloucks/badges-ts/api/*": ["api/*"],
+      "@jonloucks/badges-ts/test/*": ["test/*"]
+    },
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

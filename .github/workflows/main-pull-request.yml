@@ -1,0 +1,84 @@
+name: main-pull-request
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+
+    - name: Assigning SIMPLE_REPOSITORY_NAME
+      run: echo "SIMPLE_REPOSITORY_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+
+    - name: Assigning SIMPLE_BRANCH_NAME
+      run: |
+        BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+        SIMPLE_BRANCH_NAME="${BRANCH_NAME//\//-}"
+        echo "SIMPLE_BRANCH_NAME=${SIMPLE_BRANCH_NAME}" >> $GITHUB_ENV
+
+    - name: Checkout ${{ env.SIMPLE_BRANCH_NAME }} branch
+      uses: actions/checkout@v4
+      with:
+        path: main-project
+
+    - name: Checkout badges branch
+      uses: actions/checkout@v4
+      with:
+        ref: badges
+        path: badges   
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: 'main-project/package-lock.json' 
+
+    - name: Install dependencies
+      run: npm ci
+      working-directory: main-project
+
+    - name: Lint
+      run: npm run lint
+      working-directory: main-project
+
+    - name: Build
+      run: npm run build
+      working-directory: main-project
+
+    - name: Test with coverage
+      run: npm run test:coverage
+      working-directory: main-project
+
+    - name: Generate coverage badges
+      run: npm run badges
+      working-directory: main-project
+      env:
+        KIT_COVERAGE_SUMMARY_BADGE_PATH: ${{ github.workspace }}/badges/${{ env.SIMPLE_BRANCH_NAME }}-coverage.svg
+
+    - name: Upload Jest Code Coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: jest-coverage-report
+        path: main-project/coverage/lcov-report/
+
+    - name: Commit and Push the Badges to the badges branch
+      uses: EndBug/add-and-commit@v9
+      with:
+        default_author: github_actions
+        message: 'Push updated badges branch'
+        add: '*.svg'
+        pull: '--rebase --autostash'
+        cwd: badges
+

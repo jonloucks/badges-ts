@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.log
+.env
+.DS_Store
+coverage/
+.nyc_output/
+*.tgz
+docs/jsdoc/
+docs/typedoc/
+.tmp/
