@@ -3,8 +3,6 @@
 npm install @jonloucks/badges-ts@0.0.0
 ```
 
-Skeleton project
-
 ## Customer impact
 *  None
 
