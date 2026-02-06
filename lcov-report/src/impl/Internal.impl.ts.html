@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/auxiliary/Checks.ts</title>
+    <title>Code coverage report for src/impl/Internal.impl.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/auxiliary</a> Checks.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/impl</a> Internal.impl.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -94,20 +94,14 @@
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
 <a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
+<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -116,70 +110,52 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">80x</span>
 <span class="cline-any cline-yes">86x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">74x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">109x</span>
+<span class="cline-any cline-yes">109x</span>
+<span class="cline-any cline-yes">100x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">54x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { OptionalType, RequiredType } from "@jonloucks/contracts-ts/api/Types";
-import { illegalCheck, presentCheck, configCheck, used } from "@jonloucks/contracts-ts/auxiliary/Checks";
-import { Duration, MAX_TIMEOUT } from "@jonloucks/badges-ts/api/Types";
-import { existsSync } from "fs";
-&nbsp;
-export { presentCheck, illegalCheck, configCheck, used, Duration, RequiredType, OptionalType };
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&nbsp;
+import { isPresent, RequiredType } from "@jonloucks/contracts-ts/api/Types";
+import { CONTRACTS, Contracts } from "@jonloucks/contracts-ts";
 &nbsp;
 /**
- * Check that a timeout is valid
- *
- * @param timeout the timeout to check
- * @return the timeout if valid
- * @throws IllegalArgumentException if the timeout is not valid
+ * Helper functions for internal implementations.
  */
-export function timeoutCheck(timeout: OptionalType&lt;Duration&gt;): RequiredType&lt;Duration&gt; {
-  const presentTimeout : RequiredType&lt;Duration&gt; = presentCheck(timeout, "Timeout must be present.");
-  illegalCheck(timeout, presentTimeout.milliSeconds &lt; 0, "Timeout must not be negative.");
-  illegalCheck(timeout, presentTimeout.milliSeconds &gt; MAX_TIMEOUT.milliSeconds, "Timeout must be less than or equal to maximum time.");
-  return presentTimeout;
-}
+export const Internal = {
 &nbsp;
-/**
- * Check if a value is a non-empty string
- *
- * @param value the value to check
- * @return true if the value is a non-empty string, false otherwise
- */
-export function isNonEmptyString(value: unknown): value is string {
-  return typeof value === "string" &amp;&amp; value.trim().length &gt; 0;
-}
+  /**
+   * Resolves the contracts to use from the provided configurations.
+   * Returns the first config with present contracts, or CONTRACTS as default.
+   * @param configs the configurations to resolve from (in priority order)
+   * @return the resolved contracts
+   */
+  resolveContracts(...configs: Array&lt;{ contracts?: Contracts }| undefined&gt;): RequiredType&lt;Contracts&gt; {
+    for (const config of configs) {
+      if (isPresent(config) &amp;&amp; isPresent(config?.contracts)) {
+        return config.contracts;
+      }
+    }
+    return CONTRACTS;
+  },
 &nbsp;
-/**
- * Check if a file does not exist at the given path
- *
- * @param path the file path to check
- * @return true if the file does not exist, false otherwise
- */
-export function fileDoesNotExist(path: string): boolean {
-  return !existsSync(presentCheck(path, "Path must be present."));
+  getEnvPathOrDefault(envVarName: string, defaultPath: string): string {
+    const myVarValue: string | undefined = process.env[envVarName];
+    if (isPresent(myVarValue) &amp;&amp; myVarValue.trim() !== '') {
+      return myVarValue.trim();
+    }
+    return defaultPath;
+  }
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
