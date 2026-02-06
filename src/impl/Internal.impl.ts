@@ -21,4 +21,12 @@ export const Internal = {
     }
     return CONTRACTS;
   },
+
+  getEnvPathOrDefault(envVarName: string, defaultPath: string): string {
+    const myVarValue: string | undefined = process.env[envVarName];
+    if (isPresent(myVarValue) && myVarValue.trim() !== '') {
+      return myVarValue.trim();
+    }
+    return defaultPath;
+  }
 }

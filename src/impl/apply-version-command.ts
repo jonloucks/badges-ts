@@ -5,6 +5,7 @@ import { CONTRACTS } from "@jonloucks/contracts-ts";
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 import { Command, Context } from "./Command.impl";
+import { Internal } from "./Internal.impl";
 
 export const COMMAND: Command<Project> = {
   execute: async function (context: Context): Promise<Project> {
@@ -36,8 +37,8 @@ function applyProjectVersion(context: Context, project: Project): void {
 }
 
 function createReleaseNotesFromTemplate(context: Context, project: Project): void {
-  const templatePath: string = resolve('notes/release-notes-template.md');
-  const outputPath: string = resolve('notes', `release-notes-v${project.version}.md`);
+  const templatePath: string = getReleaseNotesTemplatePath();
+  const outputPath: string = resolve(getReleaseNotesOutputFolder(), `release-notes-v${project.version}.md`);
   if (fileDoesNotExist(templatePath)) {
     const message = `Release notes template not found at ${templatePath}`;
     context.display.warn(message);
@@ -76,3 +77,10 @@ export const VERSION: string = ${JSON.stringify(project.version)};`;
   writeFileSync(resolve('src', 'version.ts'), text, 'utf8');
 }
 
+function getReleaseNotesOutputFolder(): string {
+  return Internal.getEnvPathOrDefault('KIT_RELEASE_NOTES_OUTPUT_FOLDER', resolve('notes'));
+}
+
+function getReleaseNotesTemplatePath(): string {
+  return Internal.getEnvPathOrDefault('KIT_RELEASE_NOTES_TEMPLATE_PATH', resolve('notes', 'release-notes-template.md'));
+}

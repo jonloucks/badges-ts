@@ -9,6 +9,8 @@ import { AutoClose } from "@jonloucks/contracts-ts";
 import { Context, toContext } from "../impl/Command.impl";
 import { COMMAND } from "../impl/discover-command";
 
+const TEST_VERSION : string = "888.888.888";
+
 describe('discover command', () => {
   let closeInstaller: AutoClose;
   let context: Context;
@@ -80,7 +82,7 @@ describe('discover command', () => {
   it('should normalize repository URL by removing .git suffix', async () => {
     const packageJson = {
       name: "git-package",
-      version: "1.0.0",
+      version: TEST_VERSION,
       repository: {
         url: "https://github.com/test/repo.git"
       }
@@ -95,7 +97,7 @@ describe('discover command', () => {
   it('should normalize repository URL by removing git+ prefix', async () => {
     const packageJson = {
       name: "git-prefix-package",
-      version: "1.0.0",
+      version: TEST_VERSION,
       repository: {
         url: "git+https://github.com/test/repo"
       }
@@ -110,7 +112,7 @@ describe('discover command', () => {
   it('should normalize repository URL by removing both git+ prefix and .git suffix', async () => {
     const packageJson = {
       name: "complex-repo-package",
-      version: "1.0.0",
+      version: TEST_VERSION,
       repository: {
         url: "git+https://github.com/test/repo.git"
       }
@@ -124,7 +126,7 @@ describe('discover command', () => {
   it('should return undefined for repository when URL is undefined', async () => {
     const packageJson = {
       name: "no-url-package",
-      version: "1.0.0",
+      version: TEST_VERSION,
       repository: {
         url: undefined
       }
@@ -147,7 +149,7 @@ describe('discover command', () => {
 
   it('should reject when package.json is missing name', async () => {
     const packageJson = {
-      version: "1.0.0"
+      version: TEST_VERSION
     };
     writeFileSync('package.json', JSON.stringify(packageJson));
     await rejects(() => COMMAND.execute(context));
@@ -164,7 +166,7 @@ describe('discover command', () => {
   it('should reject when name is empty string', async () => {
     const packageJson = {
       name: "",
-      version: "1.0.0"
+      version: TEST_VERSION
     };
     writeFileSync('package.json', JSON.stringify(packageJson));
     await rejects(() => COMMAND.execute(context));
@@ -182,7 +184,7 @@ describe('discover command', () => {
   it('should reject when name is only whitespace', async () => {
     const packageJson = {
       name: "   ",
-      version: "1.0.0"
+      version: TEST_VERSION
     };
     writeFileSync('package.json', JSON.stringify(packageJson));
     await rejects(() => COMMAND.execute(context));
@@ -200,7 +202,7 @@ describe('discover command', () => {
   it('should handle repository with only .git suffix', async () => {
     const packageJson = {
       name: "repo-package",
-      version: "1.0.0",
+      version: TEST_VERSION,
       repository: {
         url: ".git"
       }
@@ -215,7 +217,7 @@ describe('discover command', () => {
   it('should handle repository with only git+ prefix', async () => {
     const packageJson = {
       name: "prefix-package",
-      version: "1.0.0",
+      version: TEST_VERSION,
       repository: {
         url: "git+"
       }

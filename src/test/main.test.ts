@@ -13,7 +13,7 @@ describe('Main module', () => {
   let applyVersionExecuteSpy: jest.SpyInstance;
   let originalArgv: string[];
 
-  const mockProject = { name: 'test-project', version: '1.0.0' };
+  const mockProject = { name: 'test-project', version: '888.888.888' };
   const mockBadges = [{ name: 'coverage', outputPath: '/path/to/badge.svg' }];
 
   beforeEach(() => {
@@ -185,7 +185,7 @@ describe('Main module', () => {
       await main([]);
       expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('Badges CLI - Version'));
       expect(consoleInfoSpy).toHaveBeenCalledWith('Usage:');
-      expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('detect-project'));
+      expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('discover'));
       expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('generate-badges'));
       expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('apply-version'));
     });

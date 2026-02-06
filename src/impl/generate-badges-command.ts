@@ -25,6 +25,7 @@ import { mkdir, readFile, writeFile } from "fs";
 import { join } from "path";
 import { VERSION } from "../version";
 import { Command, Context } from "./Command.impl";
+import { Internal } from "./Internal.impl";
 
 export const COMMAND: Command<Badge[]> = {
   execute: async function (context: Context): Promise<Badge[]> {
@@ -205,31 +206,23 @@ function readPercentageFromCoverageSummary(data: Buffer): number {
 }
 
 function getCoverageSummaryFilePath(): string {
-  return getEnvPathOrDefault('KIT_COVERAGE_SUMMARY_PATH', './coverage/coverage-summary.json');
+  return Internal.getEnvPathOrDefault('KIT_COVERAGE_SUMMARY_PATH', './coverage/coverage-summary.json');
 }
 
 function getTemplateBadgePath(): string {
-  return getEnvPathOrDefault('KIT_TEMPLATE_BADGE_PATH', './src/data/badge-template.svg.dat');
+  return Internal.getEnvPathOrDefault('KIT_TEMPLATE_BADGE_PATH', './src/data/badge-template.svg.dat');
 }
 
 function getCoverageSummaryBadgePath(): string {
-  return getEnvPathOrDefault('KIT_COVERAGE_SUMMARY_BADGE_PATH', join(OUTPUT_FOLDER, 'coverage-summary.svg'));
+  return Internal.getEnvPathOrDefault('KIT_COVERAGE_SUMMARY_BADGE_PATH', join(OUTPUT_FOLDER, 'coverage-summary.svg'));
 }
 
 function getTypedocBadgePath(): string {
-  return getEnvPathOrDefault('KIT_TYPEDOC_BADGE_PATH', join(OUTPUT_FOLDER, 'typedoc-badge.svg'));
+  return Internal.getEnvPathOrDefault('KIT_TYPEDOC_BADGE_PATH', join(OUTPUT_FOLDER, 'typedoc-badge.svg'));
 }
 
 function getNpmBadgePath(): string {
-  return getEnvPathOrDefault('KIT_NPM_BADGE_PATH', join(OUTPUT_FOLDER, 'npm-badge.svg'));
-}
-
-function getEnvPathOrDefault(envVarName: string, defaultPath: string): string {
-  const myVarValue: string | undefined = process.env[envVarName];
-  if (myVarValue && myVarValue.trim() !== '') {
-    return myVarValue.trim();
-  }
-  return defaultPath;
+  return Internal.getEnvPathOrDefault('KIT_NPM_BADGE_PATH', join(OUTPUT_FOLDER, 'npm-badge.svg'));
 }
 
 function determineBackgroundColor(percent: number): string {
@@ -245,4 +238,5 @@ function determineBackgroundColor(percent: number): string {
     return 'red';
   }
 }
+
 

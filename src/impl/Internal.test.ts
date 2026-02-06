@@ -110,3 +110,4 @@ describe("Internal resolveContracts", () => {
     strictEqual(result2, result3, "Should return same CONTRACTS instance");
     strictEqual(result1, CONTRACTS, "Should return the CONTRACTS constant");
   });
+});
