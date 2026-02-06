@@ -48,7 +48,7 @@ function findCommand(context: Context): Command<unknown> | undefined {
 function printUsage(context: Context): void {
   context.display.info(`Badges CLI - Version ${VERSION}`);
   context.display.info(`Usage:`);
-  context.display.info(`  badges-cli detect-project     Detect project information from the current directory`);
+  context.display.info(`  badges-cli discover           Detect project information from the current directory`);
   context.display.info(`  badges-cli generate-badges    Generate badges for the current project`);
   context.display.info(`  badges-cli apply-version      Apply version badges to the current project`);
 }
