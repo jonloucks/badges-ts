@@ -1,5 +1,7 @@
-import { Badge, Config as BadgeConfig } from "./Badge";
+import { Badge, Config as BadgeConfig } from "@jonloucks/badges-ts/api/Badge";
 
 export interface BadgeFactory {
-  createBadge(config: BadgeConfig): Badge
+
+  createBadge(config: BadgeConfig): Promise<Badge>;
+
 }

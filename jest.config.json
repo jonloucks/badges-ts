@@ -6,6 +6,7 @@
     "^@jonloucks/badges-ts/version$": "<rootDir>/src/version",
     "^@jonloucks/badges-ts/api/(.*)$": "<rootDir>/src/api/$1",
     "^@jonloucks/badges-ts/auxiliary/(.*)$": "<rootDir>/src/auxiliary/$1",
+    "^@jonloucks/badges-ts/commands/(.*)$": "<rootDir>/src/commands/$1",
     "^@jonloucks/badges-ts/test/(.*)$": "<rootDir>/src/test/$1"
   },
   "transform": {
