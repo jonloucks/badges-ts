@@ -48,7 +48,7 @@ function createReleaseNotesFromTemplate(context: Context, project: Project): voi
     const releaseNotesContent: string = templateContent
       .replace(/{{\s*NAME\s*}}/g, project.name)
       .replace(/{{\s*VERSION\s*}}/g, project.version)
-      .replace(/{{{\s*REPOSITORY\s*}}/g, project.repository ?? "");
+      .replace(/{{\s*REPOSITORY\s*}}/g, project.repository ?? "");
     if (context.flags.dryRun) {
       context.display.dry("Dry run enabled - not writing release notes file");
       context.display.dry(releaseNotesContent);
