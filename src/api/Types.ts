@@ -37,9 +37,3 @@ export const MAX_TIMEOUT: Duration = {
     return Number.MAX_SAFE_INTEGER;
   }
 };
-
-export type BadgeSource = 'jest-coverage' | 'typedoc-coverage' | 'npm-version';
-
-export type Color = 'blue' | 'green' | 'red' | 'yellow' | 'orange' | 'purple' | 'grey' | 'black';
-
-

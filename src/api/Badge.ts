@@ -9,6 +9,6 @@ export interface Config {
 }
 
 export interface Badge {
-  exists(): boolean;
-  location?: string;
+  name: string;
+  outputPath: string;
 }
