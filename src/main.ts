@@ -7,14 +7,14 @@ import { VERSION } from "./version";
 import { createInstaller } from "@jonloucks/badges-ts";
 import { AutoClose, isNotPresent, isPresent } from "@jonloucks/contracts-ts";
 import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
-import { Command, Context, toContext } from "impl/Command.impl";
+import { Command, Context, toContext } from "./impl/Command.impl";
 
-async function main(): Promise<void> {
+export async function main(args: string[]): Promise<void> {
   using usingInstaller: AutoClose = createInstaller().open();
   used(usingInstaller);
 
-  const context: Context = toContext(process.argv.slice(2));
-  const command: Command<unknown> | undefined = getCommand(context);
+  const context: Context = toContext(args);
+  const command: Command<unknown> | undefined = findCommand(context);
 
   if (isPresent(command)) {
     await command.execute(context);
@@ -24,7 +24,7 @@ async function main(): Promise<void> {
   }
 }
 
-function getCommand(context: Context): Command<unknown> | undefined {
+function findCommand(context: Context): Command<unknown> | undefined {
   const firstNonFlag: string | undefined = findFirstNonFlag(context.arguments);
   if (isNotPresent(firstNonFlag)) {
     return undefined;
@@ -57,4 +57,12 @@ function findFirstNonFlag(args: string[]): string | undefined {
   return args.find(arg => !arg.startsWith('-'));
 }
 
-main();
+export async function runMain(): Promise<void> {
+  return await main(process.argv.slice(2));
+}
+
+/* istanbul ignore next */
+// Only run main if the file is executed directly
+if (require.main === module) {
+  runMain();
+}
