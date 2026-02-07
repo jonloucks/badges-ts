@@ -28,6 +28,6 @@ export default [
     }
   },
   {
-    ignores: ['dist/', 'node_modules/', 'coverage/', 'eslint.config.mjs']
+    ignores: ['dist/', 'node_modules/', 'coverage/', 'eslint.config.mjs', 'packs/**' ]
   }
 ];
