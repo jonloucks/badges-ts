@@ -1,10 +1,11 @@
 import { createInstaller } from "@jonloucks/badges-ts";
 import { AutoClose, CONTRACTS } from "@jonloucks/contracts-ts";
+import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { COMMAND } from "../impl/apply-version-command";
-import { Context, toContext } from "../impl/Command.impl";
+import { toContext } from "../impl/Command.impl";
 
 describe('apply-version-command tests', () => {
   let closeInstaller: AutoClose;

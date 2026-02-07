@@ -2,12 +2,16 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs
 import { tmpdir } from "os";
 import { join, resolve } from "path";
 
-import { Context, toContext } from "../impl/Command.impl";
+import { createInstaller } from "@jonloucks/badges-ts";
+import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { AutoClose } from "@jonloucks/contracts-ts";
+import { toContext } from "../impl/Command.impl";
 import { COMMAND } from "../impl/generate-badges-command";
 
 describe('generate-badges-command tests', () => {
   let consoleWarnSpy: jest.SpyInstance;
   let originalEnv: NodeJS.ProcessEnv;
+  let closeInstaller: AutoClose;
 
   const makeTempDir = (): string => mkdtempSync(join(tmpdir(), 'badges-ts-'));
 
@@ -52,11 +56,13 @@ describe('generate-badges-command tests', () => {
   beforeEach(() => {
     originalEnv = { ...process.env };
     consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    closeInstaller = createInstaller().open();
   });
 
   afterEach(() => {
     process.env = originalEnv;
     consoleWarnSpy.mockRestore();
+    closeInstaller.close();
   });
 
   it('should generate all badges with template replacements', async () => {

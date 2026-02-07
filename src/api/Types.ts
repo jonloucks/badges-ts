@@ -37,3 +37,29 @@ export const MAX_TIMEOUT: Duration = {
     return Number.MAX_SAFE_INTEGER;
   }
 };
+
+export interface Display {
+
+  error(message: string): void;
+
+  info(message: string): void;
+
+  warn(message: string): void;
+
+  trace(message: string): void;
+
+  dry(message: string): void;
+}
+
+export interface Flags {
+
+  dryRun: boolean;
+
+  quiet: boolean;
+
+  trace: boolean;
+
+  warn: boolean;
+
+  verbose: boolean;
+}

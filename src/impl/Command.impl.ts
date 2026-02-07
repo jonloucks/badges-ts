@@ -1,47 +1,9 @@
-export interface Command<T> {
-
-  execute(context: Context): Promise<T>;
-
-}
-
-export interface Display {
-
-  error(message: string): void;
-
-  info(message: string): void;
-
-  warn(message: string): void;
-
-  trace(message: string): void;
-
-  dry(message: string): void;
-}
-
-export interface Flags {
-
-  dryRun: boolean;
-
-  quiet: boolean;
-
-  trace: boolean;
-
-  warn: boolean;
-
-  verbose: boolean;
-}
-
-export interface Context {
-
-  arguments: string[];
-
-  display: Display;
-
-  flags: Flags;
-}
+import { Display, Flags } from "@jonloucks/badges-ts/api/Types";
+import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 
 export function toContext(args: string[]): Context {
   const flags: Flags = parseFlags({ args });
-  const display: Display = toDisplay(flags);
+  const display: Display = flagsToDisplay(flags);
   return {
     arguments: args,
     display: display,
@@ -59,7 +21,7 @@ function parseFlags({ args }: { args: string[]; }): Flags {
   };
 }
 
-function toDisplay(flags: Flags): Display {
+function flagsToDisplay(flags: Flags): Display {
   return {
     error: (message: string) : void => {
       if (!flags.quiet) {

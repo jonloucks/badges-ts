@@ -2,6 +2,8 @@ import assert, { ok } from "node:assert";
 
 import { MockProxy } from "jest-mock-extended/lib/Mock";
 import { mock } from "jest-mock-extended";
+import { Contract } from "@jonloucks/contracts-ts/api/Contract";
+import { isRatifiedContract } from "@jonloucks/contracts-ts/api/RatifiedContract";
 
 describe('Helper Tests', () => {
   it('should run a place holder test', () => {
@@ -25,6 +27,19 @@ export function mockDuck<T>(...propertyNames: (string | symbol)[]): MockProxy<T>
     assert(lookup[propertyName]);
   }
   return mocked;
+}
+
+export function assertContract<T>(contract: Contract<T>, name: string): void {
+  describe(`${name} CONTRACT test`, () => {
+    it(`${name} CONTRACT should be ratified with a name`, () => {
+      ok(isRatifiedContract(contract), `${name} isRatifiedContract should return true`);
+      ok(contract.name === name, `CONTRACT name should be ${name}`);
+      if (contract.guarded === false) {
+        ok(contract.cast(null) === null, `${name} CONTRACT.cast(null) should return null`);
+        ok(contract.cast(undefined) === undefined, `${name} CONTRACT.cast(undefined) should return undefined`);
+      }
+    });
+  });
 }
 
 type Guard<T> = (o: unknown) => o is T;
@@ -85,3 +100,4 @@ function generateCombinations<T>(items: T[]): T[][] {
   backtrack(0, []);
   return result;
 }
+
