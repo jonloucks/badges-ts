@@ -6,8 +6,6 @@ import { create as createBadgeFactory } from "./BadgeFactory.impl";
 import { create as createDiscoverProject } from "./DiscoverProject.impl";
 import { Internal } from "./Internal.impl";
 
-export { Installer, Config } from "@jonloucks/badges-ts/api/Installer";
-
 /**
  * Factory function to create an instance of Installer.
  * 

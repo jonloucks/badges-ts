@@ -1,6 +1,8 @@
-import { OptionalType, RequiredType } from "@jonloucks/contracts-ts/api/Types";
+import type { OptionalType, RequiredType } from "@jonloucks/contracts-ts/api/Types";
 import { illegalCheck, presentCheck, configCheck, used } from "@jonloucks/contracts-ts/auxiliary/Checks";
-import { Duration, MAX_TIMEOUT } from "@jonloucks/badges-ts/api/Types";
+import type { Duration } from "@jonloucks/badges-ts/api/Types";
+import { MAX_TIMEOUT } from "@jonloucks/badges-ts/api/Types";
+
 import { existsSync } from "fs";
 
 export { presentCheck, illegalCheck, configCheck, used, Duration, RequiredType, OptionalType };

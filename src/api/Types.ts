@@ -1,4 +1,6 @@
-export { guardFunctions, isNotPresent, isNumber, isPresent, isString, OptionalType, RequiredType } from "@jonloucks/contracts-ts/api/Types";
+export type { OptionalType, RequiredType } from "@jonloucks/contracts-ts/api/Types";
+
+export { guardFunctions, isNotPresent, isNumber, isPresent, isString } from "@jonloucks/contracts-ts/api/Types";
 
 // candidate for inclusion in api-ts
 /**

@@ -10,10 +10,10 @@
   "types": "index.d.ts",
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "require": "./index.js",
-      "import": "./index.js",
-      "default": "./index.js"
+      "types": ["./index.d.ts", "./cli.d.ts"],
+      "require": ["./index.js", "./cli.js"],
+      "import": ["./index.js", "./cli.js"],
+      "default": ["./index.js", "./cli.js"]
     },
     "./api/*": {
       "types": "./api/*.d.ts",
@@ -43,17 +43,17 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build",
-    "before:publish": "npm run clean && npm run compile && cp package.json dist && cp README.md dist && cd dist && npm pkg delete private",
+    "before:publish": "npm run clean && npm run compile && cp package.json dist && cp README.md dist && mkdir -p dist/data && cp src/data/* dist/data/ && cd dist && npm pkg delete private",
     "after:publish": "npm run clean",
     "prepare": "npm run build",
     "docs": "typedoc --options typedoc.json",
-    "badges": "npx tsx ./src/cli.ts generate-badges",
-    "discover": "npx tsx ./src/cli.ts discover",
-    "clean": "rm -rf dist",
+    "badges": "npx badges-ts generate-badges",
+    "discover": "npx badges-ts discover",
+    "clean": "rm -rf dist && rm -rf coverage && npm install",
     "compile": "tsc",
     "postversion": "npm run applyversion",
-    "applyversion": "npx tsx ./src/cli.ts apply-version",
-    "pack-package": "npm run before:publish && cd dist && npm pack && npm run after:publish"
+    "applyversion": "npx badges-ts apply-version",
+    "pack-package": "npm run before:publish && mkdir -p packs && cd dist && npm pack && mv *.tgz ../packs/ && npm run after:publish"
   },
   "keywords": [
     "typescript",
