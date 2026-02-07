@@ -1,3 +1,3 @@
 // generated file - do not edit
 export const NAME: string = "@jonloucks/badges-ts";
-export const VERSION: string = "0.0.1";
+export const VERSION: string = "0.1.0";

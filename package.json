@@ -1,6 +1,6 @@
 {
   "name": "@jonloucks/badges-ts",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Node.js badge creator",
   "private": true,
   "main": "index.js",
@@ -11,10 +11,16 @@
   "types": "index.d.ts",
   "exports": {
     ".": {
-      "types": ["./index.d.ts", "./cli.d.ts"],
-      "require": ["./index.js", "./cli.js"],
-      "import": ["./index.js", "./cli.js"],
-      "default": ["./index.js", "./cli.js"]
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "import": "./index.js",
+      "default": "./index.js"
+    },
+    "./cli": {
+      "types": "./cli.d.ts",
+      "require": "./cli.js",
+      "import": "./cli.js",
+      "default": "./cli.js"
     },
     "./api/*": {
       "types": "./api/*.d.ts",
