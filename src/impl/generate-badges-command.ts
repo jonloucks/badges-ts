@@ -151,7 +151,7 @@ function getCoverageSummaryFilePath(): string {
 
 function getTemplateBadgePath(): string {
   return Internal.getEnvPathOrDefault('KIT_TEMPLATE_BADGE_PATH',
-    './src/data/badge-template.svg.dat');
+    join(__dirname, '..', 'data', 'badge-template.svg.dat'));
 }
 
 function getBadgesFolder(): string {

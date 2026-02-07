@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { COMMAND as APPLY_VERSION_COMMAND } from "./impl/apply-version-command";
 import { COMMAND as DISCOVER_COMMAND } from "./impl/discover-command";
 import { COMMAND as GENERATE_BADGES_COMMAND } from "./impl/generate-badges-command";
