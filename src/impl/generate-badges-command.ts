@@ -20,7 +20,7 @@
  * ```
  */
 import { Badge } from "@jonloucks/badges-ts/api/Badge";
-import { readFile, } from "fs";
+import { readFile } from "fs";
 import { join } from "path";
 import { VERSION } from "../version";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
