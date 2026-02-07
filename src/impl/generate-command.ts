@@ -6,9 +6,9 @@
  * Environment Variables:
  * - KIT_TEMPLATE_BADGE_PATH: Input path to the SVG badge template file. Default: './src/data/badge-template.svg.dat'
  * - KIT_COVERAGE_SUMMARY_PATH: Input path coverage summary JSON file. Default: './coverage/coverage-summary.json'
- * - KIT_COVERAGE_SUMMARY_BADGE_PATH: Output path for the generated coverage badge SVG file. Default: './.tmp/badges/coverage-summary.svg'     
- * - KIT_TYPEDOC_BADGE_PATH: Output path for the generated typedoc badge SVG file. Default: './.tmp/badges/typedoc.svg'     
- * - KIT_NPM_BADGE_PATH: Output path for the generated npm badge SVG file. Default: './.tmp/badges/npm.svg'     
+ * - KIT_COVERAGE_SUMMARY_BADGE_PATH: Output path for the generated coverage badge SVG file. Default: './coverage-summary.svg'
+ * - KIT_TYPEDOC_BADGE_PATH: Output path for the generated typedoc badge SVG file. Default: './typedoc-badge.svg'
+ * - KIT_NPM_BADGE_PATH: Output path for the generated npm badge SVG file. Default: './npm-badge.svg'
 
  *  * Template Placeholders:
  * - {{LABEL}}: Placeholder for the badge label (e.g., "coverage").
