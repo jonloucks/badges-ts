@@ -1,11 +1,14 @@
+import { Display, Flags } from "./Types";
+
 export interface Config {
   name: string;
-  templatePath?: string;
+  templatePath: string;
   outputPath: string;
   label: string;
   value: string;
   color: string;
-  createFolders?: boolean;
+  flags: Flags;
+  display: Display;
 }
 
 export interface Badge {

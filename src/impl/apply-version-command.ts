@@ -2,9 +2,10 @@ import { Project } from "@jonloucks/badges-ts/api/Project";
 import { fileDoesNotExist } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { CONTRACT as DISCOVER_PROJECT, DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
 import { CONTRACTS } from "@jonloucks/contracts-ts";
+import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
+
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import { Command, Context } from "./Command.impl";
 import { Internal } from "./Internal.impl";
 
 export const COMMAND: Command<Project> = {

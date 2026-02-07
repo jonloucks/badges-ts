@@ -7,8 +7,19 @@ import { VERSION } from "./version";
 import { createInstaller } from "@jonloucks/badges-ts";
 import { AutoClose, isNotPresent, isPresent } from "@jonloucks/contracts-ts";
 import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
-import { Command, Context, toContext } from "./impl/Command.impl";
+import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { toContext } from "./impl/Command.impl";
 
+/**
+ * Main entry point for the Badges CLI application. 
+ * This function is responsible for parsing command-line arguments, 
+ * determining which command to execute, and invoking the appropriate command logic. 
+ * It also handles displaying usage information when no valid command is found.
+ * 
+ * @param args - The command-line arguments passed to the CLI, typically from process.argv.slice(2).
+ * @returns A promise that resolves when the command execution is complete.
+ * @throws An error if command execution fails or if no valid command is found.
+ */
 export async function main(args: string[]): Promise<void> {
   using usingInstaller: AutoClose = createInstaller().open();
   used(usingInstaller);
@@ -25,7 +36,10 @@ export async function main(args: string[]): Promise<void> {
 }
 
 function findCommand(context: Context): Command<unknown> | undefined {
-  const firstNonFlag: string | undefined = findFirstNonFlag(context.arguments);
+  if (context.arguments.length === 0) {
+    return undefined;
+  }
+  const firstNonFlag: string | undefined = findFirstCommand(context.arguments);
   if (isNotPresent(firstNonFlag)) {
     return undefined;
   }
@@ -40,6 +54,21 @@ function findCommand(context: Context): Command<unknown> | undefined {
     case 'apply-version': {
       return APPLY_VERSION_COMMAND;
     }
+    case 'version': {
+      return {
+        execute: async (context: Context) : Promise<string> => {
+          context.display.info(`Badges CLI - Version ${VERSION}`);
+          return VERSION;
+        }
+      };
+    } 
+    case 'help': {
+      return {
+        execute: async (context: Context) : Promise<void> => {
+          printUsage(context);
+        }
+      };
+    }
     default:
       return undefined;
   }
@@ -53,7 +82,14 @@ function printUsage(context: Context): void {
   context.display.info(`  badges-cli apply-version      Apply version badges to the current project`);
 }
 
-function findFirstNonFlag(args: string[]): string | undefined {
+function findFirstCommand(args: string[]): string | undefined {
+  const front : string = args[0];
+  if (front === '--help' || front === '-h') {
+    return 'help';
+  }
+  if (front === '--version' || front === '-v') {
+    return 'version';
+  }
   return args.find(arg => !arg.startsWith('-'));
 }
 

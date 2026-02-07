@@ -6,7 +6,8 @@ import { join } from "path";
 import { createInstaller } from "@jonloucks/badges-ts";
 import { Project } from "@jonloucks/badges-ts/api/Project";
 import { AutoClose } from "@jonloucks/contracts-ts";
-import { Context, toContext } from "../impl/Command.impl";
+import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { toContext } from "../impl/Command.impl";
 import { COMMAND } from "../impl/discover-command";
 
 const TEST_VERSION : string = "888.888.888";

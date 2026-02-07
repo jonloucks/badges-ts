@@ -1,9 +1,12 @@
 {
   "name": "@jonloucks/badges-ts",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Node.js badge creator",
   "private": true,
   "main": "index.js",
+  "bin": {
+    "badges-ts": "cli.js"
+  },
   "types": "index.d.ts",
   "exports": {
     ".": {
@@ -44,12 +47,12 @@
     "after:publish": "npm run clean",
     "prepare": "npm run build",
     "docs": "typedoc --options typedoc.json",
-    "badges": "npx tsx ./src/main.ts generate-badges",
-    "discover": "npx tsx ./src/main.ts discover",
+    "badges": "npx tsx ./src/cli.ts generate-badges",
+    "discover": "npx tsx ./src/cli.ts discover",
     "clean": "rm -rf dist",
     "compile": "tsc",
     "postversion": "npm run applyversion",
-    "applyversion": "npx tsx ./src/main.ts apply-version",
+    "applyversion": "npx tsx ./src/cli.ts apply-version",
     "pack-package": "npm run before:publish && cd dist && npm pack && npm run after:publish"
   },
   "keywords": [
