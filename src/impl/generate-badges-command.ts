@@ -25,7 +25,7 @@ import { join } from "path";
 import { VERSION } from "../version";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { Internal } from "./Internal.impl";
-import { BadgeFactory, CONTRACT as BADGE_FACTORY } from "../api/BadgeFactory";
+import { BadgeFactory, CONTRACT as BADGE_FACTORY } from "@jonloucks/badges-ts/api/BadgeFactory";
 import { CONTRACTS } from "@jonloucks/contracts-ts";
 
 export const COMMAND: Command<Badge[]> = {
