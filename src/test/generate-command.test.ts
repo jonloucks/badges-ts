@@ -8,7 +8,7 @@ import { AutoClose } from "@jonloucks/contracts-ts";
 import { toContext } from "../impl/Command.impl";
 import { COMMAND } from "../impl/generate-command";
 
-describe('generate-command tests', () => {
+describe('generate CLI command', () => {
   let consoleWarnSpy: jest.SpyInstance;
   let originalEnv: NodeJS.ProcessEnv;
   let closeInstaller: AutoClose;
