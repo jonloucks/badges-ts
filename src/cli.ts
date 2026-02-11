@@ -84,7 +84,8 @@ function printUsage(context: Context): void {
   printBanner(context);
   context.display.info(`Usage:`);
   context.display.info(`  badges-ts discover           Detect project information from the current directory`);
-  context.display.info(`  badges-ts generate-badges    Generate badges for the current project`);
+  context.display.info(`  badges-ts generate           Generate badges for the current project`);
+  context.display.info(`  badges-ts generate-badges    (deprecated) Alias for "generate"`);
   context.display.info(`  badges-ts apply-version      Apply version badges to the current project`);
 }
 
