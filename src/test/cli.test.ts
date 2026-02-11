@@ -3,7 +3,9 @@ import { ok } from "node:assert";
 import { main, runMain } from "../cli";
 import { COMMAND as APPLY_VERSION_COMMAND } from "../impl/apply-version-command";
 import { COMMAND as DISCOVER_COMMAND } from "../impl/discover-command";
-import { COMMAND as GENERATE_BADGES_COMMAND } from "../impl/generate-badges-command";
+import { COMMAND as GENERATE_COMMAND } from "../impl/generate-command";
+
+const BANNER_START: string = "Badges-TS CLI - Version ";
 
 describe('Main module', () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -21,7 +23,7 @@ describe('Main module', () => {
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     consoleInfoSpy = jest.spyOn(console, 'info').mockImplementation();
     discoverExecuteSpy = jest.spyOn(DISCOVER_COMMAND, 'execute').mockResolvedValue(mockProject);
-    generateBadgesExecuteSpy = jest.spyOn(GENERATE_BADGES_COMMAND, 'execute').mockResolvedValue(mockBadges);
+    generateBadgesExecuteSpy = jest.spyOn(GENERATE_COMMAND, 'execute').mockResolvedValue(mockBadges);
     applyVersionExecuteSpy = jest.spyOn(APPLY_VERSION_COMMAND, 'execute').mockResolvedValue(mockProject);
   });
 
@@ -78,7 +80,7 @@ describe('Main module', () => {
     it('should show error and usage when no command provided', async () => {
       await main([]);
       expect(consoleErrorSpy).toHaveBeenCalledWith("No valid command found.");
-      expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('Badges CLI - Version'));
+      expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining(BANNER_START));
       expect(consoleInfoSpy).toHaveBeenCalledWith('Usage:');
       expect(discoverExecuteSpy).not.toHaveBeenCalled();
       expect(generateBadgesExecuteSpy).not.toHaveBeenCalled();
@@ -95,7 +97,7 @@ describe('Main module', () => {
     it('should show error and usage for unknown command', async () => {
       await main(['unknown-command']);
       expect(consoleErrorSpy).toHaveBeenCalledWith("No valid command found.");
-      expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('Badges CLI - Version'));
+      expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining(BANNER_START));
       expect(discoverExecuteSpy).not.toHaveBeenCalled();
       expect(generateBadgesExecuteSpy).not.toHaveBeenCalled();
       expect(applyVersionExecuteSpy).not.toHaveBeenCalled();
@@ -169,7 +171,7 @@ describe('Main module', () => {
     it('should execute version command with --version flag', async () => {
       await main(['--version']);
       expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Badges CLI - Version')
+        expect.stringContaining(BANNER_START)
       );
       expect(discoverExecuteSpy).not.toHaveBeenCalled();
       expect(generateBadgesExecuteSpy).not.toHaveBeenCalled();
@@ -179,7 +181,7 @@ describe('Main module', () => {
     it('should execute version command with -v flag', async () => {
       await main(['-v']);
       expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Badges CLI - Version')
+        expect.stringContaining(BANNER_START)
       );
       expect(discoverExecuteSpy).not.toHaveBeenCalled();
       expect(generateBadgesExecuteSpy).not.toHaveBeenCalled();
@@ -189,7 +191,7 @@ describe('Main module', () => {
     it('should execute version command with version keyword', async () => {
       await main(['version']);
       expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Badges CLI - Version')
+        expect.stringContaining(BANNER_START)
       );
       expect(discoverExecuteSpy).not.toHaveBeenCalled();
       expect(generateBadgesExecuteSpy).not.toHaveBeenCalled();
@@ -200,7 +202,7 @@ describe('Main module', () => {
       await main(['--help']);
       expect(consoleInfoSpy).toHaveBeenCalledWith('Usage:');
       expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Badges CLI - Version')
+        expect.stringContaining(BANNER_START)
       );
       expect(discoverExecuteSpy).not.toHaveBeenCalled();
       expect(generateBadgesExecuteSpy).not.toHaveBeenCalled();
@@ -211,7 +213,7 @@ describe('Main module', () => {
       await main(['-h']);
       expect(consoleInfoSpy).toHaveBeenCalledWith('Usage:');
       expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Badges CLI - Version')
+        expect.stringContaining(BANNER_START)
       );
       expect(discoverExecuteSpy).not.toHaveBeenCalled();
       expect(generateBadgesExecuteSpy).not.toHaveBeenCalled();
@@ -235,7 +237,7 @@ describe('Main module', () => {
   describe('printUsage', () => {
     it('should print usage information', async () => {
       await main([]);
-      expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('Badges CLI - Version'));
+      expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining(BANNER_START));
       expect(consoleInfoSpy).toHaveBeenCalledWith('Usage:');
       expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('discover'));
       expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('generate-badges'));
