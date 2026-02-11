@@ -90,6 +90,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@jonloucks/contracts-ts": "^1.2.1"
+    "@jonloucks/contracts-ts": "^1.4.0"
   }
 }
