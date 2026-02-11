@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { COMMAND as APPLY_VERSION_COMMAND } from "./impl/apply-version-command";
 import { COMMAND as DISCOVER_COMMAND } from "./impl/discover-command";
-import { COMMAND as GENERATE_BADGES_COMMAND } from "./impl/generate-badges-command";
+import { COMMAND as GENERATE_COMMAND } from "./impl/generate-command";
 
 import { VERSION } from "./version";
 
@@ -49,23 +49,24 @@ function findCommand(context: Context): Command<unknown> | undefined {
     case 'discover': {
       return DISCOVER_COMMAND;
     }
+    case 'generate':
     case 'generate-badges': {
-      return GENERATE_BADGES_COMMAND;
+      return GENERATE_COMMAND;
     }
     case 'apply-version': {
       return APPLY_VERSION_COMMAND;
     }
     case 'version': {
       return {
-        execute: async (context: Context) : Promise<string> => {
-          context.display.info(`Badges CLI - Version ${VERSION}`);
+        execute: async (context: Context): Promise<string> => {
+          printBanner(context);
           return VERSION;
         }
       };
-    } 
+    }
     case 'help': {
       return {
-        execute: async (context: Context) : Promise<void> => {
+        execute: async (context: Context): Promise<void> => {
           printUsage(context);
         }
       };
@@ -75,16 +76,21 @@ function findCommand(context: Context): Command<unknown> | undefined {
   }
 }
 
+function printBanner(context: Context): void {
+  context.display.info(`Badges-TS CLI - Version ${VERSION}`);
+}
+
 function printUsage(context: Context): void {
-  context.display.info(`Badges CLI - Version ${VERSION}`);
+  printBanner(context);
   context.display.info(`Usage:`);
-  context.display.info(`  badges-cli discover           Detect project information from the current directory`);
-  context.display.info(`  badges-cli generate-badges    Generate badges for the current project`);
-  context.display.info(`  badges-cli apply-version      Apply version badges to the current project`);
+  context.display.info(`  badges-ts discover           Detect project information from the current directory`);
+  context.display.info(`  badges-ts generate           Generate badges for the current project`);
+  context.display.info(`  badges-ts generate-badges    (deprecated) Alias for "generate"`);
+  context.display.info(`  badges-ts apply-version      Apply version badges to the current project`);
 }
 
 function findFirstCommand(args: string[]): string | undefined {
-  const front : string = args[0];
+  const front: string = args[0];
   if (front === '--help' || front === '-h') {
     return 'help';
   }
