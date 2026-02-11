@@ -54,7 +54,7 @@
     "after:publish": "npm run clean",
     "prepare": "npm run build",
     "docs": "typedoc --options typedoc.json",
-    "badges": "npx tsx ./src/cli.ts generate-badges",
+    "badges": "npx tsx ./src/cli.ts generate",
     "discover": "npx tsx ./src/cli.ts discover",
     "clean": "rm -rf dist && rm -rf coverage && npm install",
     "compile": "tsc",
