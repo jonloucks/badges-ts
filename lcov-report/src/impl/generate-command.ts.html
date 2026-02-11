@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.29% </span>
+                <span class="strong">96.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>52/54</span>
+                <span class='fraction'>56/58</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95% </span>
+                <span class="strong">95.23% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>19/20</span>
+                <span class='fraction'>20/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.29% </span>
+                <span class="strong">96.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>52/54</span>
+                <span class='fraction'>56/58</span>
             </div>
         
             
@@ -253,7 +253,14 @@
 <a name='L188'></a><a href='#L188'>188</a>
 <a name='L189'></a><a href='#L189'>189</a>
 <a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -277,9 +284,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -331,6 +340,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -340,6 +350,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -442,7 +457,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * Best effort generation of code coverage badge from coverage summary JSON file.
  * Reads coverage percentage from JSON file, determines badge color based on thresholds,
@@ -467,11 +481,13 @@
 import { Badge } from "@jonloucks/badges-ts/api/Badge";
 import { readFile } from "fs";
 import { join } from "path";
-import { VERSION } from "../version";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { Internal } from "./Internal.impl";
 import { BadgeFactory, CONTRACT as BADGE_FACTORY } from "@jonloucks/badges-ts/api/BadgeFactory";
 import { CONTRACTS } from "@jonloucks/contracts-ts";
+import { Project } from "@jonloucks/badges-ts/api/Project";
+import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
+import { used } from "../auxiliary/Checks";
 &nbsp;
 export const COMMAND: Command&lt;Badge[]&gt; = {
   execute: async function (context: Context): Promise&lt;Badge[]&gt; {
@@ -520,17 +536,23 @@ async function generateBadges(context: Context): Promise&lt;Badge[]&gt; {
  */
 async function generateNpmBadge(context: Context): Promise&lt;Badge&gt; {
   const badgeFactory: BadgeFactory = CONTRACTS.enforce(BADGE_FACTORY);
+  const project: Project = await discoverProject(context);
   return await badgeFactory.createBadge({
     name: "npm",
     outputPath: getNpmBadgePath(),
     label: "  npm  ",
-    value: VERSION,
+    value: project.version,
     color: SUCCESS_COLOR,
     templatePath: getTemplateBadgePath(),
     flags: context.flags,
     display: context.display
   });
 }
+&nbsp;
+async function discoverProject(context: Context): Promise&lt;Project&gt; {
+  used(context); // accept and mark context as used to keep the API flexible/consistent for future parameters; this does not affect logging or tracing
+  return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject();
+};
 &nbsp;
 /**
  * Generates a code coverage summary badge based on the coverage summary JSON file.
@@ -632,7 +654,6 @@ function determineBackgroundColor(percent: number): string {
   }
 }
 &nbsp;
-&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -640,7 +661,7 @@ function determineBackgroundColor(percent: number): string {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-11T09:30:58.776Z
+                at 2026-02-11T12:48:35.373Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
