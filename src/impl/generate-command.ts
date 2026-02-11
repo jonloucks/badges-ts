@@ -22,11 +22,13 @@
 import { Badge } from "@jonloucks/badges-ts/api/Badge";
 import { readFile } from "fs";
 import { join } from "path";
-import { VERSION } from "../version";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { Internal } from "./Internal.impl";
 import { BadgeFactory, CONTRACT as BADGE_FACTORY } from "@jonloucks/badges-ts/api/BadgeFactory";
 import { CONTRACTS } from "@jonloucks/contracts-ts";
+import { Project } from "@jonloucks/badges-ts/api/Project";
+import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
+import { used } from "../auxiliary/Checks";
 
 export const COMMAND: Command<Badge[]> = {
   execute: async function (context: Context): Promise<Badge[]> {
@@ -75,17 +77,23 @@ async function generateBadges(context: Context): Promise<Badge[]> {
  */
 async function generateNpmBadge(context: Context): Promise<Badge> {
   const badgeFactory: BadgeFactory = CONTRACTS.enforce(BADGE_FACTORY);
+  const project: Project = await discoverProject(context);
   return await badgeFactory.createBadge({
     name: "npm",
     outputPath: getNpmBadgePath(),
     label: "  npm  ",
-    value: VERSION,
+    value: project.version,
     color: SUCCESS_COLOR,
     templatePath: getTemplateBadgePath(),
     flags: context.flags,
     display: context.display
   });
 }
+
+async function discoverProject(context: Context): Promise<Project> {
+  used(context); // accept and mark context as used to keep the API flexible/consistent for future parameters; this does not affect logging or tracing
+  return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject();
+};
 
 /**
  * Generates a code coverage summary badge based on the coverage summary JSON file.
@@ -186,5 +194,4 @@ function determineBackgroundColor(percent: number): string {
     return 'red';
   }
 }
-
 
