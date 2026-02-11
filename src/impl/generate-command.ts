@@ -91,7 +91,7 @@ async function generateNpmBadge(context: Context): Promise<Badge> {
 }
 
 async function discoverProject(context: Context): Promise<Project> {
-  used(context); // consistently use context in case we need to add additional parameters later, and to ensure that the trace log is included in the command execution flow 
+  used(context); // accept and mark context as used to keep the API flexible/consistent for future parameters; this does not affect logging or tracing
   return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject();
 };
 
