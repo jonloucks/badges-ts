@@ -1,4 +1,3 @@
-// import { MockProxy } from "jest-mock-extended";
 import { ok } from "node:assert";
 import { afterEach, beforeEach, describe, it } from "node:test";
 

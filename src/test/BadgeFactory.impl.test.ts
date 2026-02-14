@@ -1,6 +1,6 @@
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { ok, strictEqual } from "node:assert";
-import { afterEach, beforeEach, describe, it, mock } from "node:test";
+import { afterEach, beforeEach, describe, it } from "node:test";
 import { tmpdir } from "os";
 import { join } from "path";
 
