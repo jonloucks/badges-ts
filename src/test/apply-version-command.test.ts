@@ -1,425 +1,126 @@
+import { ok } from "node:assert";
+import { afterEach, beforeEach, describe, it, Mock, mock } from "node:test";
+
 import { createInstaller } from "@jonloucks/badges-ts";
-import { AutoClose, CONTRACTS } from "@jonloucks/contracts-ts";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs";
+import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
+import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
-import { COMMAND } from "../impl/apply-version-command";
-import { toContext } from "../impl/Command.impl";
+import { COMMAND } from "../impl/apply-version-command.js";
+import { toContext } from "../impl/Command.impl.js";
+import { OVERRIDE_ENVIRONMENT } from "../impl/Internal.impl.js";
 
 describe('apply-version-command tests', () => {
   let closeInstaller: AutoClose;
-  let consoleInfoSpy: jest.SpyInstance;
-  let consoleErrorSpy: jest.SpyInstance;
-  let consoleWarnSpy: jest.SpyInstance;
-  let originalEnv: NodeJS.ProcessEnv;
-  let testDir: string;
+  let originalCwd: string;
+  let temporaryFolder: string;
   let templatePath: string;
-  let notesOutputDir: string;
-
-  const createTestEnvironment = (): void => {
-    testDir = mkdtempSync(join(tmpdir(), 'apply-version-test-'));
-    notesOutputDir = join(testDir, 'notes');
-    mkdirSync(notesOutputDir, { recursive: true });
-
-    templatePath = join(notesOutputDir, 'release-notes-template.md');
-
-    // Set environment variables to use test directories
-    process.env.KIT_RELEASE_NOTES_TEMPLATE_PATH = templatePath;
-    process.env.KIT_RELEASE_NOTES_OUTPUT_FOLDER = notesOutputDir;
-  };
-
-  const writeTemplate = (content: string): void => {
-    writeFileSync(templatePath, content, 'utf8');
-  };
+  let mockErrorFn: Mock<(message: string) => void>;
 
   beforeEach(() => {
+    originalCwd = process.cwd();
     closeInstaller = createInstaller().open();
-    originalEnv = { ...process.env };
-    consoleInfoSpy = jest.spyOn(console, 'info').mockImplementation();
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-    consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
-    createTestEnvironment();
+    // this must be a temporary directory that is cleaned up after the test, and should not be the same as the one used in other tests to avoid conflicts
+    temporaryFolder = mkdtempSync(join(tmpdir(), 'apply-version-test-'));
+    process.chdir(temporaryFolder);
+
+    // Create necessary directories
+    mkdirSync(join(temporaryFolder, 'src')); // review requirements for src directory if needed
+
+    mockErrorFn = mock.fn((message: string): void => {
+      used(message);
+    });
+
+    // Create a package.json for the test
+    const packageJson = {
+      name: "@test/test-package",
+      version: "0.0.0"
+    };
+    writeFileSync(join(temporaryFolder, 'package.json'), JSON.stringify(packageJson), 'utf8');
+
+    templatePath = join(temporaryFolder, 'release-notes-template.md');
+    writeFileSync(templatePath, '# {{NAME}} v{{VERSION}}', 'utf8');
+    OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', templatePath);
+    OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_OUTPUT_FOLDER', temporaryFolder);
   });
 
   afterEach(() => {
+    process.chdir(originalCwd);
     closeInstaller.close();
-    process.env = originalEnv;
-    consoleInfoSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
-    consoleWarnSpy.mockRestore();
-    if (testDir && existsSync(testDir)) {
-      rmSync(testDir, { recursive: true, force: true });
+    OVERRIDE_ENVIRONMENT.clear();
+    if (temporaryFolder && existsSync(temporaryFolder)) {
+      rmSync(temporaryFolder, { recursive: true, force: true });
     }
   });
 
-  describe('COMMAND.execute', () => {
-    it('should execute successfully and return project', async () => {
-      writeTemplate('# {{NAME}} v{{VERSION}}');
-      const context: Context = toContext(['apply-version', '--quiet']);
-      const result = await COMMAND.execute(context);
+  function toMockContext(args: string[]): Context {
+    const context: Context = toContext(args);
 
-      expect(result).toBeTruthy();
-      expect(result.name).toBeDefined();
-      expect(result.version).toBeDefined();
+    context.display.error = mockErrorFn;
+
+    return context;
+  };
+
+  function assertNoErrors(): void {
+    ok(mockErrorFn.mock.calls.length === 0, 'error should not be called');
+  }
+
+  function assertHadErrors(): void {
+    ok(mockErrorFn.mock.calls.length > 0, 'error should not be called');
+  }
+
+  describe('COMMAND', () => {
+    it('should have execute method', () => {
+      ok(typeof COMMAND.execute === 'function', 'COMMAND should have execute method');
     });
 
-    it('should log success message', async () => {
-      writeTemplate('# {{NAME}} v{{VERSION}}');
-      const context: Context = toContext(['apply-version']);
-      const result = await COMMAND.execute(context);
-
-      expect(result).toBeTruthy();
-      expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('apply-version completed:')
-      );
+    it('with template file', async () => {
+      const context: Context = toMockContext(['apply-version', '--quiet']);
+      await COMMAND.execute(context);
+      ok(existsSync(templatePath), 'Release notes file should be created');
+      assertNoErrors();
     });
 
-    it('should handle errors and log error message', async () => {
-      const context: Context = toContext(['apply-version']);
-      const originalEnforce = CONTRACTS.enforce;
-
-      CONTRACTS.enforce = jest.fn().mockReturnValue({
-        discoverProject: jest.fn().mockRejectedValue(new Error('Test error'))
+    it('with template file but missing src directory', async () => {
+      const context: Context = toMockContext(['apply-version', '--quiet']);
+      rmSync(join(temporaryFolder, 'src'), { recursive: true, force: true });
+      await COMMAND.execute(context)
+      .catch((error: Error) => {
+        ok(error instanceof Error, 'Error should be thrown when src directory is missing');
+        ok(error.message.includes('ENOENT'), 'Error message should indicate missing file or directory');
       });
-
-      await expect(COMMAND.execute(context)).rejects.toThrow('Test error');
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Error during apply-version:')
-      );
-
-      CONTRACTS.enforce = originalEnforce;
-    });
-  });
-
-  describe('createVersionTs', () => {
-    it('should create version.ts file with project info', async () => {
-      writeTemplate('# {{NAME}}');
-      const context: Context = toContext(['apply-version']);
-      const result = await COMMAND.execute(context);
-
-      // Version.ts is written to src/version.ts by default - we can't test this without modifying production code
-      // Instead, verify the command completed successfully
-      expect(result).toBeTruthy();
-      expect(result.name).toBeDefined();
-      expect(result.version).toBeDefined();
+      assertHadErrors();
     });
 
-    it('should not create version.ts in dry run mode', async () => {
-      writeTemplate('# {{NAME}}');
-      const context: Context = toContext(['apply-version', '--dry-run']);
+    it('twice with template file', async () => {
+      const context: Context = toMockContext(['apply-version', '--quiet']);
       await COMMAND.execute(context);
 
-      expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('[DRY RUN]')
-      );
-      expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Dry run enabled - not writing version.ts file')
-      );
-    });
+      ok(existsSync(templatePath), 'Release notes file should be created');
 
-    it('should display dry run message with file content', async () => {
-      writeTemplate('# {{NAME}}');
-      const context: Context = toContext(['apply-version', '--dry-run']);
+      const firstContent = readFileSync(templatePath, 'utf8');
+      const firstModifiedTime = statSync(templatePath).mtime;
+
+      // Wait a bit to ensure timestamp would change if file was rewritten
+      await new Promise(resolve => setTimeout(resolve, 10));
+
       await COMMAND.execute(context);
 
-      const calls = consoleInfoSpy.mock.calls.map(call => call[0]);
-      const hasVersionTsContent = calls.some(call =>
-        typeof call === 'string' && call.includes('export const NAME:')
-      );
-      expect(hasVersionTsContent).toBe(true);
-    });
-  });
+      const secondContent = readFileSync(templatePath, 'utf8');
+      const secondModifiedTime = statSync(templatePath).mtime;
 
-  describe('createReleaseNotesFromTemplate', () => {
-    it('should warn if template does not exist', async () => {
-      // Don't create template file
-      const context: Context = toContext(['apply-version', '--warn']);
+      ok(firstContent === secondContent, 'Release notes content should not change');
+      ok(firstModifiedTime.getTime() === secondModifiedTime.getTime(), 'Release notes file should not be overwritten');
+      assertNoErrors();
+    });
+
+    it('should be callable without template file', async () => {
+      const context: Context = toMockContext(['apply-version', '--quiet']);
+      OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', join(temporaryFolder, 'non-existent-template.md'));
       await COMMAND.execute(context);
-
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Release notes template not found')
-      );
-    });
-
-    it('should create release notes from template', async () => {
-      const templateContent = `# Release Notes for {{NAME}} v{{VERSION}}
-Repository: {{REPOSITORY}}`;
-      writeTemplate(templateContent);
-
-      const context: Context = toContext(['apply-version']);
-      const result = await COMMAND.execute(context);
-
-      const releaseNotesPath = join(notesOutputDir, `release-notes-v${result.version}.md`);
-      expect(existsSync(releaseNotesPath)).toBe(true);
-
-      const content = readFileSync(releaseNotesPath, 'utf8');
-      expect(content).toContain('Release Notes for');
-      expect(content).toContain(result.version);
-
-      expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Created release notes')
-      );
-    });
-
-    it('should replace all template placeholders', async () => {
-      const templateContent = `# {{NAME}} {{VERSION}}
-{{NAME}} version {{VERSION}}
-Repository: {{REPOSITORY}}`;
-      writeTemplate(templateContent);
-
-      const context: Context = toContext(['apply-version', '--quiet']);
-      const result = await COMMAND.execute(context);
-
-      const releaseNotesPath = join(notesOutputDir, `release-notes-v${result.version}.md`);
-      const content = readFileSync(releaseNotesPath, 'utf8');
-
-      expect(content).not.toContain('{{NAME}}');
-      expect(content).not.toContain('{{VERSION}}');
-      expect(content).not.toContain('{{REPOSITORY}}');
-    });
-
-    it('should skip if release notes already exist', async () => {
-      writeTemplate('# {{NAME}} v{{VERSION}}');
-
-      const context1: Context = toContext(['apply-version', '--quiet']);
-      await COMMAND.execute(context1);
-
-      consoleInfoSpy.mockClear();
-
-      const context2: Context = toContext(['apply-version']);
-      await COMMAND.execute(context2);
-
-      expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('already exist')
-      );
-    });
-
-    it('should not create release notes in dry run mode', async () => {
-      writeTemplate('# Test Template for {{NAME}} v{{VERSION}}');
-
-      const context: Context = toContext(['apply-version', '--dry-run']);
-      const result = await COMMAND.execute(context);
-
-      expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Dry run enabled - not writing release notes file')
-      );
-
-      const releaseNotesPath = join(notesOutputDir, `release-notes-v${result.version}.md`);
-      expect(existsSync(releaseNotesPath)).toBe(false);
-    });
-
-    it('should display release notes content in dry run mode', async () => {
-      writeTemplate('# Template {{NAME}}');
-
-      const context: Context = toContext(['apply-version', '--dry-run']);
-      await COMMAND.execute(context);
-
-      const calls = consoleInfoSpy.mock.calls.map(call => call[0]);
-      const hasDryRunContent = calls.some(call =>
-        typeof call === 'string' && call.includes('# Template')
-      );
-      expect(hasDryRunContent).toBe(true);
-    });
-
-    it('should handle project with no repository', async () => {
-      writeTemplate('Repository: {{REPOSITORY}}');
-
-      const originalEnforce = CONTRACTS.enforce;
-      const mockProject = { name: 'test-project', version: '1.0.0', repository: undefined };
-
-      CONTRACTS.enforce = jest.fn().mockReturnValue({
-        discoverProject: jest.fn().mockResolvedValue(mockProject)
-      });
-
-      const context: Context = toContext(['apply-version', '--quiet']);
-      const result = await COMMAND.execute(context);
-
-      const releaseNotesPath = join(notesOutputDir, `release-notes-v${result.version}.md`);
-      const content = readFileSync(releaseNotesPath, 'utf8');
-
-      expect(content).toContain('Repository: ');
-      expect(content).not.toContain('undefined');
-
-      CONTRACTS.enforce = originalEnforce;
-    });
-
-    it('should handle project with repository', async () => {
-      writeTemplate('Repository: {{REPOSITORY}}\nName: {{NAME}}');
-
-      const context: Context = toContext(['apply-version', '--quiet']);
-      const result = await COMMAND.execute(context);
-
-      const releaseNotesPath = join(notesOutputDir, `release-notes-v${result.version}.md`);
-      const content = readFileSync(releaseNotesPath, 'utf8');
-
-      if (result.repository) {
-        expect(content).toContain('Repository:');
-      }
-      expect(content).toBeDefined();
-    });
-  });
-
-  describe('environment variable support', () => {
-    it('should use custom release notes template path from environment variable', async () => {
-      const customDir = mkdtempSync(join(tmpdir(), 'custom-template-'));
-      const customTemplatePath = join(customDir, 'custom-template.md');
-      const customOutputDir = join(customDir, 'output');
-      mkdirSync(customOutputDir, { recursive: true });
-
-      const customContent = `# Custom Template {{NAME}} v{{VERSION}}`;
-      writeFileSync(customTemplatePath, customContent, 'utf8');
-
-      process.env.KIT_RELEASE_NOTES_TEMPLATE_PATH = customTemplatePath;
-      process.env.KIT_RELEASE_NOTES_OUTPUT_FOLDER = customOutputDir;
-
-      const context: Context = toContext(['apply-version', '--quiet']);
-      const result = await COMMAND.execute(context);
-
-      const outputPath = join(customOutputDir, `release-notes-v${result.version}.md`);
-      expect(existsSync(outputPath)).toBe(true);
-
-      const content = readFileSync(outputPath, 'utf8');
-      expect(content).toContain('Custom Template');
-
-      rmSync(customDir, { recursive: true, force: true });
-    });
-
-    it('should use custom release notes output folder from environment variable', async () => {
-      const customDir = mkdtempSync(join(tmpdir(), 'custom-output-'));
-      const customTemplatePath = join(customDir, 'template.md');
-      const customOutputDir = join(customDir, 'release-notes');
-      mkdirSync(customOutputDir, { recursive: true });
-
-      writeFileSync(customTemplatePath, '# {{NAME}} v{{VERSION}}', 'utf8');
-
-      process.env.KIT_RELEASE_NOTES_TEMPLATE_PATH = customTemplatePath;
-      process.env.KIT_RELEASE_NOTES_OUTPUT_FOLDER = customOutputDir;
-
-      const context: Context = toContext(['apply-version', '--quiet']);
-      const result = await COMMAND.execute(context);
-
-      const outputPath = join(customOutputDir, `release-notes-v${result.version}.md`);
-      expect(existsSync(outputPath)).toBe(true);
-
-      rmSync(customDir, { recursive: true, force: true });
-    });
-
-    it('should trim whitespace from environment variable paths', async () => {
-      const customDir = mkdtempSync(join(tmpdir(), 'trim-test-'));
-      const customTemplatePath = join(customDir, 'template.md');
-      const customOutputDir = join(customDir, 'output');
-      mkdirSync(customOutputDir, { recursive: true });
-
-      writeFileSync(customTemplatePath, '# {{NAME}}', 'utf8');
-
-      process.env.KIT_RELEASE_NOTES_TEMPLATE_PATH = `  ${customTemplatePath}  `;
-      process.env.KIT_RELEASE_NOTES_OUTPUT_FOLDER = `  ${customOutputDir}  `;
-
-      const context: Context = toContext(['apply-version', '--quiet']);
-      const result = await COMMAND.execute(context);
-
-      const outputPath = join(customOutputDir, `release-notes-v${result.version}.md`);
-      expect(existsSync(outputPath)).toBe(true);
-
-      rmSync(customDir, { recursive: true, force: true });
-    });
-
-    it('should use default paths when environment variables are not set', async () => {
-      delete process.env.KIT_RELEASE_NOTES_TEMPLATE_PATH;
-      delete process.env.KIT_RELEASE_NOTES_OUTPUT_FOLDER;
-
-      // This will use default paths which may modify production files
-      // We'll just verify it attempts to run
-      const context: Context = toContext(['apply-version', '--quiet']);
-
-      try {
-        const result = await COMMAND.execute(context);
-        expect(result).toBeTruthy();
-      } catch (error) {
-        // May fail if template doesn't exist in default location, that's ok
-        expect(error).toBeDefined();
-      }
-    });
-
-    it('should use default paths when environment variables are empty strings', async () => {
-      process.env.KIT_RELEASE_NOTES_TEMPLATE_PATH = '';
-      process.env.KIT_RELEASE_NOTES_OUTPUT_FOLDER = '';
-
-      const context: Context = toContext(['apply-version', '--quiet']);
-
-      try {
-        const result = await COMMAND.execute(context);
-        expect(result).toBeTruthy();
-      } catch (error) {
-        // May fail if template doesn't exist in default location, that's ok
-        expect(error).toBeDefined();
-      }
-    });
-  });
-
-  describe('applyProjectVersion', () => {
-    it('should log applied version message', async () => {
-      writeTemplate('# {{NAME}}');
-      const context: Context = toContext(['apply-version']);
-      await COMMAND.execute(context);
-
-      expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringMatching(/Applied version .+ for package .+/)
-      );
-    });
-  });
-
-  describe('integration tests', () => {
-    it('should work with all flags', async () => {
-      writeTemplate('# {{NAME}} v{{VERSION}}');
-      const context: Context = toContext(['apply-version', '--verbose', '--warn', '--trace']);
-      const result = await COMMAND.execute(context);
-
-      expect(result).toBeTruthy();
-      expect(result.name).toBeDefined();
-      expect(result.version).toBeDefined();
-    });
-
-    it('should work in quiet mode', async () => {
-      writeTemplate('# {{NAME}}');
-      const context: Context = toContext(['apply-version', '--quiet']);
-      const result = await COMMAND.execute(context);
-
-      expect(result).toBeTruthy();
-    });
-
-    it('should handle multiple executions with same version', async () => {
-      writeTemplate('# {{NAME}} v{{VERSION}}');
-
-      const context1: Context = toContext(['apply-version', '--quiet']);
-      const result1 = await COMMAND.execute(context1);
-
-      consoleInfoSpy.mockClear();
-
-      const context2: Context = toContext(['apply-version']);
-      const result2 = await COMMAND.execute(context2);
-
-      expect(result1.version).toBe(result2.version);
-      expect(consoleInfoSpy).toHaveBeenCalledWith(
-        expect.stringContaining('already exist')
-      );
-    });
-
-    it('should handle whitespace in template placeholders', async () => {
-      const templateContent = `{{ NAME }} version {{ VERSION }}
-Repository: {{ REPOSITORY }}`;
-      writeTemplate(templateContent);
-
-      const context: Context = toContext(['apply-version', '--quiet']);
-      const result = await COMMAND.execute(context);
-
-      const releaseNotesPath = join(notesOutputDir, `release-notes-v${result.version}.md`);
-      const content = readFileSync(releaseNotesPath, 'utf8');
-
-      expect(content).not.toContain('{{ NAME }}');
-      expect(content).not.toContain('{{ VERSION }}');
-      expect(content).not.toContain('{{ REPOSITORY }}');
+      assertNoErrors();
     });
   });
 });

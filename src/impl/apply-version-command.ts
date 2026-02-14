@@ -6,17 +6,19 @@ import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import { Internal } from "./Internal.impl";
+import { Internal } from "./Internal.impl.js";
+
+const COMMAND_NAME: string = 'apply-version';
 
 export const COMMAND: Command<Project> = {
   execute: async function (context: Context): Promise<Project> {
 
     return applyVersion(context).then((project) => {
-      context.display.info(`apply-version completed: ${project.name} v${project.version}`);
+      context.display.info(`${COMMAND_NAME} completed: ${project.name} v${project.version}`);
       return project;
     })
       .catch((error: Error) => {
-        context.display.error(`Error during apply-version: ${error.message}`);
+        context.display.error(`Error during ${COMMAND_NAME}: ${error.message}`);
         throw error;
       });
   }

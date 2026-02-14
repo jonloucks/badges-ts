@@ -1,8 +1,9 @@
-import { ok } from "node:assert";
-import { Installer } from "@jonloucks/badges-ts/api/Installer";
 import { createInstaller } from "@jonloucks/badges-ts";
+import { Installer } from "@jonloucks/badges-ts/api/Installer";
+import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { guard as guardAutoOpen } from "@jonloucks/contracts-ts/api/AutoOpen";
-import { AutoClose } from "@jonloucks/contracts-ts";
+import { ok } from "node:assert";
+import { describe, it } from "node:test";
 
 describe('Installer tests', () => {
   it('should create an installer instance', () => {
@@ -28,5 +29,5 @@ describe('Installer tests', () => {
     } else {
       ok(true, 'Installer does not implement AutoOpen, skipping test');
     }
-  }); 
+  });
 });

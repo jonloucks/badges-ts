@@ -1,14 +1,15 @@
 import { ok } from "node:assert";
+import { describe, it } from "node:test";
 
-import { 
-  VERSION, 
+import {
   Badge,
   BadgeConfig,
+  BadgeException,
   Badges,
   BadgesConfig,
-  RequiredType,
   OptionalType,
-  BadgeException
+  RequiredType,
+  VERSION
 } from "@jonloucks/badges-ts";
 import { used } from "@jonloucks/badges-ts/auxiliary/Checks";
 

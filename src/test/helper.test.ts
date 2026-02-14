@@ -1,7 +1,8 @@
-import assert, { ok } from "node:assert";
+import { ok } from "node:assert";
+import { describe, it } from "node:test";
 
-import { MockProxy } from "jest-mock-extended/lib/Mock";
-import { mock } from "jest-mock-extended";
+// import { MockProxy } from "jest-mock-extended/lib/Mock";
+// import { mock } from "jest-mock-extended";
 import { Contract } from "@jonloucks/contracts-ts/api/Contract";
 import { isRatifiedContract } from "@jonloucks/contracts-ts/api/RatifiedContract";
 
@@ -12,22 +13,22 @@ describe('Helper Tests', () => {
 });
 
 
-/**
- * It breaks duck typing in jest-mock-extended mocks unless we access the properties.
- * Production code now avoids calls that would trigger mock to create any method or property.
- * This behavior would cause ALL guard checks to pass incorrectly.
- * 
- * @param propertyNames the names of methods to be auto created
- */
-export function mockDuck<T>(...propertyNames: (string | symbol)[]): MockProxy<T> {
-  const mocked: MockProxy<T> = mock<T>();
-  const lookup = mocked as Record<string | symbol, unknown>;
-  for (const propertyName of propertyNames) {
-    // Access the property to force jest-mock-extended to create the method
-    assert(lookup[propertyName]);
-  }
-  return mocked;
-}
+// /**
+//  * It breaks duck typing in jest-mock-extended mocks unless we access the properties.
+//  * Production code now avoids calls that would trigger mock to create any method or property.
+//  * This behavior would cause ALL guard checks to pass incorrectly.
+//  * 
+//  * @param propertyNames the names of methods to be auto created
+//  */
+// export function mockDuck<T>(...propertyNames: (string | symbol)[]): MockProxy<T> {
+//   const mocked: MockProxy<T> = mock<T>();
+//   const lookup = mocked as Record<string | symbol, unknown>;
+//   for (const propertyName of propertyNames) {
+//     // Access the property to force jest-mock-extended to create the method
+//     assert(lookup[propertyName]);
+//   }
+//   return mocked;
+// }
 
 export function assertContract<T>(contract: Contract<T>, name: string): void {
   describe(`${name} CONTRACT test`, () => {

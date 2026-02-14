@@ -1,12 +1,12 @@
-import { VERSION } from "./version";
-import { OptionalType, RequiredType } from "@jonloucks/badges-ts/api/Types";
-import { Config as BadgeConfig, Badge } from "@jonloucks/badges-ts/api/Badge";
-import { Config as BadgesConfig, Badges } from "@jonloucks/badges-ts/api/Badges";
+import { VERSION } from "@jonloucks/badges-ts/version";
+import type { OptionalType, RequiredType } from "@jonloucks/badges-ts/api/Types";
+import type { Config as BadgeConfig, Badge } from "@jonloucks/badges-ts/api/Badge";
+import type { Config as BadgesConfig, Badges } from "@jonloucks/badges-ts/api/Badges";
 import { BadgeException } from "@jonloucks/badges-ts/api/BadgeException";
 import type { Installer, Config as InstallerConfig } from "@jonloucks/badges-ts/api/Installer";
-import { create as createInstaller } from "./impl/Installer.impl";
+import { create as createInstaller } from "./impl/Installer.impl.js";
 
-export type {
+export {
   Badge,
   BadgeConfig,
   Badges,
@@ -14,10 +14,7 @@ export type {
   RequiredType,
   OptionalType,
   Installer,
-  InstallerConfig
-};
-
-export {
+  InstallerConfig,
   VERSION,
   BadgeException,
   createInstaller
