@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: ['>20.11.0 <21.0']
 
     steps:
     - name: Assigning SIMPLE_REPOSITORY_NAME
