@@ -1,10 +1,13 @@
-import { AutoClose, AutoOpen, Repository, REPOSITORY_FACTORY } from "@jonloucks/contracts-ts";
+import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
+import { AutoOpen } from "@jonloucks/contracts-ts/api/AutoOpen";
+import { Repository } from "@jonloucks/contracts-ts/api/Repository";
 import { Installer, Config } from "@jonloucks/badges-ts/api/Installer";
+import { CONTRACT as REPOSITORY_FACTORY } from "@jonloucks/contracts-ts/api/RepositoryFactory";
 import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
 import { CONTRACT as BADGE_FACTORY } from "@jonloucks/badges-ts/api/BadgeFactory";
-import { create as createBadgeFactory } from "./BadgeFactory.impl";
-import { create as createDiscoverProject } from "./DiscoverProject.impl";
-import { Internal } from "./Internal.impl";
+import { create as createBadgeFactory } from "./BadgeFactory.impl.js";
+import { create as createDiscoverProject } from "./DiscoverProject.impl.js";
+import { Internal } from "./Internal.impl.js";
 
 /**
  * Factory function to create an instance of Installer.

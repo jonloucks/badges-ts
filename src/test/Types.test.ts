@@ -1,4 +1,5 @@
 import { ok, strictEqual } from "node:assert";
+import { describe, it } from "node:test";
 
 import { presentCheck, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 
@@ -20,13 +21,13 @@ import {
 describe("Types", () => {
   describe("isThrowable", () => {
     it("should return true for all values", () => {
-      expect(isThrowable(null)).toBe(true);
-      expect(isThrowable(undefined)).toBe(true);
-      expect(isThrowable(new Error("error"))).toBe(true);
-      expect(isThrowable("string")).toBe(true);
-      expect(isThrowable(42)).toBe(true);
-      expect(isThrowable({})).toBe(true);
-      expect(isThrowable([])).toBe(true);
+      ok(isThrowable(null) === true, 'isThrowable(null) should be true');
+      ok(isThrowable(undefined) === true, 'isThrowable(undefined) should be true');
+      ok(isThrowable(new Error("error")) === true, 'isThrowable(Error) should be true');
+      ok(isThrowable("string") === true, 'isThrowable(string) should be true');
+      ok(isThrowable(42) === true, 'isThrowable(42) should be true');
+      ok(isThrowable({}) === true, 'isThrowable({}) should be true');
+      ok(isThrowable([]) === true, 'isThrowable([]) should be true');
     });
   });
 });

@@ -20,15 +20,15 @@
  * ```
  */
 import { Badge } from "@jonloucks/badges-ts/api/Badge";
+import { CONTRACT as BADGE_FACTORY, BadgeFactory } from "@jonloucks/badges-ts/api/BadgeFactory";
+import { Project } from "@jonloucks/badges-ts/api/Project";
+import { used } from "@jonloucks/badges-ts/auxiliary/Checks";
+import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
+import { CONTRACTS } from "@jonloucks/contracts-ts";
 import { readFile } from "fs";
 import { join } from "path";
-import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
-import { Internal } from "./Internal.impl";
-import { BadgeFactory, CONTRACT as BADGE_FACTORY } from "@jonloucks/badges-ts/api/BadgeFactory";
-import { CONTRACTS } from "@jonloucks/contracts-ts";
-import { Project } from "@jonloucks/badges-ts/api/Project";
-import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
-import { used } from "../auxiliary/Checks";
+import { Internal, SUCCESS_COLOR } from "./Internal.impl.js";
 
 export const COMMAND: Command<Badge[]> = {
   execute: async function (context: Context): Promise<Badge[]> {
@@ -47,7 +47,6 @@ export const COMMAND: Command<Badge[]> = {
   }
 };
 
-const SUCCESS_COLOR: string = '#4bc124';
 
 async function generateBadges(context: Context): Promise<Badge[]> {
 
@@ -109,7 +108,7 @@ async function generateCoverageSummaryBadge(context: Context): Promise<Badge> {
     outputPath: getCoverageSummaryBadgePath(),
     label: "coverage",
     value: percentage + "%",
-    color: determineBackgroundColor(percentage),
+    color: Internal.colorFromPercentComplete(percentage),
     templatePath: getTemplateBadgePath(),
     flags: context.flags,
     display: context.display
@@ -179,19 +178,5 @@ function getTypedocBadgePath(): string {
 function getNpmBadgePath(): string {
   return Internal.getEnvPathOrDefault('KIT_NPM_BADGE_PATH',
     join(getBadgesFolder(), 'npm-badge.svg'));
-}
-
-function determineBackgroundColor(percent: number): string {
-  if (percent >= 95) {
-    return SUCCESS_COLOR;
-  } else if (percent >= 75) {
-    return 'yellowgreen';
-  } else if (percent >= 60) {
-    return 'yellow';
-  } else if (percent >= 40) {
-    return 'orange';
-  } else {
-    return 'red';
-  }
 }
 

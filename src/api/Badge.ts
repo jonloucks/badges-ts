@@ -1,4 +1,4 @@
-import { Display, Flags } from "./Types";
+import { Display, Flags } from "@jonloucks/badges-ts/api/Types";
 
 export interface Config {
   name: string;

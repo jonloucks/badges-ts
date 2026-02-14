@@ -1,7 +1,8 @@
-import { strictEqual } from "node:assert";
+import { ok, strictEqual } from "node:assert";
+import { describe, it } from "node:test";
 
 import { CONTRACTS } from "@jonloucks/contracts-ts";
-import { Internal } from "./Internal.impl";
+import { Internal, OVERRIDE_RUNNING, SUCCESS_COLOR } from "./Internal.impl.js";
 
 describe("Internal resolveContracts", () => {
 
@@ -33,7 +34,7 @@ describe("Internal resolveContracts", () => {
     const fallbackContracts = CONTRACTS;
 
     const result = Internal.resolveContracts(
-      { },
+      {},
       { contracts: fallbackContracts }
     );
 
@@ -42,8 +43,8 @@ describe("Internal resolveContracts", () => {
 
   it("returns default CONTRACTS when no configs have contracts", () => {
     const result = Internal.resolveContracts(
-      { },
-      { }
+      {},
+      {}
     );
 
     strictEqual(result, CONTRACTS, "Should return default CONTRACTS");
@@ -65,8 +66,8 @@ describe("Internal resolveContracts", () => {
     const thirdContracts = CONTRACTS;
 
     const result = Internal.resolveContracts(
-      { },
-      { },
+      {},
+      {},
       { contracts: thirdContracts },
       { contracts: CONTRACTS }
     );
@@ -109,5 +110,38 @@ describe("Internal resolveContracts", () => {
     strictEqual(result1, result2, "Should return same CONTRACTS instance");
     strictEqual(result2, result3, "Should return same CONTRACTS instance");
     strictEqual(result1, CONTRACTS, "Should return the CONTRACTS constant");
+  });
+
+  it ("colorFromPercentComplete should return correct colors based on percent", () => { 
+    strictEqual(Internal.colorFromPercentComplete(100), SUCCESS_COLOR, "Should return success color for 100%");
+    strictEqual(Internal.colorFromPercentComplete(95), SUCCESS_COLOR, "Should return success color for 95%");
+    strictEqual(Internal.colorFromPercentComplete(94.99), 'yellowgreen', "Should return yellowgreen for just under 95%");
+    strictEqual(Internal.colorFromPercentComplete(80), 'yellowgreen', "Should return yellowgreen for 80%");
+    strictEqual(Internal.colorFromPercentComplete(75), 'yellowgreen', "Should return yellowgreen for 75%");
+    strictEqual(Internal.colorFromPercentComplete(74.99), 'yellow', "Should return yellow for just under 75%");
+    strictEqual(Internal.colorFromPercentComplete(65), 'yellow', "Should return yellow for 65%");
+    strictEqual(Internal.colorFromPercentComplete(60), 'yellow', "Should return yellow for 60%");
+    strictEqual(Internal.colorFromPercentComplete(59.99), 'orange', "Should return orange for just under 60%");
+    strictEqual(Internal.colorFromPercentComplete(50), 'orange', "Should return orange for 50%");
+    strictEqual(Internal.colorFromPercentComplete(40), 'orange', "Should return orange for 40%");
+    strictEqual(Internal.colorFromPercentComplete(39.99), 'red', "Should return red for just under 40%");
+    strictEqual(Internal.colorFromPercentComplete(20), 'red', "Should return red for 20%");
+    strictEqual(Internal.colorFromPercentComplete(0), 'red', "Should return red for 0%"); 
+    ok(Internal.colorFromPercentComplete(-1), "Negative percent should return a color");
+    strictEqual(Internal.colorFromPercentComplete(150), SUCCESS_COLOR, "Percent over 100 should return a color"); 
+  });
+
+  it("isRunning should return false when metaUrl is not present", () => {
+    strictEqual(Internal.isRunning(undefined as unknown as string), false, "Should return false when metaUrl is undefined");
+    strictEqual(Internal.isRunning(null as unknown as string), false, "Should return false when metaUrl is null");
+    strictEqual(Internal.isRunning(''), false, "Should return false when metaUrl is empty string");
+  });
+
+  it("isRunning should return overridden value when metaUrl is present in OVERRIDE_RUNNING", () => {
+    const testMetaUrl = "test-meta-url";
+    OVERRIDE_RUNNING.set(testMetaUrl, true);
+    strictEqual(Internal.isRunning(testMetaUrl), true, "Should return overridden true value");
+    OVERRIDE_RUNNING.set(testMetaUrl, false);
+    strictEqual(Internal.isRunning(testMetaUrl), false, "Should return overridden false value");
   });
 });

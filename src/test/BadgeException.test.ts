@@ -1,4 +1,5 @@
 import { throws } from "node:assert";
+import { describe, it } from "node:test";
 
 import { BadgeException } from "@jonloucks/badges-ts/api/BadgeException";
 
@@ -48,7 +49,7 @@ describe('BadgeException Tests', () => {
     });
   });
 
-    it('rethrow with number caught without message, has correct name and message', () => {
+  it('rethrow with number caught without message, has correct name and message', () => {
     throws(() => {
       BadgeException.rethrow(13);
     }, {
