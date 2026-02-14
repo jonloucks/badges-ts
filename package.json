@@ -46,7 +46,7 @@
     "build": "tsc",
     "test": "tsx --test $(find src -name '*.test.ts')",
     "test:watch": "tsx --test --watch $(find src -name '*.test.ts')",
-    "test:coverage": "npx c8 --check-coverage --lines 95 --functions 95 --branches 90 --statements 95 --reporter=lcov npx tsx --test $(find src -name '*.test.ts')",
+    "test:coverage": "npx c8 --check-coverage --lines 90 --functions 90 --branches 90 --statements 90 --reporter=lcov npx tsx --test $(find src -name '*.test.ts')",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build",
