@@ -50,7 +50,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build",
-    "before:publish": "npm run clean && npm run compile && cp package.json dist && cp README.md dist && mkdir -p dist/data && cp src/data/* dist/data/ && cd dist && npm pkg delete private",
+    "before:publish": "npm run clean && npm run compile && cp package.json dist && cp README.md dist && mkdir -p dist/data && cp src/data/*.dat dist/data/ && cd dist && npm pkg delete private",
     "after:publish": "npm run clean",
     "prepare": "npm run build",
     "docs": "typedoc --options typedoc.json",

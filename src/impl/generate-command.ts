@@ -149,7 +149,7 @@ async function getCodeCoveragePercentFromLcovReport(): Promise<number> {
         reject(err);
       } else {
         try {
-          const percentage: number = readPercentagFromLcovReport(data);
+          const percentage: number = readPercentageFromLcovReport(data);
           resolve(percentage);
         } catch (parseError) {
           reject(parseError);
@@ -159,7 +159,7 @@ async function getCodeCoveragePercentFromLcovReport(): Promise<number> {
   })
 };
 
-function readPercentagFromLcovReport(data: string): number {
+function readPercentageFromLcovReport(data: string): number {
   const percentages: Record<string, number> = {};
   const pattern = /<span class="strong">\s*([\d.]+)%\s*<\/span>\s*<span class="quiet">\s*(Statements|Branches|Functions|Lines)\s*<\/span>/g;
 
