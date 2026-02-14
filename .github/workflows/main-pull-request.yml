@@ -57,6 +57,10 @@ jobs:
       run: npm run build
       working-directory: main-project
 
+    - name: Test 
+      run: npm run test
+      working-directory: main-project
+
     - name: Test with coverage
       run: npm run test:coverage
       working-directory: main-project
@@ -66,11 +70,12 @@ jobs:
       working-directory: main-project
       env:
         KIT_COVERAGE_SUMMARY_BADGE_PATH: ${{ github.workspace }}/badges/${{ env.SIMPLE_BRANCH_NAME }}-coverage.svg
+        KIT_COVERAGE_LCOV_REPORT_BADGE_PATH: ${{ github.workspace }}/badges/${{ env.SIMPLE_BRANCH_NAME }}-coverage.svg
 
-    - name: Upload Jest Code Coverage report
+    - name: Upload Code Coverage report
       uses: actions/upload-artifact@v4
       with:
-        name: jest-coverage-report
+        name: coverage-report
         path: main-project/coverage/lcov-report/
 
     - name: Commit and Push the Badges to the badges branch
