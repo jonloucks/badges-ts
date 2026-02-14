@@ -1,14 +1,14 @@
-import { ok } from "node:assert";
-import { describe, it, beforeEach, afterEach, mock, Mock } from "node:test";
+import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { runMain } from "@jonloucks/badges-ts/cli";
 import { existsSync, mkdtempSync, rmSync } from "fs";
+import { ok } from "node:assert";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { afterEach, beforeEach, describe, it, mock, Mock } from "node:test";
 import { tmpdir } from "os";
 import { join } from "path";
-import { runContext } from "@jonloucks/badges-ts/cli";
-import { OVERRIDE_ENVIRONMENT } from "../impl/Internal.impl.js";
-import { toContext } from "../impl/Command.impl.js";
-import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { used } from "../auxiliary/Checks.js";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { toContext } from "../impl/Command.impl.js";
+import { OVERRIDE_ENVIRONMENT } from "../impl/Internal.impl.js";
 
 const BANNER_START: string = "Badges-TS CLI - Version ";
 
@@ -95,48 +95,48 @@ describe('Main module', () => {
 
   describe('main function', () => {
     it('should have a main function', () => {
-      ok(typeof runContext === 'function', 'runContext should be a function');
+      ok(typeof runMain === 'function', 'runMain should be a function');
     });
 
     it('should execute discover command', async () => {
       const context = toMockContext(['discover', '--quiet']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should execute generate command', async () => {
       const context = toMockContext(['generate']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should execute apply-version command', async () => {
       const context = toMockContext(['apply-version']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should handle discover command with flags', async () => {
       const context = toMockContext(['--verbose', 'discover', '--dry-run']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should handle generate command with flags', async () => {
       const context = toMockContext(['--trace', 'generate', '--quiet']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should handle apply-version command with flags', async () => {
       const context = toMockContext(['-x', 'apply-version', '-d']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should show error and usage when no command provided', async () => {
       const context = toMockContext([]);
-      await runContext(context);
+      await runMain(context);
       assertInvalidCommand();
       assertHasBanner();
       assertHasUsage();
@@ -144,7 +144,7 @@ describe('Main module', () => {
 
     it('should show error and usage when only flags provided', async () => {
       const context = toMockContext(['--verbose', '--dry-run']);
-      await runContext(context);
+      await runMain(context);
       assertInvalidCommand();
       assertHasBanner();
       assertHasUsage();
@@ -152,7 +152,7 @@ describe('Main module', () => {
 
     it('should show error and usage for unknown command', async () => {
       const context = toMockContext(['unknown-command']);
-      await runContext(context);
+      await runMain(context);
       assertInvalidCommand();
       assertHasBanner();
       assertHasUsage();
@@ -160,25 +160,25 @@ describe('Main module', () => {
 
     it('should handle case insensitive discover command', async () => {
       const context = toMockContext(['DISCOVER']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should handle case insensitive generate command', async () => {
       const context = toMockContext(['Generate']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should handle case insensitive apply-version command', async () => {
       const context = toMockContext(['Apply-Version']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should trim whitespace from command', async () => {
       const context = toMockContext(['  discover  ']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
   });
@@ -186,13 +186,13 @@ describe('Main module', () => {
   describe('findFirstNonFlag', () => {
     it('should find first non-flag argument', async () => {
       const context = toMockContext(['--verbose', 'discover', '--quiet']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should return undefined when all args are flags', async () => {
       const context = toMockContext(['--verbose', '--warn', '-d']);
-      await runContext(context);
+      await runMain(context);
       assertInvalidCommand();
       assertHasBanner();
       assertHasUsage();
@@ -200,7 +200,7 @@ describe('Main module', () => {
 
     it('should return undefined for empty array', async () => {
       const context = toMockContext([]);
-      await runContext(context);
+      await runMain(context);
       assertInvalidCommand();
       assertHasBanner();
       assertHasUsage();
@@ -208,7 +208,7 @@ describe('Main module', () => {
 
     it('should find first non-flag even if multiple exist', async () => {
       const context = toMockContext(['--verbose', 'discover', 'extra-arg']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
   });
@@ -216,67 +216,67 @@ describe('Main module', () => {
   describe('findCommand', () => {
     it('should find discover command', async () => {
       const context = toMockContext(['discover']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should find generate command', async () => {
       const context = toMockContext(['generate']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should find apply-version command', async () => {
       const context = toMockContext(['apply-version']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
     });
 
     it('should execute version command with --version flag', async () => {
       const context = toMockContext(['--version']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
       assertHasVersion();
     });
 
     it('should execute version command with -v flag', async () => {
       const context = toMockContext(['-v']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
       assertHasVersion();
     });
 
     it('should execute version command with version keyword', async () => {
       const context = toMockContext(['version']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
       assertHasVersion();
     });
 
     it('should execute help command with --help flag', async () => {
       const context = toMockContext(['--help']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
       assertHasUsage();
     });
 
     it('should execute help command with -h flag', async () => {
       const context = toMockContext(['-h']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
       assertHasUsage();
     });
 
     it('should execute help command with help keyword', async () => {
       const context = toMockContext(['help']);
-      await runContext(context);
+      await runMain(context);
       assertNoErrors();
       assertHasUsage();
     });
 
     it('should return undefined when no non-flag argument', async () => {
       const context = toMockContext(['--verbose', '-d']);
-      await runContext(context);
+      await runMain(context);
       assertInvalidCommand();
     });
   });
@@ -284,7 +284,7 @@ describe('Main module', () => {
   describe('printUsage', () => {
     it('should print usage information', async () => {
       const context = toMockContext([]);
-      await runContext(context);
+      await runMain(context);
       // assertNoErrors();
       assertHasBanner();
       assertHasUsage();
@@ -292,13 +292,13 @@ describe('Main module', () => {
 
     it('should print usage for unknown command', async () => {
       const context = toMockContext(['help']);
-      await runContext(context);
+      await runMain(context);
       // expect(consoleInfoSpy).toHaveBeenCalledWith('Usage:');
     });
 
     it('should print usage when only flags provided', async () => {
       const context = toMockContext(['--verbose']);
-      await runContext(context);
+      await runMain(context);
       // expect(consoleInfoSpy).toHaveBeenCalledWith('Usage:');
     });
   });

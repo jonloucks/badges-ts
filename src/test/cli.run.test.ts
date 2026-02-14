@@ -18,7 +18,7 @@ describe('Main module', () => {
   describe('run main function', () => {
     it('run command line', async () => {
       const module = await import("@jonloucks/badges-ts/cli");
-      ok(module, 'runContext should be exported from cli.js');
+      ok(module, 'runMain should be exported from cli.js');
     });
   });
 });

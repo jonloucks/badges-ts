@@ -3,15 +3,15 @@ import { COMMAND as APPLY_VERSION_COMMAND } from "./impl/apply-version-command.j
 import { COMMAND as DISCOVER_COMMAND } from "./impl/discover-command.js";
 import { COMMAND as GENERATE_COMMAND } from "./impl/generate-command.js";
 
-import { isNotPresent, isPresent } from '@jonloucks/contracts-ts/api/Types';
 import { createInstaller } from "@jonloucks/badges-ts";
 import { type Command, type Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { type AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
+import { isNotPresent, isPresent } from '@jonloucks/contracts-ts/api/Types';
 import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
 
-import { VERSION } from "./version.js";
 import { toContext } from "./impl/Command.impl.js";
 import { Internal } from './impl/Internal.impl.js';
+import { VERSION } from "./version.js";
 
 /**
  * Main entry point for the Badges CLI application. 
@@ -24,7 +24,7 @@ import { Internal } from './impl/Internal.impl.js';
  * @throws An error if command execution fails or if no valid command is found.
  * 
  */
-export async function runContext(context: Context): Promise<void> {
+export async function runMain(context: Context): Promise<void> {
   using usingInstaller: AutoClose = createInstaller().open();
   used(usingInstaller);
 
@@ -101,5 +101,5 @@ function findFirstCommand(args: string[]): string | undefined {
 }
 
 if (Internal.isRunning(import.meta.url)) {
-  await runContext(toContext(process.argv.slice(2)));
+  await runMain(toContext(process.argv.slice(2)));
 }
