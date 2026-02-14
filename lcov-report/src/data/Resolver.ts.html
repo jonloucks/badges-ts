@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/impl/discover-command.ts</title>
+    <title>Code coverage report for src/data/Resolver.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/impl</a> discover-command.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/data</a> Resolver.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.9% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/22</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.9% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/22</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -75,18 +75,7 @@
 <a name='L10'></a><a href='#L10'>10</a>
 <a name='L11'></a><a href='#L11'>11</a>
 <a name='L12'></a><a href='#L12'>12</a>
-<a name='L13'></a><a href='#L13'>13</a>
-<a name='L14'></a><a href='#L14'>14</a>
-<a name='L15'></a><a href='#L15'>15</a>
-<a name='L16'></a><a href='#L16'>16</a>
-<a name='L17'></a><a href='#L17'>17</a>
-<a name='L18'></a><a href='#L18'>18</a>
-<a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L13'></a><a href='#L13'>13</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -97,42 +86,20 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Project } from "@jonloucks/badges-ts/api/Project";
-import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
-import { CONTRACTS } from "@jonloucks/contracts-ts";
-import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span></td><td class="text"><pre class="prettyprint lang-js">import { join } from "path";
 &nbsp;
 /**
- * Discovers the project information such as name and version. 
- * This command is typically used as a prerequisite for other commands that need project information to function correctly.
- * It relies on the DiscoverProject contract to gather the necessary details about the project.
+ * Resolves a path relative to the src/data directory.
+ * This is used to access data files that are part of the package, such as badge templates.
+ * This avoids issues with relative paths when the package is installed in different locations or when the current working directory is not the project root.
+ * and avoids path vulnerabilities using relative paths from the current working directory.
+ * @param segments - The path segments to join.
+ * @returns The resolved path.
  */
-export const COMMAND: Command&lt;Project&gt; = {
-  execute: async function (context: Context): Promise&lt;Project&gt; {
-    context.display.trace(`Running discover-project with: ${context.arguments.join(' ')}`);
-    return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject().then((project) =&gt; {
-      context.display.info(`Discovered project: ${project.name}, version: ${project.version}`);
-      return project;
-    }).catch((error: Error) =&gt; {
-<span class="cstat-no" title="statement not covered" >      context.display.error(`Error during project detection: ${error.message}`);</span>
-<span class="cstat-no" title="statement not covered" >      throw error;</span>
-    });
-  }
-};
-&nbsp;
-&nbsp;</pre></td></tr></table></pre>
+export function resolveDataPath(...segments: string[]): string {
+  return join(import.meta.dirname, ...segments);
+} </pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
