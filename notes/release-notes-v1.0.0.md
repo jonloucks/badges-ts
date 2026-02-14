@@ -89,7 +89,7 @@ If you have forked this repository or are contributing:
 1. **Testing Framework Change**:
    - Tests now use `node:test` instead of Jest
    - Replace `expect(x).toBe(y)` with `strictEqual(x, y)` from `node:assert`
-   - Replace `jest.spyOn()` with `sinon.stub()`
+   - Replace `jest.spyOn()` with `mock.fn()` from Node's built-in `node:test` module
    - Run tests with: `npm test` (uses `tsx --test`)
 
 2. **Contracts-ts 2.x**:
