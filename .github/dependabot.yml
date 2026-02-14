@@ -6,3 +6,6 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "eslint"
+        versions: [">= 10.0.0"] # Ignore v10.0.0 and above
