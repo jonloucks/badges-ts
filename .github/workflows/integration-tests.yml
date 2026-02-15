@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build-package:
-    name: Build and Package
+    name: Integration - Build and Package
     runs-on: ubuntu-latest
 
     steps:
@@ -47,7 +47,7 @@ jobs:
           retention-days: 1
 
   integration-tests:
-    name: Integration Test - Node ${{ matrix.node-version }}
+    name: Integration - Smoke Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     needs: build-package
 
@@ -116,7 +116,7 @@ jobs:
           echo "All expected badges generated successfully"
 
   integration-test-summary:
-    name: Integration Test Summary
+    name: Integration - Test Summary
     runs-on: ubuntu-latest
     needs: integration-tests
     if: always()
