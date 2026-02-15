@@ -23,6 +23,12 @@
       "import": "./cli.js",
       "default": "./cli.js"
     },
+    "./version": {
+      "types": "./version.d.ts",
+      "require": "./version.js",
+      "import": "./version.js",
+      "default": "./version.js"
+    },
     "./api/*": {
       "types": "./api/*.d.ts",
       "require": "./api/*.js",
@@ -60,7 +66,8 @@
     "compile": "tsc",
     "postversion": "npm run applyversion",
     "applyversion": "npx tsx ./src/cli.ts apply-version",
-    "pack-package": "npm run before:publish && mkdir -p packs && cd dist && npm pack && mv *.tgz ../packs/ && npm run after:publish"
+    "pack-package": "npm run before:publish && mkdir -p packs && cd dist && npm pack && mv *.tgz ../packs/ && npm run after:publish",
+    "smoke-test": "npm run pack-package && rm -rf smoke && cp -r src/test/smoke smoke && cd smoke && npm install ../packs/*.tgz && npm test && npm run badges"
   },
   "keywords": [
     "typescript",

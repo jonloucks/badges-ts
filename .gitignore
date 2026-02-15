@@ -11,3 +11,4 @@ docs/typedoc/
 .tmp/
 *.svg
 packs/
+smoke/
