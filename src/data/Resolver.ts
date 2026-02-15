@@ -1,4 +1,5 @@
-import { join } from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 /**
  * Resolves a path relative to the src/data directory.
@@ -9,5 +10,8 @@ import { join } from "path";
  * @returns The resolved path.
  */
 export function resolveDataPath(...segments: string[]): string {
-  return join(import.meta.dirname, ...segments);
+  // Use import.meta.dirname if available (Node 20.11.0+), otherwise fall back to dirname(fileURLToPath(import.meta.url))
+  // This ensures compatibility with Node 14+ while taking advantage of newer features when available
+  const __dirname = import.meta.dirname ?? dirname(fileURLToPath(import.meta.url));
+  return join(__dirname, ...segments);
 } 

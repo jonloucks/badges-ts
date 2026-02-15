@@ -81,6 +81,9 @@
     "type": "git",
     "url": "git+https://github.com/jonloucks/badges-ts.git"
   },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
