@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['>20.11.0 <21.0', 22.x, 24.x]
+        node-version: ['>18.18.0 <19.0', '>20.11.0 <21.0', 22.x, 24.x]
 
     steps:
     - name: Assigning SIMPLE_REPOSITORY_NAME
