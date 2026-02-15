@@ -32,24 +32,11 @@ jobs:
       - name: Create package
         run: npm run pack-package
 
-      - name: Verify smoke test directory exists
-        run: |
-          echo "Contents of src/test/smoke:"
-          ls -la src/test/smoke/
-          echo "---"
-
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
           name: package
           path: packs/*.tgz
-          retention-days: 1
-
-      - name: Upload smoke test environment
-        uses: actions/upload-artifact@v4
-        with:
-          name: smoke-test
-          path: src/test/smoke
           retention-days: 1
 
   integration-tests:
@@ -67,6 +54,9 @@ jobs:
           - "22" # Latest stable
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -78,17 +68,10 @@ jobs:
           name: package
           path: ./packs
 
-      - name: Download smoke test environment
-        uses: actions/download-artifact@v4
-        with:
-          name: smoke-test
-          path: ./smoke-test-artifact
-
-      - name: Prepare smoke test directory
+      - name: Create smoke test directory
         run: |
           mkdir -p smoke-test
-          cp -r smoke-test-artifact/* smoke-test/ || cp -r smoke-test-artifact/smoke/* smoke-test/
-          rm -rf smoke-test-artifact
+          cp -r src/test/smoke/* smoke-test/
           ls -la smoke-test/
 
       - name: Install test dependencies
