@@ -32,6 +32,12 @@ jobs:
       - name: Create package
         run: npm run pack-package
 
+      - name: Verify smoke test directory exists
+        run: |
+          echo "Contents of src/test/smoke:"
+          ls -la src/test/smoke/
+          echo "---"
+
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
@@ -43,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: smoke-test
-          path: src/test/smoke/
+          path: src/test/smoke
           retention-days: 1
 
   integration-tests:
@@ -76,7 +82,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: smoke-test
-          path: ./smoke-test
+          path: ./smoke-test-artifact
+
+      - name: Prepare smoke test directory
+        run: |
+          mkdir -p smoke-test
+          cp -r smoke-test-artifact/* smoke-test/ || cp -r smoke-test-artifact/smoke/* smoke-test/
+          rm -rf smoke-test-artifact
+          ls -la smoke-test/
 
       - name: Install test dependencies
         run: |
