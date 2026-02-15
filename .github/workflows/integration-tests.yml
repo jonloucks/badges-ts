@@ -39,6 +39,13 @@ jobs:
           path: packs/*.tgz
           retention-days: 1
 
+      - name: Upload smoke test environment
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test
+          path: src/test/smoke/
+          retention-days: 1
+
   integration-tests:
     name: Integration Test - Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
@@ -54,9 +61,6 @@ jobs:
           - "22" # Latest stable
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -68,11 +72,11 @@ jobs:
           name: package
           path: ./packs
 
-      - name: Prepare smoke test environment
-        run: |
-          mkdir -p smoke-test
-          cp -r src/test/smoke/* smoke-test/
-          cd smoke-test
+      - name: Download smoke test environment
+        uses: actions/download-artifact@v4
+        with:
+          name: smoke-test
+          path: ./smoke-test
 
       - name: Install test dependencies
         run: |
