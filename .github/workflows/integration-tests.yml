@@ -55,10 +55,10 @@ jobs:
       fail-fast: false
       matrix:
         node-version:
-          - "16" # Minimum production support
           - "18" # LTS, minimum dev requirement
           - "20" # Current LTS
           - "22" # Latest stable
+          - "24" # Latest stable
 
     steps:
       - name: Setup Node.js ${{ matrix.node-version }}
