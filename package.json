@@ -1,6 +1,6 @@
 {
   "name": "@jonloucks/badges-ts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Node.js badge creator",
   "private": true,
   "type": "module",
