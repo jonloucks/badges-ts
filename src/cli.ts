@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { COMMAND as APPLY_VERSION_COMMAND } from "./impl/apply-version-command.js";
 import { COMMAND as DISCOVER_COMMAND } from "./impl/discover-command.js";
 import { COMMAND as GENERATE_COMMAND } from "./impl/generate-command.js";

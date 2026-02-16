@@ -48,6 +48,7 @@ class BadgeFactoryImpl implements BadgeFactory {
       };
     } else {
       return await writeDataFile(config.outputPath, generated).then(() => {
+        config.display.info(`Badge ${config.name} generated at ${config.outputPath}`);
         return {
           name: config.name,
           outputPath: config.outputPath

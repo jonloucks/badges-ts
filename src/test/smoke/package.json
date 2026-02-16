@@ -1,0 +1,32 @@
+{
+  "name": "@jonloucks/badges-ts-smoke",
+  "version": "999.888.777",
+  "description": "Node.js badge creator smoke test package",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsx --test $(find src -name '*.test.ts')",
+    "clean": "rm -rf dist && rm -rf coverage && npm install",
+    "badges": "npx badges-ts generate",
+    "compile": "tsc"
+  },
+  "author": "Jon Loucks",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonloucks/badges-ts.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+  }
+}
