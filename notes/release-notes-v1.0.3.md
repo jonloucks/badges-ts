@@ -24,8 +24,8 @@ npm install @jonloucks/badges-ts@1.0.3
 
 ## 🐛 Bug Fixes
 *  Fixed production CLI startup issue where some environments attempted to parse transpiled JavaScript as shell, causing errors like:
-	* `syntax error near unexpected token '('`
-	* Triggered from `node_modules/.bin/badges-ts` in affected installs
+  * `syntax error near unexpected token '('`
+  * Triggered from `node_modules/.bin/badges-ts` in affected installs
 *  Consolidated executable shebang usage in launcher file and removed shebang from core command module in [src/cli.ts](../src/cli.ts)
 
 ## ⬇️ Download
