@@ -152,6 +152,7 @@ badges-ts
 │       ├── main-pull-request-matrix.yml
 │       ├── main-pull-request.yml
 │       ├── main-push.yml
+│       ├── main-push-publish.yml
 │       └── main-release.yml
 ├── CODE_OF_CONDUCT.md
 ├── CODING_STANDARDS.md
@@ -197,6 +198,19 @@ badges-ts
 
 ## GitHub Workflows
 
+<details markdown="1"><summary>Workflow File Index</summary>
+
+- `main-pull-request.yml` (workflow name: `main-pull-request`): Pull request validation workflow for `main` (lint, build, coverage on Node 18).
+- `main-pull-request-matrix.yml` (workflow name: `main-pull-request-matrix`): Pull request validation matrix for `main` (lint, build, coverage across Node 18/20/22/24).
+- `main-pull-request-smoke.yml` (workflow name: `main-pull-request-smoke`): Pull request smoke packaging workflow with multi-version smoke test matrix.
+- `main-push.yml` (workflow name: `main-push`): Unprivileged push workflow for `main` that builds/tests and uploads publish artifacts.
+- `main-push-publish.yml` (workflow name: `main-push-publish`): Privileged `workflow_run` publisher that updates `gh-pages` and `badges` from artifacts.
+- `main-push-smoke.yml` (workflow name: `main-push-smoke`): Push smoke packaging workflow with multi-version smoke test matrix.
+- `main-release-smoke.yml` (workflow name: `main-release-smoke`): Release-created smoke workflow that builds package and validates install/tests.
+- `main-release.yml` (workflow name: `Publish`): Release publishing workflow triggered after smoke success.
+
+</details>
+
 <details markdown="1"><summary>CI Workflow</summary>
 
 The CI workflow runs on every push and pull request to `main` branch. It:
@@ -204,7 +218,12 @@ The CI workflow runs on every push and pull request to `main` branch. It:
 - Runs linting
 - Builds the project
 - Runs tests with coverage
-- Uploads coverage to Codecov (optional)
+- Uploads build outputs as workflow artifacts for downstream jobs
+
+Security model:
+- Pull request workflows run with read-only repository permissions.
+- `main-push` runs as an unprivileged build/test workflow and uploads publish artifacts.
+- `main-push-publish` is a separate `workflow_run` workflow that downloads artifacts and performs privileged writes to `gh-pages` and `badges` branches.
 
 </details>
 

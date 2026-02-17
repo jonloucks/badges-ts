@@ -5,10 +5,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
-  packages: write
-  pages: write
-  id-token: write
+  contents: read
 
 jobs:
   build:
@@ -32,18 +29,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: main-project
-
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages
-
-      - name: Checkout badges branch
-        uses: actions/checkout@v4
-        with:
-          ref: badges
-          path: badges
 
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -72,13 +57,16 @@ jobs:
         run: npm run docs
         working-directory: main-project
 
+      - name: Create badge output directory
+        run: mkdir -p .artifacts/badges
+
       - name: Generate coverage badges
         run: npm run badges
         working-directory: main-project
         env:
-          KIT_COVERAGE_SUMMARY_BADGE_PATH: ${{ github.workspace }}/badges/${{ env.SIMPLE_BRANCH_NAME }}-coverage.svg
-          KIT_TYPEDOC_BADGE_PATH: ${{ github.workspace }}/badges/${{ env.SIMPLE_BRANCH_NAME }}-typedoc.svg
-          KIT_NPM_BADGE_PATH: ${{ github.workspace }}/badges/${{ env.SIMPLE_BRANCH_NAME }}-npm.svg
+          KIT_COVERAGE_SUMMARY_BADGE_PATH: ${{ github.workspace }}/.artifacts/badges/${{ env.SIMPLE_BRANCH_NAME }}-coverage.svg
+          KIT_TYPEDOC_BADGE_PATH: ${{ github.workspace }}/.artifacts/badges/${{ env.SIMPLE_BRANCH_NAME }}-typedoc.svg
+          KIT_NPM_BADGE_PATH: ${{ github.workspace }}/.artifacts/badges/${{ env.SIMPLE_BRANCH_NAME }}-npm.svg
 
       - name: Upload Jest Code Coverage report
         uses: actions/upload-artifact@v4
@@ -86,27 +74,22 @@ jobs:
           name: jest-coverage-report
           path: main-project/coverage/lcov-report/
 
-      - name: Copy Code Coverage and Source Documentation
-        working-directory: gh-pages
+      - name: Stage publish artifacts
         run: |
-          rm -rf typedoc/ lcov-report/ ; mkdir -p typedoc ; mkdir -p lcov-report
-          cp -r "${{ github.workspace }}/main-project/docs/typedoc/"* typedoc/
-          cp -r "${{ github.workspace }}/main-project/coverage/lcov-report/"* lcov-report/
-          cp -r "${{ github.workspace }}/main-project/"*.md .
+          rm -rf .artifacts/publish
+          mkdir -p .artifacts/publish/typedoc .artifacts/publish/lcov-report .artifacts/publish/root-markdown
+          cp -r "${{ github.workspace }}/main-project/docs/typedoc/." .artifacts/publish/typedoc/
+          cp -r "${{ github.workspace }}/main-project/coverage/lcov-report/." .artifacts/publish/lcov-report/
+          cp "${{ github.workspace }}/main-project/"*.md .artifacts/publish/root-markdown/ || true
 
-      - name: Commit and Push gh-pages
-        uses: EndBug/add-and-commit@v9
+      - name: Upload publish artifact
+        uses: actions/upload-artifact@v4
         with:
-          default_author: github_actions
-          message: "Update Source Documentation"
-          pull: "--rebase --autostash"
-          cwd: gh-pages
+          name: publish-site-content
+          path: .artifacts/publish/
 
-      - name: Commit and Push the Badges to the badges branch
-        uses: EndBug/add-and-commit@v9
+      - name: Upload badges artifact
+        uses: actions/upload-artifact@v4
         with:
-          default_author: github_actions
-          message: "Push updated badges branch"
-          add: "*.svg"
-          pull: "--rebase --autostash"
-          cwd: badges
+          name: publish-badges
+          path: .artifacts/badges/

@@ -5,8 +5,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
-  id-token: write
+  contents: read
 
 jobs:
   build:
@@ -31,12 +30,6 @@ jobs:
         with:
           path: main-project
 
-      - name: Checkout badges branch
-        uses: actions/checkout@v4
-        with:
-          ref: badges
-          path: badges
-
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -60,23 +53,8 @@ jobs:
         run: npm run test:coverage
         working-directory: main-project
 
-      - name: Generate coverage badges
-        run: npm run badges
-        working-directory: main-project
-        env:
-          KIT_COVERAGE_SUMMARY_BADGE_PATH: ${{ github.workspace }}/badges/${{ env.SIMPLE_BRANCH_NAME }}-coverage.svg
-
       - name: Upload Jest Code Coverage report
         uses: actions/upload-artifact@v4
         with:
           name: jest-coverage-report
           path: main-project/coverage/lcov-report/
-
-      - name: Commit and Push the Badges to the badges branch
-        uses: EndBug/add-and-commit@v9
-        with:
-          default_author: github_actions
-          message: "Push updated badges branch"
-          add: "*.svg"
-          pull: "--rebase --autostash"
-          cwd: badges
