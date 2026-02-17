@@ -101,8 +101,8 @@ jobs:
     steps:
       - name: Check smoke tests
         run: |
-          if [ "${{ needs.smoke_matrix.result }}" == "failure" ]; then
-            echo "Smoke tests failed"
+          if [ "${{ needs.smoke_matrix.result }}" != "success" ]; then
+            echo "Smoke tests did not complete successfully: ${{ needs.smoke_matrix.result }}"
             exit 1
           fi
           echo "All smoke tests passed"
