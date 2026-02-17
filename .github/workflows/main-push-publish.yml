@@ -1,0 +1,75 @@
+name: main-push-publish
+
+on:
+  workflow_run:
+    workflows: [main-push]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.run_attempt == 1 }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Checkout badges branch
+        uses: actions/checkout@v4
+        with:
+          ref: badges
+          path: badges
+
+      - name: Download publish-site-content artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          name: publish-site-content
+          path: ./artifacts/publish-site-content
+
+      - name: Download publish-badges artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          name: publish-badges
+          path: ./artifacts/publish-badges
+
+      - name: Update gh-pages content
+        working-directory: gh-pages
+        run: |
+          rm -rf typedoc/ lcov-report/
+          mkdir -p typedoc lcov-report
+          cp -r "${{ github.workspace }}/artifacts/publish-site-content/typedoc/." typedoc/
+          cp -r "${{ github.workspace }}/artifacts/publish-site-content/lcov-report/." lcov-report/
+          cp -r "${{ github.workspace }}/artifacts/publish-site-content/root-markdown/"*.md . || true
+
+      - name: Update badges content
+        working-directory: badges
+        run: |
+          cp -r "${{ github.workspace }}/artifacts/publish-badges/"*.svg . || true
+
+      - name: Commit and Push gh-pages
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: "Update Source Documentation"
+          pull: "--rebase --autostash"
+          cwd: gh-pages
+
+      - name: Commit and Push the Badges to the badges branch
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: "Push updated badges branch"
+          add: "*.svg"
+          pull: "--rebase --autostash"
+          cwd: badges

@@ -1,25 +1,52 @@
 name: Publish
 
 on:
-  release:
-    types: [created]
+  workflow_run:
+    workflows: [main-release-smoke]
+    types: [completed]
 
 jobs:
   publish:
+    # Security: Only run if smoke tests succeeded, this is the first attempt, 
+    # and the triggering workflow was initiated by a release event (not a PR)
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.run_attempt == 1 &&
+      github.event.workflow_run.event == 'release'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Verify workflow trigger
+        env:
+          WORKFLOW_EVENT: ${{ github.event.workflow_run.event }}
+          WORKFLOW_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WORKFLOW_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          echo "Workflow run event: ${WORKFLOW_EVENT}"
+          echo "Workflow run branch: ${WORKFLOW_BRANCH}"
+          echo "Workflow run SHA: ${WORKFLOW_SHA}"
+          
+          # Ensure this was triggered by a release event
+          if [ "${WORKFLOW_EVENT}" != "release" ]; then
+            echo "ERROR: This workflow should only run for release events"
+            exit 1
+          fi
 
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '24.x'
-        registry-url: 'https://registry.npmjs.org'
-    - run: npm ci
-    - run: npm run before:publish
-    - run: cd dist && npm publish --access public --provenance
-    - run: npm run after:publish
+      - uses: actions/checkout@v4
+        with:
+          # Checkout the exact commit that triggered the release
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          registry-url: "https://registry.npmjs.org"
+      
+      - run: npm ci
+      - run: npm run before:publish
+      - run: cd dist && npm publish --access public --provenance
+      - run: npm run after:publish

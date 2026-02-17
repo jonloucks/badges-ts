@@ -1,0 +1,108 @@
+name: main-push-smoke
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-package:
+    name: Smoke - Build and Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Create package
+        run: npm run pack-package
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: packs/*.tgz
+          retention-days: 1
+
+      - name: Upload smoke test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test
+          path: src/test/smoke
+          retention-days: 1
+
+  smoke_matrix:
+    name: main-push-smoke (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    needs: build-package
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - "16" # Minimum production support
+          - "18" # LTS, minimum dev requirement
+          - "20" # Current LTS
+          - "22" # Latest stable
+          - "24" # Latest stable
+
+    steps:
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Download package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: package
+          path: ./packs
+
+      - name: Download smoke test artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: smoke-test
+          path: ./smoke-test
+
+      - name: Install test dependencies
+        run: |
+          cd smoke-test
+          npm ci
+
+      - name: Install package from artifact
+        run: |
+          cd smoke-test
+          npm install ../packs/*.tgz
+
+      - name: Run smoke tests
+        run: |
+          cd smoke-test
+          npm test
+
+  smoke_summary:
+    name: main-push-smoke-summary
+    runs-on: ubuntu-latest
+    needs: smoke_matrix
+    if: always()
+
+    steps:
+      - name: Check smoke tests
+        run: |
+          if [ "${{ needs.smoke_matrix.result }}" != "success" ]; then
+            echo "Smoke tests failed"
+            exit 1
+          fi
+          echo "All smoke tests passed"
