@@ -20,13 +20,17 @@ jobs:
 
     steps:
       - name: Verify workflow trigger
+        env:
+          WORKFLOW_EVENT: ${{ github.event.workflow_run.event }}
+          WORKFLOW_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WORKFLOW_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
-          echo "Workflow run event: ${{ github.event.workflow_run.event }}"
-          echo "Workflow run branch: ${{ github.event.workflow_run.head_branch }}"
-          echo "Workflow run SHA: ${{ github.event.workflow_run.head_sha }}"
+          echo "Workflow run event: ${WORKFLOW_EVENT}"
+          echo "Workflow run branch: ${WORKFLOW_BRANCH}"
+          echo "Workflow run SHA: ${WORKFLOW_SHA}"
           
           # Ensure this was triggered by a release event
-          if [ "${{ github.event.workflow_run.event }}" != "release" ]; then
+          if [ "${WORKFLOW_EVENT}" != "release" ]; then
             echo "ERROR: This workflow should only run for release events"
             exit 1
           fi
