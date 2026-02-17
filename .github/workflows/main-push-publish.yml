@@ -55,7 +55,7 @@ jobs:
       - name: Update badges content
         working-directory: badges
         run: |
-          cp -r "${{ github.workspace }}/artifacts/publish-badges/"*.svg .
+          cp -r "${{ github.workspace }}/artifacts/publish-badges/"*.svg . || true
 
       - name: Commit and Push gh-pages
         uses: EndBug/add-and-commit@v9
