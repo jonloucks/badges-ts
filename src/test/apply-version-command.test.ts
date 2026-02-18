@@ -11,22 +11,20 @@ import { join } from "path";
 import { COMMAND } from "../impl/apply-version-command.js";
 import { toContext } from "../impl/Command.impl.js";
 import { createEnvironment, createMapSource, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
+import { resolve } from "node:path";
 
 describe('apply-version-command tests', () => {
   const environmentMap: Map<string, string> = new Map<string, string>();
   let closeInstaller: AutoClose;
-  let originalCwd: string;
   let temporaryFolder: string;
   let templatePath: string;
   let mockErrorFn: Mock<(message: string) => void>;
 
   beforeEach(() => {
-    originalCwd = process.cwd();
     closeInstaller = createInstaller().open();
     // this must be a temporary directory that is cleaned up after the test, and should not be the same as the one used in other tests to avoid conflicts
     temporaryFolder = mkdtempSync(join(tmpdir(), 'apply-version-test-'));
-    process.chdir(temporaryFolder);
-
+    environmentMap.set('KIT_PROJECT_FOLDER', temporaryFolder);
     // Create necessary directories
     mkdirSync(join(temporaryFolder, 'src')); // review requirements for src directory if needed
 
@@ -39,18 +37,17 @@ describe('apply-version-command tests', () => {
       name: "@test/test-package",
       version: "0.0.0"
     };
-    const packageJsonPath = join(temporaryFolder, 'package.json');
+    const packageJsonPath = resolve(temporaryFolder, 'package.json');
     writeFileSync(packageJsonPath, JSON.stringify(packageJson), 'utf8');
     environmentMap.set('KIT_PACKAGE_JSON_PATH', packageJsonPath);
 
-    templatePath = join(temporaryFolder, 'release-notes-template.md');
+    templatePath = resolve(temporaryFolder, 'release-notes-template.md');
     writeFileSync(templatePath, '# {{NAME}} v{{VERSION}}', 'utf8');
     environmentMap.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', templatePath);
     environmentMap.set('KIT_RELEASE_NOTES_OUTPUT_FOLDER', temporaryFolder);
   });
 
   afterEach(() => {
-    process.chdir(originalCwd);
     closeInstaller.close();
     environmentMap.clear();
     if (temporaryFolder && existsSync(temporaryFolder)) {
@@ -95,7 +92,7 @@ describe('apply-version-command tests', () => {
 
     it('with template file but missing src directory', async () => {
       const context: Context = toMockContext(['apply-version', '--quiet']);
-      rmSync(join(temporaryFolder, 'src'), { recursive: true, force: true });
+      rmSync(resolve(temporaryFolder, 'src'), { recursive: true, force: true });
       await COMMAND.execute(context)
       .catch((error: Error) => {
         ok(error instanceof Error, 'Error should be thrown when src directory is missing');
@@ -128,7 +125,7 @@ describe('apply-version-command tests', () => {
 
     it('should be callable without template file', async () => {
       const context: Context = toMockContext(['apply-version', '--quiet']);
-      environmentMap.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', join(temporaryFolder, 'non-existent-template.md'));
+      environmentMap.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', resolve(temporaryFolder, 'non-existent-template.md'));
       await COMMAND.execute(context);
       assertNoErrors();
     });

@@ -5,7 +5,7 @@ import { ok } from "node:assert";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, it, mock, Mock } from "node:test";
 import { tmpdir } from "os";
-import { join } from "path";
+import { resolve } from "path";
 import { used } from "../auxiliary/Checks.js";
 import { toContext } from "../impl/Command.impl.js";
 import { createEnvironment, createMapSource, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
@@ -22,14 +22,14 @@ describe('Main module', () => {
   let mockDryFn: Mock<(message: string) => void>;
 
   beforeEach(() => {
-    testDir = mkdtempSync(join(tmpdir(), 'cli-test-'));
-    mkdirSync(join(testDir, 'src'));
-    const summarySummaryPath: string = join(testDir, 'coverage-summary.json');
+    testDir = mkdtempSync(resolve(tmpdir(), 'cli-test-'));
+    mkdirSync(resolve(testDir, 'src'));
+    const summarySummaryPath: string = resolve(testDir, 'coverage-summary.json');
     const coverageJsonText = '{"total": {"lines":{"total":695,"covered":687,"skipped":0,"pct":98.84},"statements":{"total":713,"covered":704,"skipped":0,"pct":98.73},"functions":{"total":219,"covered":213,"skipped":0,"pct":97.26},"branches":{"total":170,"covered":163,"skipped":0,"pct":95.88},"branchesTrue":{"total":0,"covered":0,"skipped":0,"pct":100}}}';
     writeFileSync(summarySummaryPath, coverageJsonText, 'utf8');
     environmentMap.clear();
     environmentMap.set('KIT_BADGES_FOLDER', testDir);
-    const templatePath: string = join(testDir, 'release-notes-template.md');
+    const templatePath: string = resolve(testDir, 'release-notes-template.md');
     environmentMap.set('KIT_COVERAGE_SUMMARY_PATH', summarySummaryPath);
     environmentMap.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', templatePath);
     environmentMap.set('KIT_RELEASE_NOTES_OUTPUT_FOLDER', testDir);

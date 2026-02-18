@@ -7,7 +7,7 @@ import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { mkdtempSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
-import { join } from "path";
+import { resolve } from "path";
 import { toContext } from "../impl/Command.impl.js";
 import { COMMAND } from "../impl/generate-command.js";
 import { createEnvironment, createMapSource, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
@@ -16,20 +16,19 @@ describe('generate-command tests', () => {
   const environmentMap: Map<string, string> = new Map<string, string>();
 
   let closeInstaller: AutoClose;
-  let originalCwd: string;
   let temporaryFolder: string;
+  let packageJsonPath: string;
 
   beforeEach(() => {
     environmentMap.clear();
-    originalCwd = process.cwd();
-    temporaryFolder = mkdtempSync(join(tmpdir(), 'generate-command-test-'));
+    temporaryFolder = mkdtempSync(resolve(tmpdir(), 'generate-command-test-'));
+    packageJsonPath = resolve(temporaryFolder, 'package.json');
+    environmentMap.set('KIT_PROJECT_FOLDER', temporaryFolder);
     environmentMap.set('KIT_BADGES_FOLDER', temporaryFolder);
-    process.chdir(temporaryFolder);
     closeInstaller = createInstaller().open();
   });
 
   afterEach(() => {
-    process.chdir(originalCwd);
     rmSync(temporaryFolder, { recursive: true });
     closeInstaller.close();
   });
@@ -60,7 +59,7 @@ describe('generate-command tests', () => {
           url: "https://github.com/test/my-package.git"
         }
       };
-      writeFileSync('package.json', JSON.stringify(packageJson));
+      writeFileSync(packageJsonPath, JSON.stringify(packageJson), 'utf8');
 
       const context: Context = toMockContext(['generate']);
       const badges: Badge[] = await COMMAND.execute(context);

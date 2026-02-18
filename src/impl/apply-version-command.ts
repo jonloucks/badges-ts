@@ -6,7 +6,7 @@ import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import { KIT_RELEASE_NOTES_OUTPUT_FOLDER, KIT_RELEASE_NOTES_TEMPLATE_PATH } from "../api/Variances.js";
+import { KIT_PROJECT_FOLDER, KIT_RELEASE_NOTES_OUTPUT_FOLDER, KIT_RELEASE_NOTES_TEMPLATE_PATH } from "@jonloucks/badges-ts/api/Variances";
 
 const COMMAND_NAME: string = 'apply-version';
 
@@ -77,13 +77,22 @@ export const VERSION: string = ${JSON.stringify(project.version)};`;
     return;
   }
 
-  writeFileSync(resolve('src', 'version.ts'), text, 'utf8');
+  writeFileSync(getVersionTsPath(context), text, 'utf8');
+}
+
+function getProjectFolder(context: Context): string {
+  return context.environment.getVariance(KIT_PROJECT_FOLDER);
+}
+
+function getVersionTsPath(context: Context): string {
+  const fileName: string = 'version.ts'; //context.environment.getVariance(KIT_VERSION_TS_PATH);
+  return resolve(getProjectFolder(context), 'src', fileName);
 }
 
 function getReleaseNotesOutputFolder(context: Context): string {
-  return context.environment.getVariance(KIT_RELEASE_NOTES_OUTPUT_FOLDER);
+  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_RELEASE_NOTES_OUTPUT_FOLDER));
 }
 
 function getReleaseNotesTemplatePath(context: Context): string {
-  return context.environment.getVariance(KIT_RELEASE_NOTES_TEMPLATE_PATH);
+  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_RELEASE_NOTES_TEMPLATE_PATH));
 }

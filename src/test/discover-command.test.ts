@@ -7,7 +7,7 @@ import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { mkdtempSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
-import { join } from "path";
+import { resolve } from "path";
 import { toContext } from "../impl/Command.impl.js";
 import { COMMAND } from "../impl/discover-command.js";
 import { createEnvironment, createMapSource, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
@@ -16,23 +16,21 @@ describe('discover-command tests', () => {
   const environmentMap: Map<string, string> = new Map<string, string>();
 
   let closeInstaller: AutoClose;
-  let originalCwd: string;
   let temporaryFolder: string;
   let packageJsonPath: string;
 
   beforeEach(() => {
-    originalCwd = process.cwd();
-    temporaryFolder = mkdtempSync(join(tmpdir(), 'discover-command-test-'));
-    packageJsonPath = join(temporaryFolder, 'package.json');
+    temporaryFolder = mkdtempSync(resolve(tmpdir(), 'discover-command-test-'));
+    packageJsonPath = resolve(temporaryFolder, 'package.json');
+    environmentMap.set('KIT_PROJECT_FOLDER', temporaryFolder);
     environmentMap.set('KIT_PACKAGE_JSON_PATH', packageJsonPath);
 
-    process.chdir(temporaryFolder);
     closeInstaller = createInstaller().open();
   });
 
   afterEach(() => {
-    process.chdir(originalCwd);
     rmSync(temporaryFolder, { recursive: true });
+    environmentMap.clear();
     closeInstaller.close();
   });
 

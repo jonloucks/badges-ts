@@ -5,8 +5,9 @@ import { isNonEmptyString, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { BadgeException } from "@jonloucks/badges-ts/api/BadgeException";
 import { isNotPresent } from "@jonloucks/badges-ts/api/Types";
 import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
-import { Context } from "../auxiliary/Command.js";
-import { KIT_PACKAGE_JSON_PATH } from "../api/Variances.js";
+import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { KIT_PACKAGE_JSON_PATH, KIT_PROJECT_FOLDER } from "@jonloucks/badges-ts/api/Variances";
+import { resolve } from "path";
 
 export interface Config {
   contracts: Contracts;
@@ -42,7 +43,7 @@ class DiscoverProjectImpl implements DiscoverProject {
   }
 
   async detectPackageJson(context: Context): Promise<Project> {
-    const fileName: string = context.environment.getVariance(KIT_PACKAGE_JSON_PATH);
+    const fileName: string = this.#getPackageJsonPath(context);
     try {
       const fileContent: string = await readFile(fileName, 'utf8');
       const packageJson: PackageJson = JSON.parse(fileContent) as PackageJson;
@@ -56,6 +57,12 @@ class DiscoverProjectImpl implements DiscoverProject {
       throw new BadgeException("Failed to detect project from package.json.");
     }
   };
+
+  #getPackageJsonPath(context: Context): string {
+    const projectFolder: string = context.environment.getVariance(KIT_PROJECT_FOLDER);
+    const fileName: string = context.environment.getVariance(KIT_PACKAGE_JSON_PATH);
+    return resolve(projectFolder, fileName);
+  }
 
   private constructor(config: Config) {
     this.#contracts = config.contracts;

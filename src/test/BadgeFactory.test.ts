@@ -2,7 +2,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs
 import { ok, strictEqual } from "node:assert";
 import { afterEach, beforeEach, describe, it } from "node:test";
 import { tmpdir } from "os";
-import { join } from "path";
+import {resolve } from "path";
 
 import { Badge, Config as BadgeConfig } from "@jonloucks/badges-ts/api/Badge";
 import { BadgeFactory, CONTRACT as BADGE_FACTORY, guard } from "@jonloucks/badges-ts/api/BadgeFactory";
@@ -31,7 +31,7 @@ describe('BadgeFactory tests', () => {
     verbose: false
   };
 
-  const makeTempDir = (): string => mkdtempSync(join(tmpdir(), 'badge-factory-'));
+  const makeTempDir = (): string => mkdtempSync(resolve(tmpdir(), 'badge-factory-'));
 
   const writeTemplate = (path: string, content: string = '<svg>{{LABEL}}-{{VALUE}}-{{COLOR}}</svg>'): void => {
     writeFileSync(path, content, 'utf8');
@@ -41,8 +41,8 @@ describe('BadgeFactory tests', () => {
     closeInstaller = createInstaller().open();
     badgeFactory = CONTRACTS.enforce(BADGE_FACTORY);
     temporaryFolder = makeTempDir();
-    templatePath = join(temporaryFolder, 'template.svg');
-    outputPath = join(temporaryFolder, 'output.svg');
+    templatePath = resolve(temporaryFolder, 'template.svg');
+    outputPath = resolve(temporaryFolder, 'output.svg');
   });
 
   afterEach(() => {

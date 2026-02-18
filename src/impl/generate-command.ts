@@ -20,7 +20,7 @@
  * ```
  */
 import { Badge } from "@jonloucks/badges-ts/api/Badge";
-import { isPresent } from "@jonloucks/contracts-ts/api/Types";
+import { isPresent, OptionalType } from "@jonloucks/contracts-ts/api/Types";
 import { CONTRACT as BADGE_FACTORY, BadgeFactory } from "@jonloucks/badges-ts/api/BadgeFactory";
 import { Project } from "@jonloucks/badges-ts/api/Project";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
@@ -29,7 +29,7 @@ import { CONTRACTS } from "@jonloucks/contracts-ts";
 import { readFile } from "fs";
 import { resolve } from "path";
 import { Internal, SUCCESS_COLOR } from "./Internal.impl.js";
-import { KIT_BADGES_FOLDER, KIT_COVERAGE_SUMMARY_BADGE_PATH, KIT_COVERAGE_SUMMARY_PATH, KIT_LCOV_REPORT_INDEX_PATH, KIT_NPM_BADGE_PATH, KIT_TEMPLATE_BADGE_PATH, KIT_TYPEDOC_BADGE_PATH } from "../api/Variances.js";
+import { KIT_BADGES_FOLDER, KIT_CODE_COVERAGE_PERCENT, KIT_COVERAGE_SUMMARY_BADGE_PATH, KIT_COVERAGE_SUMMARY_PATH, KIT_LCOV_REPORT_INDEX_PATH, KIT_NPM_BADGE_PATH, KIT_PROJECT_FOLDER, KIT_TEMPLATE_BADGE_PATH, KIT_TYPEDOC_BADGE_PATH } from "@jonloucks/badges-ts/api/Variances";
 
 export const COMMAND: Command<Badge[]> = {
   execute: async function (context: Context): Promise<Badge[]> {
@@ -116,11 +116,22 @@ async function getCodeCoveragePercent(context: Context): Promise<number> {
   // and the first successful result is used; this allows for flexibility in how the 
   // coverage percentage is provided and can accommodate different project setups
   return Promise.any([
+    getCodeCoverageFromEnvironment(context),
     getCodeCoveragePercentFromCoverageSummary(context),
     getCodeCoveragePercentFromLcovReport(context)
   ]);
 };
 
+async function getCodeCoverageFromEnvironment(context: Context): Promise<number> {
+  return new Promise<number>((resolve, reject) => {
+    const envValue: OptionalType<number> = context.environment.findVariance(KIT_CODE_COVERAGE_PERCENT); 
+    if (isPresent(envValue) && !Number.isNaN(envValue) && envValue >= 0 && envValue <= 100) {
+      resolve(envValue);
+    } else {
+      reject(new Error('Code coverage percentage not found in environment variables'));
+    }
+  });
+}
 async function getCodeCoveragePercentFromCoverageSummary(context: Context): Promise<number> {
   return new Promise<number>((resolve, reject) => {
     const inputPath: string = getCoverageSummaryFilePath(context);
@@ -141,7 +152,7 @@ async function getCodeCoveragePercentFromCoverageSummary(context: Context): Prom
 
 async function getCodeCoveragePercentFromLcovReport(context: Context): Promise<number> {
   return new Promise<number>((resolve, reject) => {
-    const inputPath: string = context.environment.getVariance(KIT_LCOV_REPORT_INDEX_PATH);
+    const inputPath: string = getLcovReportIndexPath(context);
     readFile(inputPath, 'utf8', (err, data) => {
       if (err) {
         reject(err);
@@ -203,16 +214,24 @@ function readPercentageFromCoverageSummary(data: Buffer): number {
   return jsonData.total.lines.pct;
 }
 
+function getProjectFolder(context: Context): string {
+  return context.environment.getVariance(KIT_PROJECT_FOLDER);
+}
+
 function getCoverageSummaryFilePath(context: Context): string {
-  return context.environment.getVariance(KIT_COVERAGE_SUMMARY_PATH);
+  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_COVERAGE_SUMMARY_PATH));
 }
 
 function getTemplateBadgePath(context: Context): string {
-  return context.environment.getVariance(KIT_TEMPLATE_BADGE_PATH);
+  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_TEMPLATE_BADGE_PATH));
+}
+
+function getLcovReportIndexPath(context: Context): string {
+  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_LCOV_REPORT_INDEX_PATH));
 }
 
 function getBadgesFolder(context: Context): string {
-  return context.environment.getVariance(KIT_BADGES_FOLDER);
+  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_BADGES_FOLDER));
 }
 
 function getCodeCoverageBadgePath(context: Context): string {
@@ -226,4 +245,3 @@ function getTypedocBadgePath(context: Context): string {
 function getNpmBadgePath(context: Context): string {
   return resolve(getBadgesFolder(context), context.environment.getVariance(KIT_NPM_BADGE_PATH));
 }
-
