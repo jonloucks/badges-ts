@@ -1,13 +1,21 @@
 import { Display, Flags } from "@jonloucks/badges-ts/api/Types";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { Environment } from "@jonloucks/variants-ts/api/Environment";
+import { createEnvironment, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
 
 export function toContext(args: string[]): Context {
   const flags: Flags = parseFlags({ args });
   const display: Display = flagsToDisplay(flags);
+  const environment: Environment = createEnvironment({
+    sources: [
+      createProcessSource()
+    ]
+  });
   return {
     arguments: args,
     display: display,
     flags: flags,
+    environment: environment,
   };
 }
 

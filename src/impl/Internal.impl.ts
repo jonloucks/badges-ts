@@ -4,7 +4,6 @@ import { isNotPresent, isPresent, type RequiredType } from "@jonloucks/contracts
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
-export const OVERRIDE_ENVIRONMENT: Map<string, string> = new Map<string, string>();
 export const OVERRIDE_RUNNING: Map<string, boolean> = new Map<string, boolean>();
 
 export const SUCCESS_COLOR: string = '#4bc124';
@@ -28,17 +27,6 @@ export const Internal = {
       }
     }
     return CONTRACTS;
-  },
-
-  getEnvPathOrDefault(envVarName: string, defaultPath: string): string {
-    if (OVERRIDE_ENVIRONMENT.has(envVarName)) {
-      return OVERRIDE_ENVIRONMENT.get(envVarName) as string;
-    }
-    const myVarValue: string | undefined = process.env[envVarName];
-    if (isPresent(myVarValue) && myVarValue.trim() !== '') {
-      return myVarValue.trim();
-    }
-    return defaultPath;
   },
 
   colorFromPercentComplete(percent: number): string {

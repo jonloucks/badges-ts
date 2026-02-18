@@ -28,9 +28,9 @@ import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
 import { CONTRACTS } from "@jonloucks/contracts-ts";
 import { readFile } from "fs";
-import { join } from "path";
-import { resolveDataPath } from "../data/Resolver.js";
+import { resolve } from "path";
 import { Internal, SUCCESS_COLOR } from "./Internal.impl.js";
+import { KIT_BADGES_FOLDER, KIT_COVERAGE_SUMMARY_BADGE_PATH, KIT_COVERAGE_SUMMARY_PATH, KIT_LCOV_REPORT_INDEX_PATH, KIT_NPM_BADGE_PATH, KIT_TEMPLATE_BADGE_PATH, KIT_TYPEDOC_BADGE_PATH } from "../api/Variances.js";
 
 export const COMMAND: Command<Badge[]> = {
   execute: async function (context: Context): Promise<Badge[]> {
@@ -79,11 +79,11 @@ async function generateNpmBadge(context: Context): Promise<Badge> {
   const project: Project = await discoverProject(context);
   return await badgeFactory.createBadge({
     name: "npm",
-    outputPath: getNpmBadgePath(),
+    outputPath: getNpmBadgePath(context),
     label: "  npm  ",
     value: project.version,
     color: SUCCESS_COLOR,
-    templatePath: getTemplateBadgePath(),
+    templatePath: getTemplateBadgePath(context),
     flags: context.flags,
     display: context.display
   });
@@ -99,33 +99,33 @@ async function discoverProject(context: Context): Promise<Project> {
  * Reads the coverage percentage, determines the badge color, and generates the SVG badge.
  */
 async function generateCodeCoverageBadge(context: Context): Promise<Badge> {
-  const percentage: number = await getCodeCoveragePercent();
+  const percentage: number = await getCodeCoveragePercent(context);
   const badgeFactory: BadgeFactory = CONTRACTS.enforce(BADGE_FACTORY);
   return await badgeFactory.createBadge({
     name: "coverage-summary",
-    outputPath: getCodeCoverageBadgePath(),
+    outputPath: getCodeCoverageBadgePath(context),
     label: "coverage",
     value: percentage + "%",
     color: Internal.colorFromPercentComplete(percentage),
-    templatePath: getTemplateBadgePath(),
+    templatePath: getTemplateBadgePath(context),
     flags: context.flags,
     display: context.display
   });
 }
 
-async function getCodeCoveragePercent(): Promise<number> {
+async function getCodeCoveragePercent(context: Context): Promise<number> {
   // various ways to determine the coverage percentage are attempted in parallel 
   // and the first successful result is used; this allows for flexibility in how the 
   // coverage percentage is provided and can accommodate different project setups
   return Promise.any([
-    getCodeCoveragePercentFromCoverageSummary(),
-    getCodeCoveragePercentFromLcovReport()
+    getCodeCoveragePercentFromCoverageSummary(context),
+    getCodeCoveragePercentFromLcovReport(context)
   ]);
 };
 
-async function getCodeCoveragePercentFromCoverageSummary(): Promise<number> {
+async function getCodeCoveragePercentFromCoverageSummary(context: Context): Promise<number> {
   return new Promise<number>((resolve, reject) => {
-    const inputPath: string = getCoverageSummaryFilePath();
+    const inputPath: string = getCoverageSummaryFilePath(context);
     readFile(inputPath, (err, data) => {
       if (err) {
         reject(err);
@@ -141,9 +141,9 @@ async function getCodeCoveragePercentFromCoverageSummary(): Promise<number> {
   })
 };
 
-async function getCodeCoveragePercentFromLcovReport(): Promise<number> {
+async function getCodeCoveragePercentFromLcovReport(context: Context): Promise<number> {
   return new Promise<number>((resolve, reject) => {
-    const inputPath: string = Internal.getEnvPathOrDefault('KIT_LCOV_REPORT_INDEX_PATH', './coverage/lcov-report/index.html');
+    const inputPath: string = context.environment.getVariance(KIT_LCOV_REPORT_INDEX_PATH);
     readFile(inputPath, 'utf8', (err, data) => {
       if (err) {
         reject(err);
@@ -189,11 +189,11 @@ async function generateTypedocBadge(context: Context): Promise<Badge> {
   const badgeFactory: BadgeFactory = CONTRACTS.enforce(BADGE_FACTORY);
   return await badgeFactory.createBadge({
     name: "typedoc",
-    outputPath: getTypedocBadgePath(),
+    outputPath: getTypedocBadgePath(context),
     label: " typedoc ",
     value: "100%",
     color: SUCCESS_COLOR,
-    templatePath: getTemplateBadgePath(),
+    templatePath: getTemplateBadgePath(context),
     flags: context.flags,
     display: context.display
   });
@@ -205,32 +205,27 @@ function readPercentageFromCoverageSummary(data: Buffer): number {
   return jsonData.total.lines.pct;
 }
 
-function getCoverageSummaryFilePath(): string {
-  return Internal.getEnvPathOrDefault('KIT_COVERAGE_SUMMARY_PATH',
-    './coverage/coverage-summary.json');
+function getCoverageSummaryFilePath(context: Context): string {
+  return context.environment.getVariance(KIT_COVERAGE_SUMMARY_PATH);
 }
 
-function getTemplateBadgePath(): string {
-  const theDefault: string = resolveDataPath('badge-template.svg.dat');
-  return Internal.getEnvPathOrDefault('KIT_TEMPLATE_BADGE_PATH', theDefault);
+function getTemplateBadgePath(context: Context): string {
+  return context.environment.getVariance(KIT_TEMPLATE_BADGE_PATH);
 }
 
-function getBadgesFolder(): string {
-  return Internal.getEnvPathOrDefault('KIT_BADGES_FOLDER', './');
+function getBadgesFolder(context: Context): string {
+  return context.environment.getVariance(KIT_BADGES_FOLDER);
 }
 
-function getCodeCoverageBadgePath(): string {
-  return Internal.getEnvPathOrDefault('KIT_COVERAGE_SUMMARY_BADGE_PATH',
-    join(getBadgesFolder(), 'coverage-summary.svg'));
+function getCodeCoverageBadgePath(context: Context): string {
+  return resolve(getBadgesFolder(context), context.environment.getVariance(KIT_COVERAGE_SUMMARY_BADGE_PATH));
 }
 
-function getTypedocBadgePath(): string {
-  return Internal.getEnvPathOrDefault('KIT_TYPEDOC_BADGE_PATH',
-    join(getBadgesFolder(), 'typedoc-badge.svg'));
+function getTypedocBadgePath(context: Context): string {
+  return resolve(getBadgesFolder(context), context.environment.getVariance(KIT_TYPEDOC_BADGE_PATH));
 }
 
-function getNpmBadgePath(): string {
-  return Internal.getEnvPathOrDefault('KIT_NPM_BADGE_PATH',
-    join(getBadgesFolder(), 'npm-badge.svg'));
+function getNpmBadgePath(context: Context): string {
+  return resolve(getBadgesFolder(context), context.environment.getVariance(KIT_NPM_BADGE_PATH));
 }
 

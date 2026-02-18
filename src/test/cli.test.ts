@@ -8,11 +8,12 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { used } from "../auxiliary/Checks.js";
 import { toContext } from "../impl/Command.impl.js";
-import { OVERRIDE_ENVIRONMENT } from "../impl/Internal.impl.js";
+import { createEnvironment, createMapSource, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
 
 const BANNER_START: string = "Badges-TS CLI - Version ";
 
 describe('Main module', () => {
+  const environmentMap: Map<string, string> = new Map<string, string>();
   let testDir: string;
   let mockErrorFn: Mock<(message: string) => void>;
   let mockInfoFn: Mock<(message: string) => void>;
@@ -26,12 +27,12 @@ describe('Main module', () => {
     const summarySummaryPath: string = join(testDir, 'coverage-summary.json');
     const coverageJsonText = '{"total": {"lines":{"total":695,"covered":687,"skipped":0,"pct":98.84},"statements":{"total":713,"covered":704,"skipped":0,"pct":98.73},"functions":{"total":219,"covered":213,"skipped":0,"pct":97.26},"branches":{"total":170,"covered":163,"skipped":0,"pct":95.88},"branchesTrue":{"total":0,"covered":0,"skipped":0,"pct":100}}}';
     writeFileSync(summarySummaryPath, coverageJsonText, 'utf8');
-    OVERRIDE_ENVIRONMENT.clear();
-    OVERRIDE_ENVIRONMENT.set('KIT_BADGES_FOLDER', testDir);
+    environmentMap.clear();
+    environmentMap.set('KIT_BADGES_FOLDER', testDir);
     const templatePath: string = join(testDir, 'release-notes-template.md');
-    OVERRIDE_ENVIRONMENT.set('KIT_COVERAGE_SUMMARY_PATH', summarySummaryPath);
-    OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', templatePath);
-    OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_OUTPUT_FOLDER', testDir);
+    environmentMap.set('KIT_COVERAGE_SUMMARY_PATH', summarySummaryPath);
+    environmentMap.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', templatePath);
+    environmentMap.set('KIT_RELEASE_NOTES_OUTPUT_FOLDER', testDir);
     writeFileSync(templatePath, '# {{NAME}} v{{VERSION}}', 'utf8');
 
     mockErrorFn = mock.fn((message: string): void => {
@@ -52,7 +53,7 @@ describe('Main module', () => {
   });
 
   afterEach(() => {
-    OVERRIDE_ENVIRONMENT.clear();
+    environmentMap.clear();
     if (testDir && existsSync(testDir)) {
       rmSync(testDir, { recursive: true, force: true });
     }
@@ -66,6 +67,13 @@ describe('Main module', () => {
     context.display.warn = mockWarnFn;
     context.display.trace = mockTraceFn;
     context.display.dry = mockDryFn;
+
+    context.environment = createEnvironment({
+      sources: [
+        createMapSource(environmentMap),
+        createProcessSource()
+      ]
+    });
 
     return context;
   };

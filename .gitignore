@@ -9,6 +9,5 @@ dist/
 /docs/jsdoc/
 /docs/typedoc/
 .tmp/
-/*.svg
 /packs/
 /smoke/

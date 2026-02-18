@@ -1,6 +1,7 @@
 import { Badge, Config as BadgeConfig, Config as GenerateOptions } from "@jonloucks/badges-ts/api/Badge";
 import { BadgeFactory } from "@jonloucks/badges-ts/api/BadgeFactory";
 import { presentCheck } from "@jonloucks/badges-ts/auxiliary/Checks";
+import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
 import { readFile, writeFile } from "fs";
 
 /**
@@ -26,8 +27,13 @@ import { readFile, writeFile } from "fs";
  * console.log(`Badge created at ${badge.outputPath}`);
  * ```
  */
-export function create(): BadgeFactory {
-  return BadgeFactoryImpl.internalCreate();
+
+export interface Config {
+  contracts: Contracts;
+}
+
+export function create(config: Config): BadgeFactory {
+  return BadgeFactoryImpl.internalCreate(config);
 }
 
 // ---- Implementation details below ----
@@ -57,13 +63,15 @@ class BadgeFactoryImpl implements BadgeFactory {
     }
   }
 
-  static internalCreate(): BadgeFactory {
-    return new BadgeFactoryImpl();
+  static internalCreate(config: Config): BadgeFactory {
+    return new BadgeFactoryImpl(config);
   }
 
-  private constructor() {
-    // Private constructor to enforce use of internalCreate
+  private constructor(config: Config) {
+    this.#contracts = config.contracts;
   }
+
+  readonly #contracts: Contracts;
 }
 
 async function readDataFile(filePath: string): Promise<Buffer> {

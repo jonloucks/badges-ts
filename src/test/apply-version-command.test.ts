@@ -10,9 +10,10 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { COMMAND } from "../impl/apply-version-command.js";
 import { toContext } from "../impl/Command.impl.js";
-import { OVERRIDE_ENVIRONMENT } from "../impl/Internal.impl.js";
+import { createEnvironment, createMapSource, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
 
 describe('apply-version-command tests', () => {
+  const environmentMap: Map<string, string> = new Map<string, string>();
   let closeInstaller: AutoClose;
   let originalCwd: string;
   let temporaryFolder: string;
@@ -42,14 +43,14 @@ describe('apply-version-command tests', () => {
 
     templatePath = join(temporaryFolder, 'release-notes-template.md');
     writeFileSync(templatePath, '# {{NAME}} v{{VERSION}}', 'utf8');
-    OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', templatePath);
-    OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_OUTPUT_FOLDER', temporaryFolder);
+    environmentMap.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', templatePath);
+    environmentMap.set('KIT_RELEASE_NOTES_OUTPUT_FOLDER', temporaryFolder);
   });
 
   afterEach(() => {
     process.chdir(originalCwd);
     closeInstaller.close();
-    OVERRIDE_ENVIRONMENT.clear();
+    environmentMap.clear();
     if (temporaryFolder && existsSync(temporaryFolder)) {
       rmSync(temporaryFolder, { recursive: true, force: true });
     }
@@ -59,6 +60,13 @@ describe('apply-version-command tests', () => {
     const context: Context = toContext(args);
 
     context.display.error = mockErrorFn;
+
+    context.environment = createEnvironment({
+      sources: [
+        createMapSource(environmentMap),
+        createProcessSource()
+      ]
+    });
 
     return context;
   };
@@ -118,7 +126,7 @@ describe('apply-version-command tests', () => {
 
     it('should be callable without template file', async () => {
       const context: Context = toMockContext(['apply-version', '--quiet']);
-      OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', join(temporaryFolder, 'non-existent-template.md'));
+      environmentMap.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', join(temporaryFolder, 'non-existent-template.md'));
       await COMMAND.execute(context);
       assertNoErrors();
     });

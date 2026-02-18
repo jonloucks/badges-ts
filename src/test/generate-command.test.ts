@@ -10,15 +10,20 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { toContext } from "../impl/Command.impl.js";
 import { COMMAND } from "../impl/generate-command.js";
+import { createEnvironment, createMapSource, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
 
 describe('generate-command tests', () => {
+  const environmentMap: Map<string, string> = new Map<string, string>();
+
   let closeInstaller: AutoClose;
   let originalCwd: string;
   let temporaryFolder: string;
 
   beforeEach(() => {
+    environmentMap.clear();
     originalCwd = process.cwd();
     temporaryFolder = mkdtempSync(join(tmpdir(), 'generate-command-test-'));
+    environmentMap.set('KIT_BADGES_FOLDER', temporaryFolder);
     process.chdir(temporaryFolder);
     closeInstaller = createInstaller().open();
   });
@@ -28,6 +33,19 @@ describe('generate-command tests', () => {
     rmSync(temporaryFolder, { recursive: true });
     closeInstaller.close();
   });
+
+   function toMockContext(args: string[]): Context {
+    const context: Context = toContext(args);
+
+    context.environment = createEnvironment({
+      sources: [
+        createMapSource(environmentMap),
+        createProcessSource()
+      ]
+    });
+
+    return context;
+  };
 
   describe('COMMAND', () => {
     it('should have execute method', () => {
@@ -44,7 +62,7 @@ describe('generate-command tests', () => {
       };
       writeFileSync('package.json', JSON.stringify(packageJson));
 
-      const context: Context = toContext(['generate', '--quiet']);
+      const context: Context = toMockContext(['generate']);
       const badges: Badge[] = await COMMAND.execute(context);
 
       ok(Array.isArray(badges), 'result should be an array');

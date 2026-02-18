@@ -97,6 +97,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@jonloucks/contracts-ts": "^2.0.2"
+    "@jonloucks/contracts-ts": "^2.0.2",
+    "@jonloucks/variants-ts": "^1.1.0"
   }
 }

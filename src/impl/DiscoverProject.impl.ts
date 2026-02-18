@@ -5,9 +5,14 @@ import { DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject"
 import { isNonEmptyString, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { BadgeException } from "@jonloucks/badges-ts/api/BadgeException";
 import { isNotPresent } from "@jonloucks/badges-ts/api/Types";
+import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
 
-export function create(): DiscoverProject {
-  return DiscoverProjectImpl.internalCreate();
+export interface Config {
+  contracts: Contracts;
+}
+
+export function create(config: Config): DiscoverProject {
+  return DiscoverProjectImpl.internalCreate(config);
 }
 
 // ---- Implementation details below ----
@@ -31,8 +36,8 @@ class DiscoverProjectImpl implements DiscoverProject {
     ]);
   }
 
-  static internalCreate(): DiscoverProject {
-    return new DiscoverProjectImpl();
+  static internalCreate(config: Config): DiscoverProject {
+    return new DiscoverProjectImpl(config);
   }
 
   async detectPackageJson(): Promise<Project> {
@@ -50,6 +55,12 @@ class DiscoverProjectImpl implements DiscoverProject {
       throw new BadgeException("Failed to detect project from package.json.");
     }
   };
+
+  private constructor(config: Config) {
+    this.#contracts = config.contracts;
+  }
+
+  readonly #contracts: Contracts;
 }
 
 function packageJsonToProject(packageJson: PackageJson): Project {
