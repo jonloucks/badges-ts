@@ -26,7 +26,7 @@ export const COMMAND: Command<Project> = {
 
 async function applyVersion(context: Context): Promise<Project> {
   const discoverProject: DiscoverProject = CONTRACTS.enforce(DISCOVER_PROJECT);
-  return await discoverProject.discoverProject()
+  return await discoverProject.discoverProject(context)
     .then((project: Project) => {
       applyProjectVersion(context, project);
       return project;

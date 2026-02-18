@@ -34,7 +34,7 @@ describe('generate-command tests', () => {
     closeInstaller.close();
   });
 
-   function toMockContext(args: string[]): Context {
+  function toMockContext(args: string[]): Context {
     const context: Context = toContext(args);
 
     context.environment = createEnvironment({

@@ -10,24 +10,44 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { toContext } from "../impl/Command.impl.js";
 import { COMMAND } from "../impl/discover-command.js";
+import { createEnvironment, createMapSource, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
 
 describe('discover-command tests', () => {
+  const environmentMap: Map<string, string> = new Map<string, string>();
+
   let closeInstaller: AutoClose;
   let originalCwd: string;
-  let testDir: string;
+  let temporaryFolder: string;
+  let packageJsonPath: string;
 
   beforeEach(() => {
     originalCwd = process.cwd();
-    testDir = mkdtempSync(join(tmpdir(), 'discover-command-test-'));
-    process.chdir(testDir);
+    temporaryFolder = mkdtempSync(join(tmpdir(), 'discover-command-test-'));
+    packageJsonPath = join(temporaryFolder, 'package.json');
+    environmentMap.set('KIT_PACKAGE_JSON_PATH', packageJsonPath);
+
+    process.chdir(temporaryFolder);
     closeInstaller = createInstaller().open();
   });
 
   afterEach(() => {
     process.chdir(originalCwd);
-    rmSync(testDir, { recursive: true });
+    rmSync(temporaryFolder, { recursive: true });
     closeInstaller.close();
   });
+
+  function toMockContext(args: string[]): Context {
+    const context: Context = toContext(args);
+
+    context.environment = createEnvironment({
+      sources: [
+        createMapSource(environmentMap),
+        createProcessSource()
+      ]
+    });
+
+    return context;
+  };
 
   describe('COMMAND', () => {
     it('should have execute method', () => {
@@ -42,9 +62,9 @@ describe('discover-command tests', () => {
           url: "https://github.com/test/my-package.git"
         }
       };
-      writeFileSync('package.json', JSON.stringify(packageJson));
+      writeFileSync(packageJsonPath, JSON.stringify(packageJson), 'utf8');
 
-      const context: Context = toContext(['discover', '--quiet']);
+      const context: Context = toMockContext(['discover']);
       const project: Project = await COMMAND.execute(context);
 
       ok(project !== null && project !== undefined, 'project should be returned');

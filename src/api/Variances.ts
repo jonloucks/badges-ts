@@ -3,6 +3,13 @@ import { Variant } from "@jonloucks/variants-ts/api/Variant";
 import { resolveDataPath } from "../data/Resolver.js";
 import { resolve } from "path";
 
+export const KIT_PACKAGE_JSON_PATH: Variant<string> = createVariant<string>({
+  name: 'Package JSON Path',
+  keys: ['KIT_PACKAGE_JSON_PATH', 'kit.package.json.path'],
+  description: 'The file path to the package.json file.',
+  fallback: resolve('package.json')
+});
+
 export const KIT_COVERAGE_SUMMARY_PATH: Variant<string> = createVariant<string>({
   name: 'Coverage Summary Path',
   keys: ['KIT_COVERAGE_SUMMARY_PATH', 'kit.coverage.summary.path'],

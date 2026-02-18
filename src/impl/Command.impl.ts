@@ -6,6 +6,8 @@ import { createEnvironment, createProcessSource } from "@jonloucks/variants-ts/a
 export function toContext(args: string[]): Context {
   const flags: Flags = parseFlags({ args });
   const display: Display = flagsToDisplay(flags);
+
+  // add load from configuration file
   const environment: Environment = createEnvironment({
     sources: [
       createProcessSource()
@@ -30,31 +32,16 @@ function parseFlags({ args }: { args: string[]; }): Flags {
 }
 
 function flagsToDisplay(flags: Flags): Display {
+  const errorFn: (message: string) => void = flags.quiet ? () => {} : console.error;
+  const infoFn: (message: string) => void = flags.quiet ? () => {} : console.info;
+  const warnFn: (message: string) => void = (!flags.quiet && (flags.warn || flags.verbose)) ? console.warn : () => {};
+  const traceFn: (message: string) => void = (!flags.quiet && (flags.trace || flags.verbose)) ? console.info : () => {};
+  const dryFn: (message: string) => void = (!flags.quiet && flags.dryRun) ? (t: string) => console.info(`[DRY RUN] ${t}`) : () => {};
   return {
-    error: (message: string) : void => {
-      if (!flags.quiet) {
-        console.error(message);
-      }
-    },
-    info: (message: string) : void => {
-      if (!flags.quiet) {
-        console.info(message);
-      }
-    },
-    warn: (message: string) : void => {
-      if (!flags.quiet && (flags.warn || flags.verbose)) {
-        console.warn(message);
-      }
-    },
-    trace: (message: string) : void => {
-      if (!flags.quiet && (flags.trace || flags.verbose)) {
-        console.info(message);
-      }
-    },
-    dry: (message: string) : void => {
-      if (!flags.quiet && flags.dryRun) {
-        console.info(`[DRY RUN] ${message}`);
-      }
-    }
+    error: errorFn,
+    info: infoFn,
+    warn: warnFn,
+    trace: traceFn,
+    dry: dryFn
   };
 }

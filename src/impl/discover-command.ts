@@ -11,7 +11,7 @@ import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 export const COMMAND: Command<Project> = {
   execute: async function (context: Context): Promise<Project> {
     context.display.trace(`Running discover-project with: ${context.arguments.join(' ')}`);
-    return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject().then((project) => {
+    return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject(context).then((project) => {
       context.display.info(`Discovered project: ${project.name}, version: ${project.version}`);
       return project;
     }).catch((error: Error) => {

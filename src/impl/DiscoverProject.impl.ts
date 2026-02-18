@@ -1,4 +1,3 @@
-import { join } from "path";
 import { readFile } from "fs/promises";
 import { Project } from "@jonloucks/badges-ts/api/Project";
 import { DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
@@ -6,6 +5,8 @@ import { isNonEmptyString, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { BadgeException } from "@jonloucks/badges-ts/api/BadgeException";
 import { isNotPresent } from "@jonloucks/badges-ts/api/Types";
 import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
+import { Context } from "../auxiliary/Command.js";
+import { KIT_PACKAGE_JSON_PATH } from "../api/Variances.js";
 
 export interface Config {
   contracts: Contracts;
@@ -28,9 +29,9 @@ interface PackageJson {
 
 class DiscoverProjectImpl implements DiscoverProject {
 
-  async discoverProject(): Promise<Project> {
+  async discoverProject(context: Context): Promise<Project> {
     return Promise.any([
-      this.detectPackageJson()
+      this.detectPackageJson(context)
       // Future detection methods can be added here
       // for example, detectGradle(), detectMaven(), etc.
     ]);
@@ -40,8 +41,8 @@ class DiscoverProjectImpl implements DiscoverProject {
     return new DiscoverProjectImpl(config);
   }
 
-  async detectPackageJson(): Promise<Project> {
-    const fileName: string = join(process.cwd(), 'package.json');
+  async detectPackageJson(context: Context): Promise<Project> {
+    const fileName: string = context.environment.getVariance(KIT_PACKAGE_JSON_PATH);
     try {
       const fileContent: string = await readFile(fileName, 'utf8');
       const packageJson: PackageJson = JSON.parse(fileContent) as PackageJson;

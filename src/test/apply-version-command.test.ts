@@ -39,7 +39,9 @@ describe('apply-version-command tests', () => {
       name: "@test/test-package",
       version: "0.0.0"
     };
-    writeFileSync(join(temporaryFolder, 'package.json'), JSON.stringify(packageJson), 'utf8');
+    const packageJsonPath = join(temporaryFolder, 'package.json');
+    writeFileSync(packageJsonPath, JSON.stringify(packageJson), 'utf8');
+    environmentMap.set('KIT_PACKAGE_JSON_PATH', packageJsonPath);
 
     templatePath = join(temporaryFolder, 'release-notes-template.md');
     writeFileSync(templatePath, '# {{NAME}} v{{VERSION}}', 'utf8');

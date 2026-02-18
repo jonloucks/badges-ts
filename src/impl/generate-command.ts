@@ -23,7 +23,6 @@ import { Badge } from "@jonloucks/badges-ts/api/Badge";
 import { isPresent } from "@jonloucks/contracts-ts/api/Types";
 import { CONTRACT as BADGE_FACTORY, BadgeFactory } from "@jonloucks/badges-ts/api/BadgeFactory";
 import { Project } from "@jonloucks/badges-ts/api/Project";
-import { used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
 import { CONTRACTS } from "@jonloucks/contracts-ts";
@@ -90,8 +89,7 @@ async function generateNpmBadge(context: Context): Promise<Badge> {
 }
 
 async function discoverProject(context: Context): Promise<Project> {
-  used(context); // accept and mark context as used to keep the API flexible/consistent for future parameters; this does not affect logging or tracing
-  return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject();
+  return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject(context);
 };
 
 /**
