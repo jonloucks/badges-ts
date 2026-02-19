@@ -97,3 +97,59 @@ export const KIT_LCOV_REPORT_INDEX_PATH: Variant<string> = createVariant<string>
   of: ofString(),
   fallback: 'coverage/lcov-report/index.html'
 });
+
+export const KIT_100_PERCENT_COLOR: Variant<string> = createVariant<string>({
+  name: '100% Color',
+  keys: ['KIT_100_PERCENT_COLOR', 'kit.100.percent.color'],
+  description: 'The color to use for badges that are at 100% complete.',
+  of: ofString(),
+  fallback: '#4bc124'
+});
+
+export const KIT_ABOVE_90_PERCENT_COLOR: Variant<string> = createVariant<string>({
+  name: 'Above 90% Color',
+  keys: ['KIT_ABOVE_90_PERCENT_COLOR', 'kit.above.90.percent.color'],
+  description: 'The color to use for badges that are above 90% complete.',
+  of: ofString(),
+  fallback: '#377526'
+});
+
+export const KIT_ABOVE_80_PERCENT_COLOR: Variant<string> = createVariant<string>({
+  name: 'Above 80% Color',
+  keys: ['KIT_ABOVE_80_PERCENT_COLOR', 'kit.above.80.percent.color'],
+  description: 'The color to use for badges that are above 80% complete.',
+  of: ofString(),
+  fallback: '#yellowgreen'
+});
+
+export const KIT_ABOVE_70_PERCENT_COLOR: Variant<string> = createVariant<string>({
+  name: 'Above 70% Color',
+  keys: ['KIT_ABOVE_70_PERCENT_COLOR', 'kit.above.70.percent.color'],
+  description: 'The color to use for badges that are above 70% complete.',
+  of: ofString(),
+  fallback: 'yellow'
+});
+
+export const KIT_ABOVE_60_PERCENT_COLOR: Variant<string> = createVariant<string>({
+  name: 'Above 60% Color',
+  keys: ['KIT_ABOVE_60_PERCENT_COLOR', 'kit.above.60.percent.color'],
+  description: 'The color to use for badges that are above 60% complete.',
+  of: ofString(),
+  fallback: '#orange'
+});
+
+export const KIT_BELOW_60_PERCENT_COLOR: Variant<string> = createVariant<string>({
+  name: 'Below 60% Color',
+  keys: ['KIT_BELOW_60_PERCENT_COLOR', 'kit.below.60.percent.color'],
+  description: 'The color to use for badges that are below 60% complete.',
+  of: ofString(),
+  fallback: '#880000'
+});
+
+export const KIT_0_PERCENT_COLOR: Variant<string> = createVariant<string>({
+  name: '0% Color',
+  keys: ['KIT_0_PERCENT_COLOR', 'kit.0.percent.color'],
+  description: 'The color to use for badges that are at 0% complete.',
+  of: ofString(),
+  fallback: '#ff0000'
+});
