@@ -34,7 +34,7 @@ export const Internal = {
 
   getColorVariant(percent: number): Variant<string> {
     const normalizedPercent = Internal.normalizePercent(percent);
-    if (normalizedPercent == 100) {
+    if (normalizedPercent === 100) {
       return KIT_100_PERCENT_COLOR;
     } else if (normalizedPercent>= 90) {
       return KIT_ABOVE_90_PERCENT_COLOR;
