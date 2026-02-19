@@ -75,9 +75,7 @@ export const Internal = {
 
   normalizePercent(percent: number): number {
     if (Internal.isPercent(percent)) {
-      if (percent < 0) {
-        return 0;
-      } else if (percent > 100) {
+      if (percent > 100) {
         return 100;
       } else {
         return percent;
