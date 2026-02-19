@@ -6,7 +6,7 @@ import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import { Internal } from "./Internal.impl.js";
+import { KIT_PROJECT_FOLDER, KIT_RELEASE_NOTES_OUTPUT_FOLDER, KIT_RELEASE_NOTES_TEMPLATE_PATH } from "@jonloucks/badges-ts/api/Variances";
 
 const COMMAND_NAME: string = 'apply-version';
 
@@ -26,7 +26,7 @@ export const COMMAND: Command<Project> = {
 
 async function applyVersion(context: Context): Promise<Project> {
   const discoverProject: DiscoverProject = CONTRACTS.enforce(DISCOVER_PROJECT);
-  return await discoverProject.discoverProject()
+  return await discoverProject.discoverProject(context)
     .then((project: Project) => {
       applyProjectVersion(context, project);
       return project;
@@ -40,8 +40,8 @@ function applyProjectVersion(context: Context, project: Project): void {
 }
 
 function createReleaseNotesFromTemplate(context: Context, project: Project): void {
-  const templatePath: string = getReleaseNotesTemplatePath();
-  const outputPath: string = resolve(getReleaseNotesOutputFolder(), `release-notes-v${project.version}.md`);
+  const templatePath: string = getReleaseNotesTemplatePath(context);
+  const outputPath: string = resolve(getReleaseNotesOutputFolder(context), `release-notes-v${project.version}.md`);
   if (fileDoesNotExist(templatePath)) {
     const message = `Release notes template not found at ${templatePath}`;
     context.display.warn(message);
@@ -77,13 +77,22 @@ export const VERSION: string = ${JSON.stringify(project.version)};`;
     return;
   }
 
-  writeFileSync(resolve('src', 'version.ts'), text, 'utf8');
+  writeFileSync(getVersionTsPath(context), text, 'utf8');
 }
 
-function getReleaseNotesOutputFolder(): string {
-  return Internal.getEnvPathOrDefault('KIT_RELEASE_NOTES_OUTPUT_FOLDER', resolve('notes'));
+function getProjectFolder(context: Context): string {
+  return context.environment.getVariance(KIT_PROJECT_FOLDER);
 }
 
-function getReleaseNotesTemplatePath(): string {
-  return Internal.getEnvPathOrDefault('KIT_RELEASE_NOTES_TEMPLATE_PATH', resolve('notes', 'release-notes-template.md'));
+function getVersionTsPath(context: Context): string {
+  const fileName: string = 'version.ts'; //context.environment.getVariance(KIT_VERSION_TS_PATH);
+  return resolve(getProjectFolder(context), 'src', fileName);
+}
+
+function getReleaseNotesOutputFolder(context: Context): string {
+  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_RELEASE_NOTES_OUTPUT_FOLDER));
+}
+
+function getReleaseNotesTemplatePath(context: Context): string {
+  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_RELEASE_NOTES_TEMPLATE_PATH));
 }

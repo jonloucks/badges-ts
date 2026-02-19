@@ -6,10 +6,7 @@ import { createInstaller } from "@jonloucks/badges-ts";
 import { type Command, type Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { type AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { isNotPresent, isPresent } from '@jonloucks/contracts-ts/api/Types';
-import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
 
-import { toContext } from "./impl/Command.impl.js";
-import { Internal } from './impl/Internal.impl.js';
 import { VERSION } from "./version.js";
 
 /**
@@ -24,16 +21,18 @@ import { VERSION } from "./version.js";
  * 
  */
 export async function runMain(context: Context): Promise<void> {
-  using usingInstaller: AutoClose = createInstaller().open();
-  used(usingInstaller);
+  const usingInstaller: AutoClose = createInstaller().open();
+  try {
+    const command: Command<unknown> | undefined = findCommand(context);
 
-  const command: Command<unknown> | undefined = findCommand(context);
-
-  if (isPresent(command)) {
-    await command.execute(context);
-  } else {
-    context.display.error("No valid command found.");
-    printUsage(context);
+    if (isPresent(command)) {
+      await command.execute(context);
+    } else {
+      context.display.error("No valid command found.");
+      printUsage(context);
+    }
+  } finally {
+    usingInstaller.close();
   }
 }
 
@@ -97,8 +96,4 @@ function findFirstCommand(args: string[]): string | undefined {
     return 'version';
   }
   return args.find(arg => !arg.startsWith('-'));
-}
-
-if (Internal.isRunning(import.meta.url)) {
-  await runMain(toContext(process.argv.slice(2)));
 }

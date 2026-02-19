@@ -1,80 +1,36 @@
+import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { runMain } from "@jonloucks/badges-ts/cli";
-import { existsSync, mkdtempSync, rmSync } from "fs";
 import { ok } from "node:assert";
-import { mkdirSync, writeFileSync } from "node:fs";
-import { afterEach, beforeEach, describe, it, mock, Mock } from "node:test";
-import { tmpdir } from "os";
-import { join } from "path";
-import { used } from "../auxiliary/Checks.js";
-import { toContext } from "../impl/Command.impl.js";
-import { OVERRIDE_ENVIRONMENT } from "../impl/Internal.impl.js";
+import { afterEach, beforeEach, describe, it } from "node:test";
+import { create as createSandbox, Sandbox } from "./Sandbox.test.js";
 
 const BANNER_START: string = "Badges-TS CLI - Version ";
 
 describe('Main module', () => {
-  let testDir: string;
-  let mockErrorFn: Mock<(message: string) => void>;
-  let mockInfoFn: Mock<(message: string) => void>;
-  let mockWarnFn: Mock<(message: string) => void>;
-  let mockTraceFn: Mock<(message: string) => void>;
-  let mockDryFn: Mock<(message: string) => void>;
+  let sandbox: Sandbox;
+  let closeSandbox: AutoClose;
 
   beforeEach(() => {
-    testDir = mkdtempSync(join(tmpdir(), 'cli-test-'));
-    mkdirSync(join(testDir, 'src'));
-    const summarySummaryPath: string = join(testDir, 'coverage-summary.json');
-    const coverageJsonText = '{"total": {"lines":{"total":695,"covered":687,"skipped":0,"pct":98.84},"statements":{"total":713,"covered":704,"skipped":0,"pct":98.73},"functions":{"total":219,"covered":213,"skipped":0,"pct":97.26},"branches":{"total":170,"covered":163,"skipped":0,"pct":95.88},"branchesTrue":{"total":0,"covered":0,"skipped":0,"pct":100}}}';
-    writeFileSync(summarySummaryPath, coverageJsonText, 'utf8');
-    OVERRIDE_ENVIRONMENT.clear();
-    OVERRIDE_ENVIRONMENT.set('KIT_BADGES_FOLDER', testDir);
-    const templatePath: string = join(testDir, 'release-notes-template.md');
-    OVERRIDE_ENVIRONMENT.set('KIT_COVERAGE_SUMMARY_PATH', summarySummaryPath);
-    OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_TEMPLATE_PATH', templatePath);
-    OVERRIDE_ENVIRONMENT.set('KIT_RELEASE_NOTES_OUTPUT_FOLDER', testDir);
-    writeFileSync(templatePath, '# {{NAME}} v{{VERSION}}', 'utf8');
-
-    mockErrorFn = mock.fn((message: string): void => {
-      used(message);
-    });
-    mockInfoFn = mock.fn((message: string): void => {
-      used(message);
-    });
-    mockWarnFn = mock.fn((message: string): void => {
-      used(message);
-    });
-    mockTraceFn = mock.fn((message: string): void => {
-      used(message);
-    });
-    mockDryFn = mock.fn((message: string): void => {
-      used(message);
-    });
+    sandbox = createSandbox();
+    closeSandbox = sandbox.open();
   });
 
   afterEach(() => {
-    OVERRIDE_ENVIRONMENT.clear();
-    if (testDir && existsSync(testDir)) {
-      rmSync(testDir, { recursive: true, force: true });
-    }
+    closeSandbox.close();
   });
 
   function toMockContext(args: string[]): Context {
-    const context: Context = toContext(args);
-
-    context.display.error = mockErrorFn;
-    context.display.info = mockInfoFn;
-    context.display.warn = mockWarnFn;
-    context.display.trace = mockTraceFn;
-    context.display.dry = mockDryFn;
-
-    return context;
+    return sandbox.toContext(args);
   };
 
   function assertInvalidCommand(): void {
+    const mockErrorFn = sandbox.getLog('error');
     ok(mockErrorFn.mock.calls.find(call => call.arguments[0] === "No valid command found.") !== undefined, 'error should be called with "No valid command found."');
   };
 
   function assertHasBanner(): void {
+    const mockInfoFn = sandbox.getLog('info');
     ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes(BANNER_START)) !== undefined, 'info should be called with banner');
   };
 
@@ -83,6 +39,7 @@ describe('Main module', () => {
   }
 
   function assertHasUsage(): void {
+    const mockInfoFn = sandbox.getLog('info');
     ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('Usage:')) !== undefined, 'info should be called with usage');
     ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('discover')) !== undefined, 'info should be called with discover command in usage');
     ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('generate')) !== undefined, 'info should be called with generate command in usage');
@@ -90,6 +47,7 @@ describe('Main module', () => {
   }
 
   function assertNoErrors(): void {
+    const mockErrorFn = sandbox.getLog('error');
     ok(mockErrorFn.mock.calls.length === 0, 'error should not be called');
   }
 
@@ -302,19 +260,5 @@ describe('Main module', () => {
       // expect(consoleInfoSpy).toHaveBeenCalledWith('Usage:');
     });
   });
-
-  // describe('runMain', () => {
-  //   it('should call main with process.argv sliced', async () => {
-  //     process.argv = ['node', 'script', 'discover', '--verbose'];
-  //     await runMain();
-  //     // expect(discoverExecuteSpy).toHaveBeenCalledTimes(1);
-  //   });
-
-  //   it('should handle empty arguments', async () => {
-  //     process.argv = ['node', 'script'];
-  //     await runMain();
-  //     // expect(consoleErrorSpy).toHaveBeenCalledWith("No valid command found.");
-  //   });
-  // });
 });
 

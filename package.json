@@ -13,31 +13,26 @@
   "exports": {
     ".": {
       "types": "./index.d.ts",
-      "require": "./index.js",
       "import": "./index.js",
       "default": "./index.js"
     },
-    "./cli": {
-      "types": "./cli.d.ts",
-      "require": "./cli.js",
-      "import": "./cli.js",
-      "default": "./cli.js"
-    },
     "./version": {
       "types": "./version.d.ts",
-      "require": "./version.js",
       "import": "./version.js",
       "default": "./version.js"
     },
+    "./cli": {
+      "types": "./cli.d.ts",
+      "import": "./cli.js",
+      "default": "./cli.js"
+    },
     "./api/*": {
       "types": "./api/*.d.ts",
-      "require": "./api/*.js",
       "import": "./api/*.js",
       "default": "./api/*.js"
     },
     "./auxiliary/*": {
       "types": "./auxiliary/*.d.ts",
-      "require": "./auxiliary/*.js",
       "import": "./auxiliary/*.js",
       "default": "./auxiliary/*.js"
     }
@@ -52,7 +47,7 @@
     "build": "tsc",
     "test": "tsx --test $(find src -name '*.test.ts')",
     "test:watch": "tsx --test --watch $(find src -name '*.test.ts')",
-    "test:coverage": "npx c8 --check-coverage --lines 90 --functions 90 --branches 90 --statements 90 --reporter=lcov npx tsx --test $(find src -name '*.test.ts')",
+    "test:coverage": "npx c8 --check-coverage --lines 95 --functions 95 --branches 95 --statements 95 --reporter=lcov npx tsx --test $(find src -name '*.test.ts')",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build",
@@ -60,12 +55,12 @@
     "after:publish": "npm run clean",
     "prepare": "npm run build",
     "docs": "typedoc --options typedoc.json",
-    "badges": "npx tsx ./src/cli.ts generate --verbose",
-    "discover": "npx tsx ./src/cli.ts discover",
+    "badges": "npx tsx ./src/bin/badges-ts.js generate --verbose",
+    "discover": "npx tsx ./src/bin/badges-ts.js discover",
     "clean": "rm -rf dist && rm -rf coverage && npm install",
     "compile": "tsc",
     "postversion": "npm run applyversion",
-    "applyversion": "npx tsx ./src/cli.ts apply-version",
+    "applyversion": "npx tsx ./src/bin/badges-ts.js apply-version",
     "pack-package": "npm run before:publish && mkdir -p packs && cd dist && npm pack && mv *.tgz ../packs/ && npm run after:publish"
   },
   "keywords": [
@@ -97,6 +92,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@jonloucks/contracts-ts": "^2.0.2"
+    "@jonloucks/contracts-ts": "^2.0.2",
+    "@jonloucks/variants-ts": "^1.1.0"
   }
 }

@@ -1,13 +1,24 @@
 import { Display, Flags } from "@jonloucks/badges-ts/api/Types";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { Environment } from "@jonloucks/variants-ts/api/Environment";
+import { createEnvironment, createProcessSource } from "@jonloucks/variants-ts/auxiliary/Convenience";
+import { used } from "@jonloucks/badges-ts/auxiliary/Checks";
 
 export function toContext(args: string[]): Context {
   const flags: Flags = parseFlags({ args });
   const display: Display = flagsToDisplay(flags);
+
+  // add load from configuration file
+  const environment: Environment = createEnvironment({
+    sources: [
+      createProcessSource()
+    ]
+  });
   return {
     arguments: args,
     display: display,
     flags: flags,
+    environment: environment,
   };
 }
 
@@ -21,32 +32,15 @@ function parseFlags({ args }: { args: string[]; }): Flags {
   };
 }
 
+const DISCARD = (message: string): void => { used(message); };
+const DRY_RUN = (message: string): void => console.info(`[DRY RUN] ${message}`);
+
 function flagsToDisplay(flags: Flags): Display {
   return {
-    error: (message: string) : void => {
-      if (!flags.quiet) {
-        console.error(message);
-      }
-    },
-    info: (message: string) : void => {
-      if (!flags.quiet) {
-        console.info(message);
-      }
-    },
-    warn: (message: string) : void => {
-      if (!flags.quiet && (flags.warn || flags.verbose)) {
-        console.warn(message);
-      }
-    },
-    trace: (message: string) : void => {
-      if (!flags.quiet && (flags.trace || flags.verbose)) {
-        console.info(message);
-      }
-    },
-    dry: (message: string) : void => {
-      if (!flags.quiet && flags.dryRun) {
-        console.info(`[DRY RUN] ${message}`);
-      }
-    }
+    error: flags.quiet ? DISCARD : console.error,
+    info: flags.quiet ? DISCARD : console.info,
+    warn: flags.quiet || !(flags.warn || flags.verbose) ? DISCARD : console.warn,
+    trace: flags.quiet || !(flags.trace || flags.verbose) ? DISCARD : console.info,
+    dry: flags.quiet || !(flags.dryRun) ? DISCARD : DRY_RUN
   };
 }

@@ -1,6 +1,7 @@
 import { Project } from "@jonloucks/badges-ts/api/Project";
 import { RequiredType, guardFunctions } from "@jonloucks/contracts-ts/api/Types";
 import { Contract, createContract } from "@jonloucks/contracts-ts";
+import { Context } from "./Command.js";
 
 /**
  * Interface for discovering project information
@@ -12,7 +13,7 @@ export interface DiscoverProject {
    * 
    * @returns a Promise that resolves to a Project
    */
-  discoverProject(): Promise<Project>;
+  discoverProject(context: Context): Promise<Project>;
 }
 
 /**

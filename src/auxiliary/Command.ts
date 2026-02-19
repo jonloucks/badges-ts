@@ -1,4 +1,5 @@
 import { Display, Flags } from "@jonloucks/badges-ts/api/Types";
+import { Environment } from "@jonloucks/variants-ts/api/Environment";
 
 export interface Command<T> {
 
@@ -13,4 +14,6 @@ export interface Context {
   display: Display;
 
   flags: Flags;
+
+  environment: Environment;
 }

@@ -1,13 +1,20 @@
-import { join } from "path";
 import { readFile } from "fs/promises";
 import { Project } from "@jonloucks/badges-ts/api/Project";
 import { DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
 import { isNonEmptyString, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { BadgeException } from "@jonloucks/badges-ts/api/BadgeException";
 import { isNotPresent } from "@jonloucks/badges-ts/api/Types";
+import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
+import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { KIT_PACKAGE_JSON_PATH, KIT_PROJECT_FOLDER } from "@jonloucks/badges-ts/api/Variances";
+import { resolve } from "path";
 
-export function create(): DiscoverProject {
-  return DiscoverProjectImpl.internalCreate();
+export interface Config {
+  contracts: Contracts;
+}
+
+export function create(config: Config): DiscoverProject {
+  return DiscoverProjectImpl.internalCreate(config);
 }
 
 // ---- Implementation details below ----
@@ -23,33 +30,50 @@ interface PackageJson {
 
 class DiscoverProjectImpl implements DiscoverProject {
 
-  async discoverProject(): Promise<Project> {
+  async discoverProject(context: Context): Promise<Project> {
     return Promise.any([
-      this.detectPackageJson()
+      this.detectPackageJson(context)
       // Future detection methods can be added here
       // for example, detectGradle(), detectMaven(), etc.
-    ]);
-  }
-
-  static internalCreate(): DiscoverProject {
-    return new DiscoverProjectImpl();
-  }
-
-  async detectPackageJson(): Promise<Project> {
-    const fileName: string = join(process.cwd(), 'package.json');
-    try {
-      const fileContent: string = await readFile(fileName, 'utf8');
-      const packageJson: PackageJson = JSON.parse(fileContent) as PackageJson;
-      if (isNonEmptyString(packageJson.name) && isNonEmptyString(packageJson.version)) {
-        return packageJsonToProject(packageJson);
-      } else {
-        throw new BadgeException("Invalid name or version in package.json.");
-      }
-    } catch (error) {
+    ]).catch((error) => {
       used(error)
-      throw new BadgeException("Failed to detect project from package.json.");
-    }
+      throw new BadgeException("Unable to discover project using available methods.");
+    });
+  }
+
+  static internalCreate(config: Config): DiscoverProject {
+    return new DiscoverProjectImpl(config);
+  }
+
+  async detectPackageJson(context: Context): Promise<Project> {
+    return await new Promise<Project>(async (deliver, reject) => {
+      try {
+        const fileName: string = this.#getPackageJsonPath(context);
+        const fileContent: string = await readFile(fileName, 'utf8');
+        const packageJson: PackageJson = JSON.parse(fileContent) as PackageJson;
+        if (isNonEmptyString(packageJson.name) && isNonEmptyString(packageJson.version)) {
+          deliver(packageJsonToProject(packageJson));
+        } else {
+          reject(new BadgeException("Invalid name or version in package.json."));
+        }
+      } catch (error) {
+        used(error)
+        reject(new BadgeException("Failed to detect project from package.json."));
+      }
+    });
   };
+
+  #getPackageJsonPath(context: Context): string {
+    const projectFolder: string = context.environment.getVariance(KIT_PROJECT_FOLDER);
+    const fileName: string = context.environment.getVariance(KIT_PACKAGE_JSON_PATH);
+    return resolve(projectFolder, fileName);
+  }
+
+  private constructor(config: Config) {
+    this.#contracts = config.contracts;
+  }
+
+  readonly #contracts: Contracts;
 }
 
 function packageJsonToProject(packageJson: PackageJson): Project {

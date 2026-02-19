@@ -2,7 +2,7 @@ import { ok, strictEqual } from "node:assert";
 import { describe, it } from "node:test";
 
 import { CONTRACTS } from "@jonloucks/contracts-ts";
-import { Internal, OVERRIDE_RUNNING, SUCCESS_COLOR } from "./Internal.impl.js";
+import { Internal, SUCCESS_COLOR } from "./Internal.impl.js";
 
 describe("Internal resolveContracts", () => {
 
@@ -129,19 +129,5 @@ describe("Internal resolveContracts", () => {
     strictEqual(Internal.colorFromPercentComplete(0), 'red', "Should return red for 0%"); 
     ok(Internal.colorFromPercentComplete(-1), "Negative percent should return a color");
     strictEqual(Internal.colorFromPercentComplete(150), SUCCESS_COLOR, "Percent over 100 should return a color"); 
-  });
-
-  it("isRunning should return false when metaUrl is not present", () => {
-    strictEqual(Internal.isRunning(undefined as unknown as string), false, "Should return false when metaUrl is undefined");
-    strictEqual(Internal.isRunning(null as unknown as string), false, "Should return false when metaUrl is null");
-    strictEqual(Internal.isRunning(''), false, "Should return false when metaUrl is empty string");
-  });
-
-  it("isRunning should return overridden value when metaUrl is present in OVERRIDE_RUNNING", () => {
-    const testMetaUrl = "test-meta-url";
-    OVERRIDE_RUNNING.set(testMetaUrl, true);
-    strictEqual(Internal.isRunning(testMetaUrl), true, "Should return overridden true value");
-    OVERRIDE_RUNNING.set(testMetaUrl, false);
-    strictEqual(Internal.isRunning(testMetaUrl), false, "Should return overridden false value");
   });
 });

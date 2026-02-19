@@ -1,14 +1,8 @@
 
 import { CONTRACTS, type Contracts } from "@jonloucks/contracts-ts";
-import { isNotPresent, isPresent, type RequiredType } from "@jonloucks/contracts-ts/api/Types";
-import { fileURLToPath } from 'node:url';
-import { resolve } from 'node:path';
-
-export const OVERRIDE_ENVIRONMENT: Map<string, string> = new Map<string, string>();
-export const OVERRIDE_RUNNING: Map<string, boolean> = new Map<string, boolean>();
+import { isPresent, type RequiredType } from "@jonloucks/contracts-ts/api/Types";
 
 export const SUCCESS_COLOR: string = '#4bc124';
-
 
 /**
  * Helper functions for internal implementations.
@@ -30,17 +24,6 @@ export const Internal = {
     return CONTRACTS;
   },
 
-  getEnvPathOrDefault(envVarName: string, defaultPath: string): string {
-    if (OVERRIDE_ENVIRONMENT.has(envVarName)) {
-      return OVERRIDE_ENVIRONMENT.get(envVarName) as string;
-    }
-    const myVarValue: string | undefined = process.env[envVarName];
-    if (isPresent(myVarValue) && myVarValue.trim() !== '') {
-      return myVarValue.trim();
-    }
-    return defaultPath;
-  },
-
   colorFromPercentComplete(percent: number): string {
     if (percent >= 95) {
       return SUCCESS_COLOR;
@@ -53,15 +36,5 @@ export const Internal = {
     } else {
       return 'red';
     }
-  },
-
-  isRunning(metaUrl: string): boolean {
-    if (isNotPresent(metaUrl) || metaUrl.length === 0) {
-      return false;
-    }
-    if (OVERRIDE_RUNNING.has(metaUrl)) {
-      return OVERRIDE_RUNNING.get(metaUrl) as boolean;
-    } 
-    return isPresent(process.argv[1]) && resolve(process.argv[1]) === resolve(fileURLToPath(metaUrl));
   }
 }
