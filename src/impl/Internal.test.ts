@@ -171,9 +171,13 @@ describe("Internal resolveContracts", () => {
   it("getColorVariant should return correct color variants based on percent", () => {
     strictEqual(Internal.getColorVariant(100), KIT_100_PERCENT_COLOR, "Should return 100% color variant for 100%");
     strictEqual(Internal.getColorVariant(95), KIT_ABOVE_90_PERCENT_COLOR, "Should return above 90% color variant for 95%");
+    strictEqual(Internal.getColorVariant(89.9), KIT_ABOVE_80_PERCENT_COLOR, "Should return above 80% color variant for 89.9%");
     strictEqual(Internal.getColorVariant(85), KIT_ABOVE_80_PERCENT_COLOR, "Should return above 80% color variant for 85%");
+    strictEqual(Internal.getColorVariant(79.9), KIT_ABOVE_70_PERCENT_COLOR, "Should return above 70% color variant for 79.9%");
     strictEqual(Internal.getColorVariant(75), KIT_ABOVE_70_PERCENT_COLOR, "Should return above 70% color variant for 75%");
+    strictEqual(Internal.getColorVariant(69.9), KIT_ABOVE_60_PERCENT_COLOR, "Should return above 60% color variant for 69.9%");
     strictEqual(Internal.getColorVariant(65), KIT_ABOVE_60_PERCENT_COLOR, "Should return above 60% color variant for 65%");
+    strictEqual(Internal.getColorVariant(59.9), KIT_BELOW_60_PERCENT_COLOR, "Should return below 60% color variant for 59.9%");
     strictEqual(Internal.getColorVariant(50), KIT_BELOW_60_PERCENT_COLOR, "Should return below 60% color variant for 50%");
     strictEqual(Internal.getColorVariant(0), KIT_0_PERCENT_COLOR, "Should return 0% color variant for 0%"); 
   });
