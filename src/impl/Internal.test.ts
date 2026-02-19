@@ -139,9 +139,9 @@ describe("Internal resolveContracts", () => {
   it("formatPercent should format valid percentages and reject invalid values", () => {
     strictEqual(Internal.formatPercent(100), '100%', "100 should be formatted without decimal place");
     strictEqual(Internal.formatPercent(0), '0%', "0 should be formatted as 0%");
-    strictEqual(Internal.formatPercent(0.0), '0%', "Values up to 0.1 should be rounded down to 0%");
-    strictEqual(Internal.formatPercent(0.04), '0%', "Values above 0.1 should keep one decimal place");
-    strictEqual(Internal.formatPercent(0.05), '0.1%', "Values above 0.1 should keep one decimal place");
+    strictEqual(Internal.formatPercent(0.0), '0%', "0.0 should be formatted as 0%");
+    strictEqual(Internal.formatPercent(0.04), '0%', "Values below the rounding threshold should be rounded down to 0%");
+    strictEqual(Internal.formatPercent(0.05), '0.1%', "Values at or above the rounding threshold should keep one decimal place");
     strictEqual(Internal.formatPercent(42.54), '42.5%', "Valid values should be formatted to one decimal place");
     strictEqual(Internal.formatPercent(101), '100%', "Values above 100 should format as 100%");
 
