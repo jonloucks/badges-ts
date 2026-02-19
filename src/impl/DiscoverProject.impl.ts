@@ -35,7 +35,10 @@ class DiscoverProjectImpl implements DiscoverProject {
       this.detectPackageJson(context)
       // Future detection methods can be added here
       // for example, detectGradle(), detectMaven(), etc.
-    ]);
+    ]).catch((error) => {
+      used(error)
+      throw new BadgeException("Unable to discover project using available methods.");
+    });
   }
 
   static internalCreate(config: Config): DiscoverProject {
@@ -43,19 +46,21 @@ class DiscoverProjectImpl implements DiscoverProject {
   }
 
   async detectPackageJson(context: Context): Promise<Project> {
-    const fileName: string = this.#getPackageJsonPath(context);
-    try {
-      const fileContent: string = await readFile(fileName, 'utf8');
-      const packageJson: PackageJson = JSON.parse(fileContent) as PackageJson;
-      if (isNonEmptyString(packageJson.name) && isNonEmptyString(packageJson.version)) {
-        return packageJsonToProject(packageJson);
-      } else {
-        throw new BadgeException("Invalid name or version in package.json.");
+    return await new Promise<Project>(async (deliver, reject) => {
+      try {
+        const fileName: string = this.#getPackageJsonPath(context);
+        const fileContent: string = await readFile(fileName, 'utf8');
+        const packageJson: PackageJson = JSON.parse(fileContent) as PackageJson;
+        if (isNonEmptyString(packageJson.name) && isNonEmptyString(packageJson.version)) {
+          deliver(packageJsonToProject(packageJson));
+        } else {
+          reject(new BadgeException("Invalid name or version in package.json."));
+        }
+      } catch (error) {
+        used(error)
+        reject(new BadgeException("Failed to detect project from package.json."));
       }
-    } catch (error) {
-      used(error)
-      throw new BadgeException("Failed to detect project from package.json.");
-    }
+    });
   };
 
   #getPackageJsonPath(context: Context): string {

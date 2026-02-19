@@ -3,8 +3,8 @@ import { AutoOpen } from "@jonloucks/contracts-ts/api/AutoOpen";
 import { Repository } from "@jonloucks/contracts-ts/api/Repository";
 import { Installer, Config } from "@jonloucks/badges-ts/api/Installer";
 import { CONTRACT as REPOSITORY_FACTORY } from "@jonloucks/contracts-ts/api/RepositoryFactory";
-import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
-import { CONTRACT as BADGE_FACTORY } from "@jonloucks/badges-ts/api/BadgeFactory";
+import { CONTRACT as DISCOVER_PROJECT, DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
+import { CONTRACT as BADGE_FACTORY, BadgeFactory } from "@jonloucks/badges-ts/api/BadgeFactory";
 import { CONTRACT as AUTO_CLOSE_FACTORY } from "@jonloucks/contracts-ts/api/AutoCloseFactory";
 import { CONTRACT as IDEMPOTENT_FACTORY } from "@jonloucks/contracts-ts/auxiliary/IdempotentFactory";
 import { Idempotent } from "@jonloucks/contracts-ts/auxiliary/Idempotent";
@@ -13,7 +13,6 @@ import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
 import { create as createBadgeFactory } from "./BadgeFactory.impl.js";
 import { create as createDiscoverProject } from "./DiscoverProject.impl.js";
 import { Internal } from "./Internal.impl.js";
-
 
 /**
  * Factory function to create an instance of Installer.
@@ -44,15 +43,10 @@ class InstallerImpl implements Installer, AutoOpen {
   }
 
   #open(): AutoClose {
-    try {
-      const repository: Repository = this.#contracts.enforce(REPOSITORY_FACTORY).createRepository();
-      repository.keep(DISCOVER_PROJECT, () => createDiscoverProject({ contracts: this.#contracts }));
-      repository.keep(BADGE_FACTORY, () => createBadgeFactory({ contracts: this.#contracts }));
-      this.#closeMany.add(repository.open());
-    } catch (error) {
-      this.#close();
-      throw error;
-    }
+    const repository: Repository = this.#contracts.enforce(REPOSITORY_FACTORY).createRepository();
+    repository.keep(DISCOVER_PROJECT, (): DiscoverProject => createDiscoverProject({ contracts: this.#contracts }));
+    repository.keep(BADGE_FACTORY, (): BadgeFactory => createBadgeFactory({ contracts: this.#contracts }));
+    this.#closeMany.add(repository.open());
     return inlineAutoClose((): void => this.#close());
   }
 

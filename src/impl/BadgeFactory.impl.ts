@@ -75,24 +75,24 @@ class BadgeFactoryImpl implements BadgeFactory {
 }
 
 async function readDataFile(filePath: string): Promise<Buffer> {
-  return new Promise<Buffer>((resolve, reject) => {
+  return new Promise<Buffer>((deliver, reject) => {
     readFile(filePath, (err, data) => {
       if (err) {
         reject(err);
       } else {
-        resolve(data);
+        deliver(data);
       }
     });
   });
 }
 
 async function writeDataFile(filePath: string, data: string): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void>((deliver, reject) => {
     writeFile(filePath, data, (err) => {
       if (err) {
         reject(err);
       } else {
-        resolve();
+        deliver();
       }
     });
   });

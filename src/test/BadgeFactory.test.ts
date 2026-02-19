@@ -2,7 +2,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs
 import { ok, strictEqual } from "node:assert";
 import { afterEach, beforeEach, describe, it } from "node:test";
 import { tmpdir } from "os";
-import {resolve } from "path";
+import { resolve } from "path";
 
 import { Badge, Config as BadgeConfig } from "@jonloucks/badges-ts/api/Badge";
 import { BadgeFactory, CONTRACT as BADGE_FACTORY, guard } from "@jonloucks/badges-ts/api/BadgeFactory";
@@ -33,11 +33,12 @@ describe('BadgeFactory tests', () => {
 
   const makeTempDir = (): string => mkdtempSync(resolve(tmpdir(), 'badge-factory-'));
 
-  const writeTemplate = (path: string, content: string = '<svg>{{LABEL}}-{{VALUE}}-{{COLOR}}</svg>'): void => {
+  const writeTemplate = (path: string, content: string): void => {
     writeFileSync(path, content, 'utf8');
   };
 
   beforeEach(() => {
+    testFlags.dryRun = false;
     closeInstaller = createInstaller().open();
     badgeFactory = CONTRACTS.enforce(BADGE_FACTORY);
     temporaryFolder = makeTempDir();
@@ -54,7 +55,7 @@ describe('BadgeFactory tests', () => {
 
   describe('createBadge', () => {
     it('should create a badge with placeholders', async () => {
-      writeTemplate(templatePath);
+      writeTemplate(templatePath, '<svg>{{LABEL}}-{{VALUE}}-{{COLOR}}</svg>');
 
       const config: BadgeConfig = {
         name: 'test-badge',
@@ -83,9 +84,9 @@ describe('BadgeFactory tests', () => {
       ok(content.includes('coverage'), 'content should include label');
     });
 
-        it('should not create a badge with --dry-run', async () => {
-      writeTemplate(templatePath);
-          testFlags.dryRun = true;
+    it('should not create a badge with --dry-run', async () => {
+      writeTemplate(templatePath, '<svg>{{LABEL}}-{{VALUE}}-{{COLOR}}</svg>');
+      testFlags.dryRun = true;
       const config: BadgeConfig = {
         name: 'test-badge',
         templatePath,
@@ -107,6 +108,60 @@ describe('BadgeFactory tests', () => {
       ok(!existsSync(outputPath), 'output file should not exist');
 
       ok(isPresent(badge), 'badge should be created');
+    });
+
+    it('with junk template file', async () => {
+      writeTemplate(templatePath, 'Junk, {{UNKNOWN}}');
+      const config: BadgeConfig = {
+        name: 'test-badge',
+        templatePath,
+        outputPath,
+        label: 'coverage',
+        value: '95%',
+        color: '#4bc124',
+        flags: testFlags,
+        display: {
+          trace: () => { },
+          info: () => { },
+          warn: () => { },
+          error: () => { },
+          dry: () => { }
+        }
+      };
+
+      const badge: Badge = await badgeFactory.createBadge(config);
+
+      ok(badge !== null && badge !== undefined, 'badge should be created');
+      strictEqual(badge.name, 'test-badge', 'badge name should match');
+      ok(existsSync(outputPath), 'output file should exist');
+
+      const content = readFileSync(outputPath, 'utf8');
+      ok(content.includes('Junk'), 'existing content should be preserved');
+    });
+
+    it('with missing template file', async () => {
+      const config: BadgeConfig = {
+        name: 'test-badge',
+        templatePath,
+        outputPath,
+        label: 'coverage',
+        value: '95%',
+        color: '#4bc124',
+        flags: testFlags,
+        display: {
+          trace: () => { },
+          info: () => { },
+          warn: () => { },
+          error: () => { },
+          dry: () => { }
+        }
+      };
+
+      await badgeFactory.createBadge(config)
+        .catch((err) => {
+          ok(err instanceof Error, 'should throw an error');
+          ok(err.message.includes('ENOENT'), 'error message should indicate missing file');
+        });
     });
   });
 });

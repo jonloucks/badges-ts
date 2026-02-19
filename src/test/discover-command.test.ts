@@ -68,5 +68,29 @@ describe('discover-command tests', () => {
       ok(project !== null && project !== undefined, 'project should be returned');
       strictEqual(project.name, "@test/my-package", 'Project name should match');
     });
+
+    it('should not discover project from invalid package.json', async () => {
+      const randomJson = {
+        xname: "@test/my-package",
+        xversion: "1.2.3",
+        xrepository: {
+          url: "https://github.com/test/my-package.git"
+        }
+      };
+      writeFileSync(packageJsonPath, JSON.stringify(randomJson), 'utf8');
+
+      const context: Context = toMockContext(['discover']);
+      await COMMAND.execute(context).catch((error) => {
+        strictEqual(error.message, "Unable to discover project using available methods.");
+      });
+    });
+
+    it('should not discover project from non existing package.json', async () => {
+      const context: Context = toMockContext(['discover']);
+      await COMMAND.execute(context)
+        .catch((error) => {
+          strictEqual(error.message, "Unable to discover project using available methods.");
+        });
+    });
   });
 });

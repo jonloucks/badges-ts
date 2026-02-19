@@ -33,15 +33,10 @@ import { KIT_BADGES_FOLDER, KIT_CODE_COVERAGE_PERCENT, KIT_COVERAGE_SUMMARY_BADG
 
 export const COMMAND: Command<Badge[]> = {
   execute: async function (context: Context): Promise<Badge[]> {
-
     context.display.trace(`Running generate with: ${context.arguments.join(' ')}`);
     return await generateBadges(context).then((badges) => {
       return badges;
     })
-      .catch((error: Error) => {
-        context.display.error(`Error during badge generation: ${error.message}`);
-        throw error;
-      })
       .finally(() => {
         context.display.trace(`Completed generate command`);
       });
@@ -89,7 +84,7 @@ async function generateNpmBadge(context: Context): Promise<Badge> {
 }
 
 async function discoverProject(context: Context): Promise<Project> {
-  return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject(context);
+  return await CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject(context);
 };
 
 /**
@@ -115,7 +110,7 @@ async function getCodeCoveragePercent(context: Context): Promise<number> {
   // various ways to determine the coverage percentage are attempted in parallel 
   // and the first successful result is used; this allows for flexibility in how the 
   // coverage percentage is provided and can accommodate different project setups
-  return Promise.any([
+  return await Promise.any([
     getCodeCoverageFromEnvironment(context),
     getCodeCoveragePercentFromCoverageSummary(context),
     getCodeCoveragePercentFromLcovReport(context)
@@ -123,25 +118,24 @@ async function getCodeCoveragePercent(context: Context): Promise<number> {
 };
 
 async function getCodeCoverageFromEnvironment(context: Context): Promise<number> {
-  return new Promise<number>((resolve, reject) => {
-    const envValue: OptionalType<number> = context.environment.findVariance(KIT_CODE_COVERAGE_PERCENT); 
-    if (isPresent(envValue) && !Number.isNaN(envValue) && envValue >= 0 && envValue <= 100) {
-      resolve(envValue);
+  return await new Promise<number>((deliver, reject) => {
+    const envValue: OptionalType<number> = context.environment.findVariance(KIT_CODE_COVERAGE_PERCENT);
+    if (isPresent(envValue)) {
+      deliver(envValue);
     } else {
       reject(new Error('Code coverage percentage not found in environment variables'));
     }
   });
 }
 async function getCodeCoveragePercentFromCoverageSummary(context: Context): Promise<number> {
-  return new Promise<number>((resolve, reject) => {
+  return await new Promise<number>((deliver, reject) => {
     const inputPath: string = getCoverageSummaryFilePath(context);
     readFile(inputPath, (err, data) => {
       if (err) {
         reject(err);
       } else {
         try {
-          const percentage: number = readPercentageFromCoverageSummary(data);
-          resolve(percentage);
+          deliver(readPercentageFromCoverageSummary(data));
         } catch (parseError) {
           reject(parseError);
         }
@@ -151,15 +145,14 @@ async function getCodeCoveragePercentFromCoverageSummary(context: Context): Prom
 };
 
 async function getCodeCoveragePercentFromLcovReport(context: Context): Promise<number> {
-  return new Promise<number>((resolve, reject) => {
+  return await new Promise<number>((resolve, reject) => {
     const inputPath: string = getLcovReportIndexPath(context);
     readFile(inputPath, 'utf8', (err, data) => {
       if (err) {
         reject(err);
       } else {
         try {
-          const percentage: number = readPercentageFromLcovReport(data);
-          resolve(percentage);
+          resolve(readPercentageFromLcovReport(data));
         } catch (parseError) {
           reject(parseError);
         }
