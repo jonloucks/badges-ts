@@ -55,12 +55,12 @@
     "after:publish": "npm run clean",
     "prepare": "npm run build",
     "docs": "typedoc --options typedoc.json",
-    "badges": "npx tsx ./src/cli.ts generate --verbose",
-    "discover": "npx tsx ./src/cli.ts discover",
+    "badges": "npx tsx ./src/bin/badges-ts.js generate --verbose",
+    "discover": "npx tsx ./src/bin/badges-ts.js discover",
     "clean": "rm -rf dist && rm -rf coverage && npm install",
     "compile": "tsc",
     "postversion": "npm run applyversion",
-    "applyversion": "npx tsx ./src/cli.ts apply-version",
+    "applyversion": "npx tsx ./src/bin/badges-ts.js apply-version",
     "pack-package": "npm run before:publish && mkdir -p packs && cd dist && npm pack && mv *.tgz ../packs/ && npm run after:publish"
   },
   "keywords": [

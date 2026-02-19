@@ -3,21 +3,10 @@
  * Reads coverage percentage from JSON file, determines badge color based on thresholds,
  * and generates an SVG badge using a template file with placeholders.
  * 
- * Environment Variables:
- * - KIT_TEMPLATE_BADGE_PATH: Input path to the SVG badge template file. Default: is packaged with the library
- * - KIT_COVERAGE_SUMMARY_PATH: Input path coverage summary JSON file. Default: './coverage/coverage-summary.json'
- * - KIT_COVERAGE_SUMMARY_BADGE_PATH: Output path for the generated coverage badge SVG file. Default: './coverage-summary.svg'
- * - KIT_TYPEDOC_BADGE_PATH: Output path for the generated typedoc badge SVG file. Default: './typedoc-badge.svg'
- * - KIT_NPM_BADGE_PATH: Output path for the generated npm badge SVG file. Default: './npm-badge.svg'
-
  *  * Template Placeholders:
  * - {{LABEL}}: Placeholder for the badge label (e.g., "coverage").
  * - {{VALUE}}: Placeholder for the coverage percentage value.
  * - {{COLOR}}: Placeholder for the badge background color.
- * Usage:   
- * ```
- * npm run badges
- * ```
  */
 import { Badge } from "@jonloucks/badges-ts/api/Badge";
 import { isPresent, OptionalType } from "@jonloucks/contracts-ts/api/Types";
@@ -29,7 +18,18 @@ import { CONTRACTS } from "@jonloucks/contracts-ts";
 import { readFile } from "fs";
 import { resolve } from "path";
 import { Internal, SUCCESS_COLOR } from "./Internal.impl.js";
-import { KIT_BADGES_FOLDER, KIT_CODE_COVERAGE_PERCENT, KIT_COVERAGE_SUMMARY_BADGE_PATH, KIT_COVERAGE_SUMMARY_PATH, KIT_LCOV_REPORT_INDEX_PATH, KIT_NPM_BADGE_PATH, KIT_PROJECT_FOLDER, KIT_TEMPLATE_BADGE_PATH, KIT_TYPEDOC_BADGE_PATH } from "@jonloucks/badges-ts/api/Variances";
+import { 
+  KIT_BADGES_FOLDER, 
+  KIT_CODE_COVERAGE_PERCENT, 
+  KIT_COVERAGE_SUMMARY_BADGE_PATH, 
+  KIT_COVERAGE_SUMMARY_PATH, 
+  KIT_LCOV_REPORT_INDEX_PATH, 
+  KIT_NPM_BADGE_PATH, 
+  KIT_PROJECT_FOLDER, 
+  KIT_TEMPLATE_BADGE_PATH, 
+  KIT_TYPEDOC_BADGE_PATH 
+} from "@jonloucks/badges-ts/api/Variances";
+import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
 
 export const COMMAND: Command<Badge[]> = {
   execute: async function (context: Context): Promise<Badge[]> {
@@ -52,12 +52,10 @@ async function generateBadges(context: Context): Promise<Badge[]> {
 
   const badges: Badge[] = [];
   results.forEach((result, index) => {
+    used(index);
     if (result.status === 'fulfilled') {
       badges.push(result.value);
-    } else {
-      const badgeNames = ['npm', 'coverage summary', 'typedoc'];
-      context.display.warn(`Unable to generate ${badgeNames[index]} badge`);
-    }
+    } 
   });
 
   return badges;
@@ -166,18 +164,22 @@ function readPercentageFromLcovReport(data: string): number {
   const pattern = /<span class="strong">\s*([\d.]+)%\s*<\/span>\s*<span class="quiet">\s*(Statements|Branches|Functions|Lines)\s*<\/span>/g;
 
   for (const match of data.matchAll(pattern)) {
-    const label = match[2];
-    const value = Number.parseFloat(match[1]);
+    const label:string = match[2];
+    const value:number = Number.parseFloat(match[1]);
     if (!Number.isNaN(value)) {
-      percentages[label] = value;
+      percentages[label.toLowerCase()] = value;
+      if (Object.keys(percentages).length >= 4) {
+        break;
+      }
     }
   }
-
-  if (isPresent(percentages.Lines)) {
-    return percentages.Lines;
-  }
-  if (isPresent(percentages.Statements)) {
-    return percentages.Statements;
+  const length: number = Object.keys(percentages).length;
+  if (length > 0) {
+    let totalPercent: number = 0;
+    for (const label of Object.keys(percentages)) {
+      totalPercent += percentages[label];
+    }
+    return totalPercent / length;
   }
 
   throw new Error('Unable to parse coverage percentages from lcov report index.html');

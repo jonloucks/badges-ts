@@ -1,4 +1,4 @@
-import { dirname, join } from "path";
+import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
 /**
@@ -12,5 +12,5 @@ import { fileURLToPath } from "url";
 export function resolveDataPath(...segments: string[]): string {
   // reducing complexity using least common denominator approach; 
   // the path is resolved relative to the src/data directory, which is a known location within the package
-  return join(dirname(fileURLToPath(import.meta.url)), ...segments);
+  return resolve(dirname(fileURLToPath(import.meta.url)), ...segments);
 } 
