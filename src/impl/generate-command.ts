@@ -9,27 +9,27 @@
  * - {{COLOR}}: Placeholder for the badge background color.
  */
 import { Badge } from "@jonloucks/badges-ts/api/Badge";
-import { isPresent, OptionalType } from "@jonloucks/contracts-ts/api/Types";
 import { CONTRACT as BADGE_FACTORY, BadgeFactory } from "@jonloucks/badges-ts/api/BadgeFactory";
 import { Project } from "@jonloucks/badges-ts/api/Project";
+import {
+  KIT_BADGES_FOLDER,
+  KIT_CODE_COVERAGE_PERCENT,
+  KIT_COVERAGE_SUMMARY_BADGE_PATH,
+  KIT_COVERAGE_SUMMARY_PATH,
+  KIT_LCOV_REPORT_INDEX_PATH,
+  KIT_NPM_BADGE_PATH,
+  KIT_PROJECT_FOLDER,
+  KIT_TEMPLATE_BADGE_PATH,
+  KIT_TYPEDOC_BADGE_PATH
+} from "@jonloucks/badges-ts/api/Variances";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
 import { CONTRACTS } from "@jonloucks/contracts-ts";
+import { isPresent, OptionalType } from "@jonloucks/contracts-ts/api/Types";
+import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
 import { readFile } from "fs";
 import { resolve } from "path";
-import { Internal, SUCCESS_COLOR } from "./Internal.impl.js";
-import { 
-  KIT_BADGES_FOLDER, 
-  KIT_CODE_COVERAGE_PERCENT, 
-  KIT_COVERAGE_SUMMARY_BADGE_PATH, 
-  KIT_COVERAGE_SUMMARY_PATH, 
-  KIT_LCOV_REPORT_INDEX_PATH, 
-  KIT_NPM_BADGE_PATH, 
-  KIT_PROJECT_FOLDER, 
-  KIT_TEMPLATE_BADGE_PATH, 
-  KIT_TYPEDOC_BADGE_PATH 
-} from "@jonloucks/badges-ts/api/Variances";
-import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
+import { Internal } from "./Internal.impl.js";
 
 export const COMMAND: Command<Badge[]> = {
   execute: async function (context: Context): Promise<Badge[]> {
@@ -55,7 +55,7 @@ async function generateBadges(context: Context): Promise<Badge[]> {
     used(index);
     if (result.status === 'fulfilled') {
       badges.push(result.value);
-    } 
+    }
   });
 
   return badges;
@@ -72,9 +72,9 @@ async function generateNpmBadge(context: Context): Promise<Badge> {
   return await badgeFactory.createBadge({
     name: "npm",
     outputPath: getNpmBadgePath(context),
-    label: "  npm  ",
+    label: "npm",
     value: project.version,
-    color: SUCCESS_COLOR,
+    color: Internal.colorFromPercentComplete(context, 100),
     templatePath: getTemplateBadgePath(context),
     flags: context.flags,
     display: context.display
@@ -96,8 +96,8 @@ async function generateCodeCoverageBadge(context: Context): Promise<Badge> {
     name: "coverage-summary",
     outputPath: getCodeCoverageBadgePath(context),
     label: "coverage",
-    value: percentage + "%",
-    color: Internal.colorFromPercentComplete(percentage),
+    value: Internal.formatPercent(percentage),
+    color: Internal.colorFromPercentComplete(context, percentage),
     templatePath: getTemplateBadgePath(context),
     flags: context.flags,
     display: context.display
@@ -164,10 +164,10 @@ function readPercentageFromLcovReport(data: string): number {
   const pattern = /<span class="strong">\s*([\d.]+)%\s*<\/span>\s*<span class="quiet">\s*(Statements|Branches|Functions|Lines)\s*<\/span>/g;
 
   for (const match of data.matchAll(pattern)) {
-    const label:string = match[2];
-    const value:number = Number.parseFloat(match[1]);
-    if (!Number.isNaN(value)) {
-      percentages[label.toLowerCase()] = value;
+    const label: string = match[2];
+    const value: number = Number.parseFloat(match[1]);
+    if (Internal.isPercent(value)) {
+      percentages[label.toLowerCase()] = Internal.normalizePercent(value);
       if (Object.keys(percentages).length >= 4) {
         break;
       }
@@ -194,9 +194,9 @@ async function generateTypedocBadge(context: Context): Promise<Badge> {
   return await badgeFactory.createBadge({
     name: "typedoc",
     outputPath: getTypedocBadgePath(context),
-    label: " typedoc ",
-    value: "100%",
-    color: SUCCESS_COLOR,
+    label: "typedoc",
+    value: Internal.formatPercent(100),
+    color: Internal.colorFromPercentComplete(context, 100),
     templatePath: getTemplateBadgePath(context),
     flags: context.flags,
     display: context.display

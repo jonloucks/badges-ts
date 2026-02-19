@@ -134,6 +134,13 @@ npm run docs
 ```bash
 npm run badges
 ```
+
+The default badge SVG template is custom/original and lives in `src/data/badge-template.svg.dat`.
+You can override the template file path with `KIT_TEMPLATE_BADGE_PATH`.
+
+```bash
+KIT_TEMPLATE_BADGE_PATH=./my-template.svg npm run badges
+```
 </details>
 
 <details markdown="1"><summary>Project Structure</summary>
