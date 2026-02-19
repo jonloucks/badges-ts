@@ -127,7 +127,7 @@ export const KIT_ABOVE_70_PERCENT_COLOR: Variant<string> = createVariant<string>
   keys: ['KIT_ABOVE_70_PERCENT_COLOR', 'kit.above.70.percent.color'],
   description: 'The color to use for badges that are above 70% complete.',
   of: ofString(),
-  fallback: '#yellow'
+  fallback: 'yellow'
 });
 
 export const KIT_ABOVE_60_PERCENT_COLOR: Variant<string> = createVariant<string>({
