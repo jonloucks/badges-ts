@@ -133,7 +133,7 @@ describe('fileDoesNotExist function', () => {
   });
 
   it('should return false when file exists', () => {
-      strictEqual(fileDoesNotExist('.'), false, 'fileDoesNotExist should return false for existing directory');
+    strictEqual(fileDoesNotExist('.'), false, 'fileDoesNotExist should return false for existing directory');
   });
 
   it('should throw IllegalArgumentException when path is null', () => {
