@@ -169,38 +169,38 @@ Example GitHub Actions step sequence:
 
 ```yaml
 jobs:
-	badges:
-		runs-on: ubuntu-latest
-		steps:
-			- name: Checkout main
-				uses: actions/checkout@v4
-				with:
-					path: main-project
+  badges:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          path: main-project
 
-			- name: Checkout gh-pages
-				uses: actions/checkout@v4
-				with:
-					ref: gh-pages
-					path: gh-pages
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
 
-			- name: Setup Node.js
-				uses: actions/setup-node@v4
-				with:
-					node-version: "24"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
 
-			- name: Install and generate badges
-				working-directory: main-project
-				run: |
-					npm ci
-					KIT_BADGES_FOLDER="${{ github.workspace }}/gh-pages/badges" npm run badges
+      - name: Install and generate badges
+        working-directory: main-project
+        run: |
+          npm ci
+          KIT_BADGES_FOLDER="${{ github.workspace }}/gh-pages/badges" npm run badges
 
-			- name: Commit gh-pages badge updates
-				uses: EndBug/add-and-commit@v9
-				with:
-					default_author: github_actions
-					message: "Update badges"
-					add: "badges/*.svg"
-					cwd: gh-pages
+      - name: Commit gh-pages badge updates
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: "Update badges"
+          add: "badges/*.svg"
+          cwd: gh-pages
 ```
 
 Artifact-based variant (recommended for privileged publish flows):
