@@ -88,7 +88,7 @@ describe('discover-command tests', () => {
     });
 
     it('should not discover project from non existing package.json', async () => {
-      sandbox.setVariance('KIT_PACKAGE_JSON_PATH', 'non-existant-package.json');
+      sandbox.setVariance('KIT_PACKAGE_JSON_PATH', 'non-existent-package.json');
       const context: Context = sandbox.toContext(['discover']);
       await runMain(context)
         .catch((error) => {
