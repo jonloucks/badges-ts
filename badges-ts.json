@@ -1,8 +1,21 @@
 {
+  "_description": "Configuration for badges-ts. Place this file in your project root as badges-ts.json to customize generated badges.",
+
   "kit.badges.folder": "badges",
+  "kit.badges.folder.description": "Relative path to the folder where badges-ts will write generated badge files.",
+
   "kit.0.percent.color": "red",
+  "kit.0.percent.color.description": "Color used for 0% (or very low) values. Accepts any valid badge color string (e.g. 'red', '#ff0000').",
+
   "kit.above.80.percent.color": "red",
+  "kit.above.80.percent.color.description": "Color for values strictly above 80%.",
+
   "kit.above.70.percent.color": "red",
+  "kit.above.70.percent.color.description": "Color for values strictly above 70% and up to 80%, if a more specific rule is not matched.",
+
   "kit.above.60.percent.color": "red",
-  "kit.below.60.percent.color": "red"
+  "kit.above.60.percent.color.description": "Color for values strictly above 60% and up to 70%, if a more specific rule is not matched.",
+
+  "kit.below.60.percent.color": "red",
+  "kit.below.60.percent.color.description": "Color for values below or equal to 60%."
 }
