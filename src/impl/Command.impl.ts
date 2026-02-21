@@ -64,7 +64,15 @@ function createFileSource(environment: Environment): Source | undefined {
   // in the future we could check if file changes and reload the config, but for now we'll just read it once at startup
   const configFilePath: string = getFileSourcePath(environment);
   if (existsSync(configFilePath)) {
-    return createRecordSource(JSON.parse(readFileSync(configFilePath, 'utf8')));
+    try {
+      const fileContents: string = readFileSync(configFilePath, "utf8");
+      const record = JSON.parse(fileContents);
+      return createRecordSource(record);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.warn(`Failed to read or parse config file at "${configFilePath}": ${message}`);
+      return undefined;
+    }
   }
   return undefined;
 };
