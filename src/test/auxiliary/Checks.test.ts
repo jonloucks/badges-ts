@@ -1,4 +1,3 @@
-import { mkdtempSync, rmSync } from "fs";
 import { ok, strictEqual, throws } from "node:assert";
 import { describe, it } from "node:test";
 import { tmpdir } from "os";
@@ -134,12 +133,7 @@ describe('fileDoesNotExist function', () => {
   });
 
   it('should return false when file exists', () => {
-    const tempDir = mkdtempSync(join(tmpdir(), 'test-'));
-    try {
-      strictEqual(fileDoesNotExist(tempDir), false, 'fileDoesNotExist should return false for existing directory');
-    } finally {
-      rmSync(tempDir, { recursive: true });
-    }
+      strictEqual(fileDoesNotExist('.'), false, 'fileDoesNotExist should return false for existing directory');
   });
 
   it('should throw IllegalArgumentException when path is null', () => {

@@ -7,6 +7,8 @@ import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { existsSync, writeFileSync } from "node:fs";
 import { resolve } from "path";
 import { create as createSandbox, Sandbox } from "./Sandbox.test.js";
+import { KIT_BADGES_FOLDER, KIT_COVERAGE_SUMMARY_BADGE_PATH, KIT_NPM_BADGE_PATH, KIT_PROJECT_FOLDER, KIT_TYPEDOC_BADGE_PATH } from "../api/Variances.js";
+import { Variant } from "@jonloucks/variants-ts/api/Variant";
 
 describe('badges-ts generate', () => {
   let sandbox: Sandbox;
@@ -31,9 +33,13 @@ describe('badges-ts generate', () => {
       const context: Context = sandbox.toContext(['generate']);
       await runMain(context);
 
-      ok(existsSync(resolve(sandbox.folder, 'npm-badge.svg')), 'NPM badge should be created');
-      ok(existsSync(resolve(sandbox.folder, 'typedoc-badge.svg')), 'Typedoc badge should be created');
-      ok(existsSync(resolve(sandbox.folder, 'coverage-summary.svg')), 'Coverage summary badge should be created');
+      const npmBadgePath: string = resolveBadgePath(context, KIT_NPM_BADGE_PATH);
+      const typedocBadgePath: string = resolveBadgePath(context, KIT_TYPEDOC_BADGE_PATH);
+      const coverageSummaryBadgePath: string = resolveBadgePath(context, KIT_COVERAGE_SUMMARY_BADGE_PATH);
+
+      ok(existsSync(npmBadgePath), 'NPM badge should be created');
+      ok(existsSync(typedocBadgePath), 'Typedoc badge should be created');
+      ok(existsSync(coverageSummaryBadgePath), 'Coverage summary badge should be created');
       assertNoErrors();
     });
   });
@@ -44,7 +50,9 @@ describe('badges-ts generate', () => {
       const context: Context = sandbox.toContext(['generate']);
       await runMain(context);
 
-      ok(existsSync(resolve(sandbox.folder, 'coverage-summary.svg')), 'Coverage summary badge should be created');
+      const expectedBadgePath = resolveBadgePath(context, KIT_COVERAGE_SUMMARY_BADGE_PATH);
+
+      ok(existsSync(expectedBadgePath), 'Coverage summary badge should be created');
       assertNoErrors();
     });
   });
@@ -68,8 +76,14 @@ describe('badges-ts generate', () => {
       writeFileSync(lcovReportPath, 'corrupted or unexpected content', 'utf8');
       const context: Context = sandbox.toContext(['generate']);
       await runMain(context);
-      
+
       assertNoErrors();
     });
   });
 });
+
+function resolveBadgePath(context: Context, varianceKey: Variant<string>): string {
+  const projectFolder: string = context.environment.getVariance(KIT_PROJECT_FOLDER);
+  const badgesFolder: string = context.environment.getVariance(KIT_BADGES_FOLDER);
+  return resolve(projectFolder, badgesFolder, context.environment.getVariance(varianceKey));
+}

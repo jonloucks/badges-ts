@@ -1,0 +1,8 @@
+{
+  "kit.badges.folder": "badges",
+  "kit.0.percent.color": "red",
+  "kit.above.80.percent.color": "red",
+  "kit.above.70.percent.color": "red",
+  "kit.above.60.percent.color": "red",
+  "kit.below.60.percent.color": "red"
+}

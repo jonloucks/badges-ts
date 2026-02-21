@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { runMain } from "@jonloucks/badges-ts/cli";
 import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
-import { existsSync, readFileSync, rmSync, statSync } from "fs";
+import { existsSync, readFileSync, statSync } from "fs";
 import { resolve } from "node:path";
 import { create as createSandbox, Sandbox } from "./Sandbox.test.js";
 
@@ -46,11 +46,11 @@ describe('badges-ts apply-version', () => {
     });
 
     it('with template file but missing src directory', async () => {
+      sandbox.setVariance('KIT_VERSION_TS_PATH', 'non-existant-src/version.ts');
       const context: Context = toMockContext(['apply-version', '--quiet']);
-      rmSync(resolve(sandbox.folder, 'src'), { recursive: true, force: true });
       await runMain(context)
         .catch((error: Error) => {
-          ok(error instanceof Error, 'Error should be thrown when src directory is missing');
+          ok(error instanceof Error, 'Error should be thrown when directory is does not exist');
           ok(error.message.includes('ENOENT'), 'Error message should indicate missing file or directory');
         });
       assertHadErrors();

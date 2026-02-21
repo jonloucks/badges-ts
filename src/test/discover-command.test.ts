@@ -5,7 +5,7 @@ import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { create as createSandbox, Sandbox } from "./Sandbox.test.js";
 import { runMain } from "@jonloucks/badges-ts/cli";
-import { rmSync, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { KIT_PACKAGE_JSON_PATH, KIT_PROJECT_FOLDER } from "@jonloucks/badges-ts/api/Variances";
 import { resolve } from "node:path";
 
@@ -88,10 +88,8 @@ describe('discover-command tests', () => {
     });
 
     it('should not discover project from non existing package.json', async () => {
+      sandbox.setVariance('KIT_PACKAGE_JSON_PATH', 'non-existant-package.json');
       const context: Context = sandbox.toContext(['discover']);
-      const projectFolder = resolve(context.environment.getVariance(KIT_PROJECT_FOLDER));
-      const packageJsonPath = resolve(projectFolder, context.environment.getVariance(KIT_PACKAGE_JSON_PATH));
-      rmSync(packageJsonPath, { recursive: false, force: true });
       await runMain(context)
         .catch((error) => {
           strictEqual(error.message, "Unable to discover project using available methods.");
