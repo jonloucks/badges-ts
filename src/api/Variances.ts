@@ -1,13 +1,28 @@
 import { createVariant, ofNumber, ofString } from "@jonloucks/variants-ts/auxiliary/Convenience";
 import { Variant } from "@jonloucks/variants-ts/api/Variant";
 import { resolveDataPath } from "../data/Resolver.js";
+import { resolve } from "node:path";
 
+/**
+ *  Only resolving KIT_PROJECT_FOLDER to an absolute path at the point of initialization allows it to be set to a 
+ *  relative path that is resolved from the current working directory instead of the location of the 
+ *  executing code. Other path variances should be resolved relative to KIT_PROJECT_FOLDER, 
+ *  so they will be resolved correctly as well.
+ */
 export const KIT_PROJECT_FOLDER: Variant<string> = createVariant<string>({
   name: 'Project Folder',
   keys: ['KIT_PROJECT_FOLDER', 'kit.project.folder'],
   description: 'The folder path of the project.',
   of: ofString(),
-  fallback: './'
+  fallback: resolve('./')
+});
+
+export const KIT_BADGES_CONFIG_PATH: Variant<string> = createVariant<string>({
+  name: 'Config Path',
+  keys: ['KIT_BADGES_CONFIG_PATH', 'kit.badges.config.path'],
+  description: 'The file path to the configuration file.',
+  of: ofString(),
+  fallback: 'badges-ts.json'
 });
 
 export const KIT_PACKAGE_JSON_PATH: Variant<string> = createVariant<string>({
@@ -98,6 +113,14 @@ export const KIT_LCOV_REPORT_INDEX_PATH: Variant<string> = createVariant<string>
   fallback: 'coverage/lcov-report/index.html'
 });
 
+export const KIT_VERSION_TS_PATH: Variant<string> = createVariant<string>({
+  name: 'Version TS Path',
+  keys: ['KIT_VERSION_TS_PATH', 'kit.version.ts.path'],
+  description: 'The file path to output the generated version.ts file.',
+  of: ofString(),
+  fallback: 'src/version.ts'
+});
+
 export const KIT_100_PERCENT_COLOR: Variant<string> = createVariant<string>({
   name: '100% Color',
   keys: ['KIT_100_PERCENT_COLOR', 'kit.100.percent.color'],
@@ -119,7 +142,7 @@ export const KIT_ABOVE_80_PERCENT_COLOR: Variant<string> = createVariant<string>
   keys: ['KIT_ABOVE_80_PERCENT_COLOR', 'kit.above.80.percent.color'],
   description: 'The color to use for badges that are above 80% complete.',
   of: ofString(),
-  fallback: '#yellowgreen'
+  fallback: 'yellowgreen'
 });
 
 export const KIT_ABOVE_70_PERCENT_COLOR: Variant<string> = createVariant<string>({
@@ -135,7 +158,7 @@ export const KIT_ABOVE_60_PERCENT_COLOR: Variant<string> = createVariant<string>
   keys: ['KIT_ABOVE_60_PERCENT_COLOR', 'kit.above.60.percent.color'],
   description: 'The color to use for badges that are above 60% complete.',
   of: ofString(),
-  fallback: '#orange'
+  fallback: 'orange'
 });
 
 export const KIT_BELOW_60_PERCENT_COLOR: Variant<string> = createVariant<string>({
@@ -143,7 +166,7 @@ export const KIT_BELOW_60_PERCENT_COLOR: Variant<string> = createVariant<string>
   keys: ['KIT_BELOW_60_PERCENT_COLOR', 'kit.below.60.percent.color'],
   description: 'The color to use for badges that are below 60% complete.',
   of: ofString(),
-  fallback: '#880000'
+  fallback: 'darkred'
 });
 
 export const KIT_0_PERCENT_COLOR: Variant<string> = createVariant<string>({

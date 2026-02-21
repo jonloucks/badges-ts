@@ -12,7 +12,7 @@ import { copyFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { describe, it, mock, Mock } from "node:test";
 import { tmpdir } from "os";
-import { presentCheck } from "../auxiliary/Checks.js";
+import { presentCheck } from "@jonloucks/contracts-ts/auxiliary/Checks";
 import { toContext as realToContext } from "../impl/Command.impl.js";
 import { fileURLToPath } from "node:url";
 
@@ -43,7 +43,7 @@ export function create(): Sandbox {
   return SandboxImpl.privateCreate();
 }
 
-// Implementation of the Sandbox interface
+// ---- Implementation details below ----
 
 class SandboxImpl implements Sandbox {
 
@@ -90,9 +90,20 @@ class SandboxImpl implements Sandbox {
   }
 
   #open(): AutoClose {
+    SandboxImpl.#iteration++;
     this.#folder = mkdtempSync(resolve(tmpdir(), 'badges-ts-test-'));
+    // set environment variable for the project folder so that the command implementation
+    //  can find the config file and other files within the sandbox
+    process.env.KIT_PROJECT_FOLDER = this.#folder;
     this.setVariance('KIT_PROJECT_FOLDER', this.#folder);
-    this.setVariance('KIT_BADGES_FOLDER', this.#folder);
+
+    // since loading config file happens early in the command execution, 
+    // we'll deploy the config file on the first iteration to test that it can be loaded properly, 
+    // and then on subsequent iterations we'll skip deploying the config file to test that the environment
+    // can be set through other means as well
+    if (SandboxImpl.#iteration % 2 == 1) {
+      this.#deployConfigFile();
+    }
     this.#deployPackageJson();
     this.#deploySourceFiles();
     this.#deployCoverageSummary();
@@ -106,6 +117,7 @@ class SandboxImpl implements Sandbox {
     if (isPresent(this.#folder) && existsSync(this.#folder!)) {
       rmSync(this.#folder!, { recursive: true, force: true });
     }
+    delete process.env.KIT_PROJECT_FOLDER;
   }
 
   #deployPackageJson(): void {
@@ -140,10 +152,19 @@ class SandboxImpl implements Sandbox {
   }
 
   #deployLcovReport(): void {
-    const fromFile:string = resolveDataPath("lcov.report.dat");
-    const toFile:string = resolve(this.#folder!, "lcov.report.dat");
+    const fromFile: string = resolveDataPath("lcov.report.dat");
+    const toFile: string = resolve(this.#folder!, "lcov.report.dat");
     copyFileSync(fromFile, toFile);
     this.setVariance('KIT_LCOV_REPORT_INDEX_PATH', toFile);
+  }
+
+  #deployConfigFile(): void {
+    const content = JSON.stringify({
+      "kit.above.80.percent.color": "blue"
+    });
+    const configFilePath: string = resolve(this.#folder!, 'config.json');
+    writeFileSync(configFilePath, content, 'utf8');
+    this.setVariance('KIT_BADGES_CONFIG_PATH', configFilePath);
   }
 
   private constructor() {
@@ -163,7 +184,8 @@ class SandboxImpl implements Sandbox {
   readonly #environmentMap: Map<string, string> = new Map<string, string>();
   readonly #logLookup: Map<LogName, MockLog> = new Map<LogName, MockLog>();
   readonly #idempotent: Idempotent;
-} 
+  static #iteration: number = 0;
+}
 
 /**
  * Resolves a path relative to the src/data directory.

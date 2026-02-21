@@ -1,16 +1,17 @@
 
 import { CONTRACTS, type Contracts } from "@jonloucks/contracts-ts";
 import { isPresent, type RequiredType } from "@jonloucks/contracts-ts/api/Types";
-import { Context } from "../auxiliary/Command.js";
+import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { Variant } from "@jonloucks/variants-ts/api/Variant";
-import { 
-  KIT_0_PERCENT_COLOR, 
-  KIT_100_PERCENT_COLOR, 
-  KIT_ABOVE_80_PERCENT_COLOR, 
-  KIT_BELOW_60_PERCENT_COLOR, 
-  KIT_ABOVE_60_PERCENT_COLOR, 
+import {
+  KIT_0_PERCENT_COLOR,
+  KIT_100_PERCENT_COLOR,
+  KIT_ABOVE_80_PERCENT_COLOR,
+  KIT_BELOW_60_PERCENT_COLOR,
+  KIT_ABOVE_60_PERCENT_COLOR,
   KIT_ABOVE_70_PERCENT_COLOR,
-  KIT_ABOVE_90_PERCENT_COLOR } from "../api/Variances.js";
+  KIT_ABOVE_90_PERCENT_COLOR
+} from "../api/Variances.js";
 
 /**
  * Helper functions for internal implementations.

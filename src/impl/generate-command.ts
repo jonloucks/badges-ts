@@ -128,7 +128,7 @@ async function getCodeCoverageFromEnvironment(context: Context): Promise<number>
 async function getCodeCoveragePercentFromCoverageSummary(context: Context): Promise<number> {
   return await new Promise<number>((deliver, reject) => {
     const inputPath: string = getCoverageSummaryFilePath(context);
-    readFile(inputPath, (err, data) => {
+    return readFile(inputPath, (err, data) => {
       if (err) {
         reject(err);
       } else {
@@ -145,7 +145,7 @@ async function getCodeCoveragePercentFromCoverageSummary(context: Context): Prom
 async function getCodeCoveragePercentFromLcovReport(context: Context): Promise<number> {
   return await new Promise<number>((resolve, reject) => {
     const inputPath: string = getLcovReportIndexPath(context);
-    readFile(inputPath, 'utf8', (err, data) => {
+    return readFile(inputPath, 'utf8', (err, data) => {
       if (err) {
         reject(err);
       } else {
@@ -214,29 +214,36 @@ function getProjectFolder(context: Context): string {
 }
 
 function getCoverageSummaryFilePath(context: Context): string {
-  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_COVERAGE_SUMMARY_PATH));
+  return resolve(getProjectFolder(context),
+    context.environment.getVariance(KIT_COVERAGE_SUMMARY_PATH));
 }
 
 function getTemplateBadgePath(context: Context): string {
-  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_TEMPLATE_BADGE_PATH));
+  return resolve(getProjectFolder(context),
+    context.environment.getVariance(KIT_TEMPLATE_BADGE_PATH));
 }
 
 function getLcovReportIndexPath(context: Context): string {
-  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_LCOV_REPORT_INDEX_PATH));
+  return resolve(getProjectFolder(context),
+    context.environment.getVariance(KIT_LCOV_REPORT_INDEX_PATH));
 }
 
 function getBadgesFolder(context: Context): string {
-  return resolve(getProjectFolder(context), context.environment.getVariance(KIT_BADGES_FOLDER));
+  return resolve(getProjectFolder(context),
+    context.environment.getVariance(KIT_BADGES_FOLDER));
 }
 
 function getCodeCoverageBadgePath(context: Context): string {
-  return resolve(getBadgesFolder(context), context.environment.getVariance(KIT_COVERAGE_SUMMARY_BADGE_PATH));
+  return resolve(getBadgesFolder(context),
+    context.environment.getVariance(KIT_COVERAGE_SUMMARY_BADGE_PATH));
 }
 
 function getTypedocBadgePath(context: Context): string {
-  return resolve(getBadgesFolder(context), context.environment.getVariance(KIT_TYPEDOC_BADGE_PATH));
+  return resolve(getBadgesFolder(context),
+    context.environment.getVariance(KIT_TYPEDOC_BADGE_PATH));
 }
 
 function getNpmBadgePath(context: Context): string {
-  return resolve(getBadgesFolder(context), context.environment.getVariance(KIT_NPM_BADGE_PATH));
+  return resolve(getBadgesFolder(context),
+    context.environment.getVariance(KIT_NPM_BADGE_PATH));
 }
