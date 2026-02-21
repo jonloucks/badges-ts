@@ -50,7 +50,7 @@ describe('badges-ts apply-version', () => {
       const context: Context = toMockContext(['apply-version', '--quiet']);
       await runMain(context)
         .catch((error: Error) => {
-          ok(error instanceof Error, 'Error should be thrown when directory is does not exist');
+          ok(error instanceof Error, 'Error should be thrown when the directory does not exist');
           ok(error.message.includes('ENOENT'), 'Error message should indicate missing file or directory');
         });
       assertHadErrors();
