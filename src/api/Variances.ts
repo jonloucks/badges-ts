@@ -45,7 +45,8 @@ export const KIT_CODE_COVERAGE_PERCENT: Variant<number> = createVariant<number>(
   name: 'Code Coverage Percent',
   keys: ['KIT_CODE_COVERAGE_PERCENT', 'kit.code.coverage.percent'],
   description: 'The code coverage percentage.',
-  of: ofNumber()
+  of: ofNumber(),
+  fallback: undefined
 });
 
 export const KIT_COVERAGE_SUMMARY_BADGE_PATH: Variant<string> = createVariant<string>({
