@@ -126,9 +126,9 @@ async function getCodeCoverageFromEnvironment(context: Context): Promise<number>
   });
 }
 async function getCodeCoveragePercentFromCoverageSummary(context: Context): Promise<number> {
-  return await new Promise<number>(async (deliver, reject) => {
+  return await new Promise<number>((deliver, reject) => {
     const inputPath: string = getCoverageSummaryFilePath(context);
-    return await readFile(inputPath, (err, data) => {
+    return readFile(inputPath, (err, data) => {
       if (err) {
         reject(err);
       } else {
@@ -143,9 +143,9 @@ async function getCodeCoveragePercentFromCoverageSummary(context: Context): Prom
 };
 
 async function getCodeCoveragePercentFromLcovReport(context: Context): Promise<number> {
-  return await new Promise<number>(async (resolve, reject) => {
+  return await new Promise<number>((resolve, reject) => {
     const inputPath: string = getLcovReportIndexPath(context);
-    return await readFile(inputPath, 'utf8', (err, data) => {
+    return readFile(inputPath, 'utf8', (err, data) => {
       if (err) {
         reject(err);
       } else {
