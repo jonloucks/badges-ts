@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>155/155</span>
+                <span class='fraction'>178/178</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>155/155</span>
+                <span class='fraction'>178/178</span>
             </div>
         
             
@@ -218,7 +218,53 @@
 <a name='L153'></a><a href='#L153'>153</a>
 <a name='L154'></a><a href='#L154'>154</a>
 <a name='L155'></a><a href='#L155'>155</a>
-<a name='L156'></a><a href='#L156'>156</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -376,13 +422,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createVariant, ofNumber, ofString } from "@jonloucks/variants-ts/auxiliary/Convenience";
 import { Variant } from "@jonloucks/variants-ts/api/Variant";
 import { resolveDataPath } from "../data/Resolver.js";
+import { resolve } from "node:path";
 &nbsp;
+/**
+ *  Only resolving KIT_PROJECT_FOLDER to an absolute path at the point of initialization allows it to be set to a 
+ *  relative path that is resolved from the current working directory instead of the location of the 
+ *  executing code. Other path variances should be resolved relative to KIT_PROJECT_FOLDER, 
+ *  so they will be resolved correctly as well.
+ */
 export const KIT_PROJECT_FOLDER: Variant&lt;string&gt; = createVariant&lt;string&gt;({
   name: 'Project Folder',
   keys: ['KIT_PROJECT_FOLDER', 'kit.project.folder'],
   description: 'The folder path of the project.',
   of: ofString(),
-  fallback: './'
+  fallback: resolve('./')
+});
+&nbsp;
+export const KIT_BADGES_CONFIG_PATH: Variant&lt;string&gt; = createVariant&lt;string&gt;({
+  name: 'Config Path',
+  keys: ['KIT_BADGES_CONFIG_PATH', 'kit.badges.config.path'],
+  description: 'The file path to the configuration file.',
+  of: ofString(),
+  fallback: 'badges-ts.json'
 });
 &nbsp;
 export const KIT_PACKAGE_JSON_PATH: Variant&lt;string&gt; = createVariant&lt;string&gt;({
@@ -473,6 +534,14 @@ export const KIT_LCOV_REPORT_INDEX_PATH: Variant&lt;string&gt; = createVariant&l
   fallback: 'coverage/lcov-report/index.html'
 });
 &nbsp;
+export const KIT_VERSION_TS_PATH: Variant&lt;string&gt; = createVariant&lt;string&gt;({
+  name: 'Version TS Path',
+  keys: ['KIT_VERSION_TS_PATH', 'kit.version.ts.path'],
+  description: 'The file path to output the generated version.ts file.',
+  of: ofString(),
+  fallback: 'src/version.ts'
+});
+&nbsp;
 export const KIT_100_PERCENT_COLOR: Variant&lt;string&gt; = createVariant&lt;string&gt;({
   name: '100% Color',
   keys: ['KIT_100_PERCENT_COLOR', 'kit.100.percent.color'],
@@ -494,7 +563,7 @@ export const KIT_ABOVE_80_PERCENT_COLOR: Variant&lt;string&gt; = createVariant&l
   keys: ['KIT_ABOVE_80_PERCENT_COLOR', 'kit.above.80.percent.color'],
   description: 'The color to use for badges that are above 80% complete.',
   of: ofString(),
-  fallback: '#yellowgreen'
+  fallback: 'yellowgreen'
 });
 &nbsp;
 export const KIT_ABOVE_70_PERCENT_COLOR: Variant&lt;string&gt; = createVariant&lt;string&gt;({
@@ -510,7 +579,7 @@ export const KIT_ABOVE_60_PERCENT_COLOR: Variant&lt;string&gt; = createVariant&l
   keys: ['KIT_ABOVE_60_PERCENT_COLOR', 'kit.above.60.percent.color'],
   description: 'The color to use for badges that are above 60% complete.',
   of: ofString(),
-  fallback: '#orange'
+  fallback: 'orange'
 });
 &nbsp;
 export const KIT_BELOW_60_PERCENT_COLOR: Variant&lt;string&gt; = createVariant&lt;string&gt;({
@@ -518,7 +587,7 @@ export const KIT_BELOW_60_PERCENT_COLOR: Variant&lt;string&gt; = createVariant&l
   keys: ['KIT_BELOW_60_PERCENT_COLOR', 'kit.below.60.percent.color'],
   description: 'The color to use for badges that are below 60% complete.',
   of: ofString(),
-  fallback: '#880000'
+  fallback: 'darkred'
 });
 &nbsp;
 export const KIT_0_PERCENT_COLOR: Variant&lt;string&gt; = createVariant&lt;string&gt;({
@@ -535,7 +604,7 @@ export const KIT_0_PERCENT_COLOR: Variant&lt;string&gt; = createVariant&lt;strin
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-19T15:49:03.040Z
+                at 2026-02-21T02:48:38.157Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
