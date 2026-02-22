@@ -18,7 +18,7 @@ npm install @jonloucks/badges-ts@1.3.0
 
 *   Performance: Reduced fallback failures by supporting direct LCOV totals parsing.
 *   Compatibility: Added support for projects that only publish `coverage/lcov.info`.
-*   Documentation: None
+*   Documentation: Updated coverage documentation to describe `KIT_LCOV_INFO_PATH` and `lcov.info` as a coverage source.
 
 ## 🐛 Bug Fixes
 *  None
