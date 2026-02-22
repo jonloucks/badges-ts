@@ -14,7 +14,7 @@ import { Internal } from "./Internal.impl.js";
 export const COMMAND: Command<void> = {
   execute: async function (context: Context): Promise<void> {
     context.display.trace(`Running discover with: ${context.arguments.join(' ')}`);
-    Promise.allSettled([
+    await Promise.all([
       discoverProject(context),
       discoverCoverage(context)
     ]);
