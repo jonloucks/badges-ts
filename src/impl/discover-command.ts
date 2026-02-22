@@ -7,9 +7,10 @@ import { Coverage } from "@jonloucks/badges-ts/api/Coverage";
 import { Internal } from "./Internal.impl.js";
 
 /**
- * Discovers the project information such as name and version. 
- * This command is typically used as a prerequisite for other commands that need project information to function correctly.
- * It relies on the DiscoverProject contract to gather the necessary details about the project.
+ * Discovers the project information (such as name and version) and code coverage.
+ * This command is typically used as a prerequisite for other commands that need project metadata
+ * and/or coverage information to function correctly.
+ * It relies on the DiscoverProject and DiscoverCoverage contracts to gather the necessary details.
  */
 export const COMMAND: Command<void> = {
   execute: async function (context: Context): Promise<void> {
