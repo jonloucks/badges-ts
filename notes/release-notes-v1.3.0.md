@@ -21,8 +21,7 @@ npm install @jonloucks/badges-ts@1.3.0
 *   Documentation: None
 
 ## 🐛 Bug Fixes
-*  Fixed incomplete `lcov.info` parsing behavior in coverage percentage calculation.
-
+*  None
 ## ⬇️ Download
 
 *   [NPM](https://www.npmjs.com/package/@jonloucks/badges-ts/v/1.3.0)
