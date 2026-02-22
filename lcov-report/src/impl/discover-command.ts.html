@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">95.34% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>41/43</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">95.34% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>41/43</span>
             </div>
         
             
@@ -86,7 +86,28 @@
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -96,6 +117,18 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">11x</span>
@@ -108,29 +141,59 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Project } from "@jonloucks/badges-ts/api/Project";
 import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
+import { CONTRACT as DISCOVER_COVERAGE } from "@jonloucks/badges-ts/auxiliary/DiscoverCoverage";
 import { CONTRACTS } from "@jonloucks/contracts-ts";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
+import { Coverage } from "@jonloucks/badges-ts/api/Coverage";
+import { Internal } from "./Internal.impl.js";
 &nbsp;
 /**
- * Discovers the project information such as name and version. 
- * This command is typically used as a prerequisite for other commands that need project information to function correctly.
- * It relies on the DiscoverProject contract to gather the necessary details about the project.
+ * Discovers the project information (such as name and version) and code coverage.
+ * This command is typically used as a prerequisite for other commands that need project metadata
+ * and/or coverage information to function correctly.
+ * It relies on the DiscoverProject and DiscoverCoverage contracts to gather the necessary details.
  */
-export const COMMAND: Command&lt;Project&gt; = {
-  execute: async function (context: Context): Promise&lt;Project&gt; {
-    context.display.trace(`Running discover-project with: ${context.arguments.join(' ')}`);
-    return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject(context).then((project) =&gt; {
-      context.display.info(`Discovered project: ${project.name}, version: ${project.version}`);
-      return project;
-    }).catch((error: Error) =&gt; {
-      context.display.error(`Error during project detection: ${error.message}`);
-      throw error;
-    });
+export const COMMAND: Command&lt;void&gt; = {
+  execute: async function (context: Context): Promise&lt;void&gt; {
+    context.display.trace(`Running discover with: ${context.arguments.join(' ')}`);
+    await Promise.all([
+      discoverProject(context),
+      discoverCoverage(context)
+    ]);
   }
 };
+&nbsp;
+async function discoverProject(context: Context): Promise&lt;Project&gt; {
+  return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject(context).then((project) =&gt; {
+    context.display.info(`Discovered project: ${project.name}, version: ${project.version}`);
+    return project;
+  }).catch((error: Error) =&gt; {
+    context.display.error(`Error during project detection: ${error.message}`);
+    throw error;
+  });
+}
+&nbsp;
+async function discoverCoverage(context: Context): Promise&lt;Coverage&gt; {
+  return CONTRACTS.enforce(DISCOVER_COVERAGE).discoverCoverage(context).then((coverage) =&gt; {
+    context.display.info(`Discovered code coverage: ${Internal.formatPercent(coverage.percentage)}`);
+    return coverage;
+  }).catch((error: Error) =&gt; {
+<span class="cstat-no" title="statement not covered" >    context.display.error(`Error during code coverage detection: ${error.message}`);</span>
+<span class="cstat-no" title="statement not covered" >    throw error;</span>
+  });
+}
 &nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
@@ -139,7 +202,7 @@ export const COMMAND: Command&lt;Project&gt; = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-22T00:45:04.321Z
+                at 2026-02-22T21:09:39.131Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
