@@ -113,6 +113,14 @@ export const KIT_LCOV_REPORT_INDEX_PATH: Variant<string> = createVariant<string>
   fallback: 'coverage/lcov-report/index.html'
 });
 
+export const KIT_LCOV_INFO_PATH: Variant<string> = createVariant<string>({
+  name: 'LCOV Info Path',
+  keys: ['KIT_LCOV_INFO_PATH', 'kit.lcov.info.path'],
+  description: 'The file path to the LCOV info file.',
+  of: ofString(),
+  fallback: 'coverage/lcov.info'
+});
+
 export const KIT_VERSION_TS_PATH: Variant<string> = createVariant<string>({
   name: 'Version TS Path',
   keys: ['KIT_VERSION_TS_PATH', 'kit.version.ts.path'],

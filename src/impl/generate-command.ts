@@ -16,6 +16,7 @@ import {
   KIT_CODE_COVERAGE_PERCENT,
   KIT_COVERAGE_SUMMARY_BADGE_PATH,
   KIT_COVERAGE_SUMMARY_PATH,
+  KIT_LCOV_INFO_PATH,
   KIT_LCOV_REPORT_INDEX_PATH,
   KIT_NPM_BADGE_PATH,
   KIT_PROJECT_FOLDER,
@@ -110,6 +111,7 @@ async function getCodeCoveragePercent(context: Context): Promise<number> {
   // coverage percentage is provided and can accommodate different project setups
   return await Promise.any([
     getCodeCoverageFromEnvironment(context),
+    getCodeCoveragePercentFromLcovInfo(context),
     getCodeCoveragePercentFromCoverageSummary(context),
     getCodeCoveragePercentFromLcovReport(context)
   ]);
@@ -142,6 +144,69 @@ async function getCodeCoveragePercentFromCoverageSummary(context: Context): Prom
   })
 };
 
+async function getCodeCoveragePercentFromLcovInfo(context: Context): Promise<number> {
+  return await new Promise<number>((deliver, reject) => {
+    const inputPath: string = getLcovInfoPath(context);
+    return readFile(inputPath, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        try {
+          deliver(readPercentageFromLcovInfo(data));
+        } catch (parseError) {
+          reject(parseError);
+        }
+      }
+    });
+  })
+};
+
+function readPercentageFromLcovInfo(data: string): number {
+  let linesFound: number = 0;
+  let linesHit: number = 0;
+  let functionsFound: number = 0;
+  let functionsHit: number = 0;
+  let branchesFound: number = 0;
+  let branchesHit: number = 0;
+
+  for (const line of data.split(/\r?\n/)) {
+    if (line.startsWith('LF:')) {
+      linesFound += Number.parseInt(line.slice(3), 10) || 0;
+    } else if (line.startsWith('LH:')) {
+      linesHit += Number.parseInt(line.slice(3), 10) || 0;
+    } else if (line.startsWith('FNF:')) {
+      functionsFound += Number.parseInt(line.slice(4), 10) || 0;
+    } else if (line.startsWith('FNH:')) {
+      functionsHit += Number.parseInt(line.slice(4), 10) || 0;
+    } else if (line.startsWith('BRF:')) {
+      branchesFound += Number.parseInt(line.slice(4), 10) || 0;
+    } else if (line.startsWith('BRH:')) {
+      branchesHit += Number.parseInt(line.slice(4), 10) || 0;
+    }
+  }
+
+  const percentages: number[] = [];
+  if (linesFound > 0) {
+    percentages.push(Internal.normalizePercent((linesHit / linesFound) * 100));
+  }
+  if (functionsFound > 0) {
+    percentages.push(Internal.normalizePercent((functionsHit / functionsFound) * 100));
+  }
+  if (branchesFound > 0) {
+    percentages.push(Internal.normalizePercent((branchesHit / branchesFound) * 100));
+  }
+
+  if (percentages.length > 0) {
+    let totalPercent: number = 0;
+    for (const percent of percentages) {
+      totalPercent += percent;
+    }
+    return totalPercent / percentages.length;
+  }
+
+  throw new Error('Unable to parse coverage percentages from lcov.info');
+}
+
 async function getCodeCoveragePercentFromLcovReport(context: Context): Promise<number> {
   return await new Promise<number>((resolve, reject) => {
     const inputPath: string = getLcovReportIndexPath(context);
@@ -161,14 +226,14 @@ async function getCodeCoveragePercentFromLcovReport(context: Context): Promise<n
 
 function readPercentageFromLcovReport(data: string): number {
   const percentages: Record<string, number> = {};
-  const pattern = /<span class="strong">\s*([\d.]+)%\s*<\/span>\s*<span class="quiet">\s*(Statements|Branches|Functions|Lines)\s*<\/span>/g;
+  const pattern = /<span class="strong">\s*([\d.]+)%\s*<\/span>\s*<span class="quiet">\s*(Branches|Functions|Lines)\s*<\/span>/g;
 
   for (const match of data.matchAll(pattern)) {
     const label: string = match[2];
     const value: number = Number.parseFloat(match[1]);
     if (Internal.isPercent(value)) {
       percentages[label.toLowerCase()] = Internal.normalizePercent(value);
-      if (Object.keys(percentages).length >= 4) {
+      if (Object.keys(percentages).length >= 3) {
         break;
       }
     }
@@ -226,6 +291,11 @@ function getTemplateBadgePath(context: Context): string {
 function getLcovReportIndexPath(context: Context): string {
   return resolve(getProjectFolder(context),
     context.environment.getVariance(KIT_LCOV_REPORT_INDEX_PATH));
+}
+
+function getLcovInfoPath(context: Context): string {
+  return resolve(getProjectFolder(context),
+    context.environment.getVariance(KIT_LCOV_INFO_PATH));
 }
 
 function getBadgesFolder(context: Context): string {
