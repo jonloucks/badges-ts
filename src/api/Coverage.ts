@@ -5,8 +5,6 @@
  */
 export interface Coverage {
 
-  /**
-   * The overall code coverage percentage for the project.
-   */
+  /* The overall code coverage percentage for the project. */
   percentage: number;
 }
