@@ -43,7 +43,6 @@ class DiscoverCoverageImpl implements DiscoverCoverage {
       getCodeCoveragePercentFromLcovInfo(context),
       getCodeCoveragePercentFromCoverageSummary(context),
       getCodeCoveragePercentFromLcovReport(context)
-       // Future implementation will go here
     ]);
   }
 
