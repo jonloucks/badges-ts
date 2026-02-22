@@ -13,6 +13,11 @@ export interface Config {
   contracts: Contracts;
 }
 
+/**
+ * Factory function to create a DiscoverProject instance
+ * @param config the configuration for creating the DiscoverProject instance
+ * @returns a DiscoverProject instance
+ */
 export function create(config: Config): DiscoverProject {
   return DiscoverProjectImpl.internalCreate(config);
 }

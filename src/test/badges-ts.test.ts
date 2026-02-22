@@ -5,8 +5,6 @@ import {
   Badge,
   BadgeConfig,
   BadgeException,
-  Badges,
-  BadgesConfig,
   OptionalType,
   RequiredType,
   VERSION
@@ -28,8 +26,6 @@ describe('badges-ts/api Index exports', () => {
     ok(new BadgeException('Test').message === 'Test', 'BadgeException should be exported and constructible');
     assertNothing(null as OptionalType<RequiredType<unknown>>);
     assertNothing(null as OptionalType<OptionalType<unknown>>);
-    assertNothing(null as OptionalType<Badges>);
-    assertNothing(null as OptionalType<BadgesConfig>);
     assertNothing(null as OptionalType<Badge>);
     assertNothing(null as OptionalType<BadgeConfig>);
     ok(true, 'All exports are accessible'); // If we reach here, exports are accessible
