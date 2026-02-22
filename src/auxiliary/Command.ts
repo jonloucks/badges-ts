@@ -22,15 +22,15 @@ export interface Command<T> {
  */
 export interface Context {
 
-  /** The command-line arguments passed to the command, typically from process.argv.slice(2). */
+  /* The command-line arguments passed to the command, typically from process.argv.slice(2). */
   arguments: string[];
 
-  /** The display functions for logging and output within the command. */
+  /* The display functions for logging and output within the command. */
   display: Display;
 
-  /** The flags for command options, typically parsed from the command-line arguments. */
+  /* The flags for command options, typically parsed from the command-line arguments. */
   flags: Flags;
 
-  /** The environment for accessing variances and other contextual information. */
+  /* The environment for accessing variances and other contextual information. */
   environment: Environment;
 }
