@@ -35,7 +35,6 @@ export function create(config: Config): DiscoverCoverage {
 class DiscoverCoverageImpl implements DiscoverCoverage {
 
   async discoverCoverage(context: Context): Promise<Coverage> {
-    // For now, we can return a default coverage value or throw an error
     // various ways to determine the coverage percentage are attempted in parallel 
     // and the first successful result is used; this allows for flexibility in how the 
     // coverage percentage is provided and can accommodate different project setups
