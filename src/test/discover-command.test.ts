@@ -6,8 +6,7 @@ import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { create as createSandbox, Sandbox } from "./Sandbox.test.js";
 import { runMain } from "@jonloucks/badges-ts/cli";
 import { writeFileSync } from "node:fs";
-import { KIT_PACKAGE_JSON_PATH, KIT_PROJECT_FOLDER } from "@jonloucks/badges-ts/api/Variances";
-import { resolve } from "node:path";
+import { getPackageJsonPath } from "@jonloucks/badges-ts/api/Variances";
 
 describe('discover-command tests', () => {
   let sandbox: Sandbox;
@@ -48,8 +47,7 @@ describe('discover-command tests', () => {
 
     it('should discover project from package.json with missing repository', async () => {
       const context: Context = sandbox.toContext(['discover']);
-      const projectFolder = resolve(context.environment.getVariance(KIT_PROJECT_FOLDER));
-      const packageJsonPath = resolve(projectFolder, context.environment.getVariance(KIT_PACKAGE_JSON_PATH));
+      const packageJsonPath = getPackageJsonPath(context);
       const packageJson = {
         name: "@test/my-package",
         version: "1.2.3",
@@ -69,8 +67,7 @@ describe('discover-command tests', () => {
 
     it('should not discover project from invalid package.json', async () => {
       const context: Context = sandbox.toContext(['discover']);
-      const projectFolder = resolve(context.environment.getVariance(KIT_PROJECT_FOLDER));
-      const packageJsonPath = resolve(projectFolder, context.environment.getVariance(KIT_PACKAGE_JSON_PATH));
+      const packageJsonPath = getPackageJsonPath(context);
       const packageJson = {
         xname: "@test/my-package",
         xversion: "1.2.3",

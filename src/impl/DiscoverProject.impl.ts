@@ -1,7 +1,7 @@
 import { BadgeException } from "@jonloucks/badges-ts/api/BadgeException";
 import { Project } from "@jonloucks/badges-ts/api/Project";
 import { isNotPresent } from "@jonloucks/badges-ts/api/Types";
-import { KIT_PACKAGE_JSON_PATH, KIT_PROJECT_FOLDER, resolveVariant } from "@jonloucks/badges-ts/api/Variances";
+import { getPackageJsonPath } from "@jonloucks/badges-ts/api/Variances";
 import { isNonEmptyString, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
@@ -52,7 +52,7 @@ class DiscoverProjectImpl implements DiscoverProject {
   async detectPackageJson(context: Context): Promise<Project> {
     return await new Promise<Project>(async (deliver, reject) => {
       try {
-        const fileName: string = this.#getPackageJsonPath(context);
+        const fileName: string = getPackageJsonPath(context);
         const fileContent: string = await readFile(fileName, 'utf8');
         const packageJson: PackageJson = JSON.parse(fileContent) as PackageJson;
         if (isNonEmptyString(packageJson.name) && isNonEmptyString(packageJson.version)) {
@@ -66,10 +66,6 @@ class DiscoverProjectImpl implements DiscoverProject {
       }
     });
   };
-
-  #getPackageJsonPath(context: Context): string {
-    return resolveVariant(context.environment, KIT_PROJECT_FOLDER, KIT_PACKAGE_JSON_PATH);
-  }
 
   private constructor(config: Config) {
     this.#contracts = config.contracts;

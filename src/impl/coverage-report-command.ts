@@ -1,4 +1,4 @@
-import { KIT_COVERAGE_FOLDER, KIT_COVERAGE_REPORT_FOLDER, KIT_LCOV_INFO_PATH, KIT_PROJECT_FOLDER, resolveVariant } from "@jonloucks/badges-ts/api/Variances";
+import { getLcovInfoPath, getCoverageReportFolder } from "@jonloucks/badges-ts/api/Variances";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
@@ -29,14 +29,6 @@ interface FileCoverage {
   lines: number;
   functions: number;
   branches: number;
-}
-
-function getLcovInfoPath(context: Context): string {
-  return resolveVariant(context.environment, KIT_PROJECT_FOLDER, KIT_COVERAGE_FOLDER, KIT_LCOV_INFO_PATH);
-};
-
-function getCoverageReportFolder(context: Context): string {
-  return resolveVariant(context.environment, KIT_PROJECT_FOLDER, KIT_COVERAGE_FOLDER, KIT_COVERAGE_REPORT_FOLDER);
 }
 
 function matchNumber(matches: string | undefined): number {

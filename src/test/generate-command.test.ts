@@ -4,10 +4,9 @@ import { afterEach, beforeEach, describe, it } from "node:test";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { runMain } from "@jonloucks/badges-ts/cli";
 import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
-import { Variant } from "@jonloucks/variants-ts/api/Variant";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "path";
-import { KIT_BADGES_FOLDER, KIT_COVERAGE_SUMMARY_BADGE_PATH, KIT_NPM_BADGE_PATH, KIT_PROJECT_FOLDER, KIT_TYPEDOC_BADGE_PATH } from "../api/Variances.js";
+import { getCodeCoverageBadgePath, getNpmBadgePath, getTypedocBadgePath } from "@jonloucks/badges-ts/api/Variances";
 import { create as createSandbox, Sandbox } from "./Sandbox.test.js";
 
 describe('badges-ts generate', () => {
@@ -33,9 +32,9 @@ describe('badges-ts generate', () => {
       const context: Context = sandbox.toContext(['generate']);
       await runMain(context);
 
-      const npmBadgePath: string = resolveBadgePath(context, KIT_NPM_BADGE_PATH);
-      const typedocBadgePath: string = resolveBadgePath(context, KIT_TYPEDOC_BADGE_PATH);
-      const coverageSummaryBadgePath: string = resolveBadgePath(context, KIT_COVERAGE_SUMMARY_BADGE_PATH);
+      const npmBadgePath: string = getNpmBadgePath(context);
+      const typedocBadgePath: string = getTypedocBadgePath(context);
+      const coverageSummaryBadgePath: string = getCodeCoverageBadgePath(context);
 
       ok(existsSync(npmBadgePath), 'NPM badge should be created');
       ok(existsSync(typedocBadgePath), 'Typedoc badge should be created');
@@ -50,7 +49,7 @@ describe('badges-ts generate', () => {
       const context: Context = sandbox.toContext(['generate']);
       await runMain(context);
 
-      const expectedBadgePath = resolveBadgePath(context, KIT_COVERAGE_SUMMARY_BADGE_PATH);
+      const expectedBadgePath = getCodeCoverageBadgePath(context);
 
       ok(existsSync(expectedBadgePath), 'Coverage summary badge should be created');
       assertNoErrors();
@@ -108,7 +107,7 @@ describe('badges-ts generate', () => {
       const context: Context = sandbox.toContext(['generate']);
       await runMain(context);
 
-      const coverageSummaryBadgePath: string = resolveBadgePath(context, KIT_COVERAGE_SUMMARY_BADGE_PATH);
+      const coverageSummaryBadgePath: string = getCodeCoverageBadgePath(context);
       const generatedBadge: string = readFileSync(coverageSummaryBadgePath, 'utf8');
 
       ok(generatedBadge.includes('70.0%'), 'Coverage badge should include average percent derived from lcov.info totals');
@@ -117,8 +116,3 @@ describe('badges-ts generate', () => {
   });
 });
 
-function resolveBadgePath(context: Context, varianceKey: Variant<string>): string {
-  const projectFolder: string = context.environment.getVariance(KIT_PROJECT_FOLDER);
-  const badgesFolder: string = context.environment.getVariance(KIT_BADGES_FOLDER);
-  return resolve(projectFolder, badgesFolder, context.environment.getVariance(varianceKey));
-}

@@ -1,7 +1,8 @@
 import { Variant } from "@jonloucks/variants-ts/api/Variant";
-import { createVariant, Environment, ofNumber, ofString } from "@jonloucks/variants-ts/auxiliary/Convenience";
+import { createVariant, ofNumber, ofString } from "@jonloucks/variants-ts/auxiliary/Convenience";
 import { resolve } from "node:path";
 import { resolveDataPath } from "../data/Resolver.js";
+import { Context } from "@jonloucks/badges-ts/api/Types";
 
 /**
  *  Only resolving KIT_PROJECT_FOLDER to an absolute path at the point of initialization allows it to be set to a 
@@ -15,6 +16,14 @@ export const KIT_PROJECT_FOLDER: Variant<string> = createVariant<string>({
   description: 'The folder path of the project.',
   of: ofString(),
   fallback: resolve('./')
+});
+
+export const KIT_SOURCE_FOLDER: Variant<string> = createVariant<string>({
+  name: 'Source Folder',
+  keys: ['KIT_SOURCE_FOLDER', 'kit.source.folder'],
+  description: 'The folder path of the source files.',
+  of: ofString(),
+  fallback: 'src'
 });
 
 export const KIT_BADGES_CONFIG_PATH: Variant<string> = createVariant<string>({
@@ -134,7 +143,7 @@ export const KIT_COVERAGE_SUMMARY_PATH: Variant<string> = createVariant<string>(
   keys: ['KIT_COVERAGE_SUMMARY_PATH', 'kit.coverage.summary.path'],
   description: 'The file path to the coverage summary JSON file.',
   of: ofString(),
-  fallback: 'coverage/coverage-summary.json'
+  fallback: 'coverage-summary.json'
 });
 
 export const KIT_LCOV_INFO_PATH: Variant<string> = createVariant<string>({
@@ -150,7 +159,7 @@ export const KIT_VERSION_TS_PATH: Variant<string> = createVariant<string>({
   keys: ['KIT_VERSION_TS_PATH', 'kit.version.ts.path'],
   description: 'The file path to output the generated version.ts file.',
   of: ofString(),
-  fallback: 'src/version.ts'
+  fallback: 'version.ts'
 });
 
 export const KIT_100_PERCENT_COLOR: Variant<string> = createVariant<string>({
@@ -209,8 +218,59 @@ export const KIT_0_PERCENT_COLOR: Variant<string> = createVariant<string>({
   fallback: '#ff0000'
 });
 
-
-export function resolveVariant(environment: Environment, ...keys: Variant<string>[]): string {
-  const parts: string[] = keys.map(key => environment.getVariance(key));
+function resolveVariant(context: Context, ...keys: Variant<string>[]): string {
+  const parts: string[] = keys.map(key => context.environment.getVariance(key));
   return resolve(...parts);
+}
+
+export function getLcovReportIndexPath(context: Context): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_COVERAGE_FOLDER, KIT_COVERAGE_REPORT_FOLDER, KIT_LCOV_REPORT_INDEX_PATH);
+}
+
+export function getCoverageSummaryFilePath(context: Context): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_COVERAGE_FOLDER, KIT_COVERAGE_SUMMARY_PATH);
+}
+
+export function getLcovInfoPath(context: Context): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_COVERAGE_FOLDER, KIT_LCOV_INFO_PATH);
+}
+
+export function getCoverageReportFolder(context: Context): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_COVERAGE_FOLDER, KIT_COVERAGE_REPORT_FOLDER);
+}
+
+export function getPackageJsonPath(context: Context): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_PACKAGE_JSON_PATH);
+}
+
+export function resolveBadgePath(context: Context, ...keys: Variant<string>[]): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_BADGES_FOLDER, ...keys);
+}
+
+export function getTemplateBadgePath(context: Context): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_BADGES_FOLDER, KIT_TEMPLATE_BADGE_PATH);
+}
+
+export function getCodeCoverageBadgePath(context: Context): string {
+  return resolveBadgePath(context, KIT_COVERAGE_SUMMARY_BADGE_PATH);
+}
+
+export function getTypedocBadgePath(context: Context): string {
+  return resolveBadgePath(context, KIT_TYPEDOC_BADGE_PATH);
+}
+
+export function getNpmBadgePath(context: Context): string {
+  return resolveBadgePath(context, KIT_NPM_BADGE_PATH);
+}
+
+export function getVersionTsPath(context: Context): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_SOURCE_FOLDER, KIT_VERSION_TS_PATH);
+}
+
+export function getReleaseNotesOutputFolder(context: Context): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_RELEASE_NOTES_OUTPUT_FOLDER);
+}
+
+export function getReleaseNotesTemplatePath(context: Context): string {
+  return resolveVariant(context, KIT_PROJECT_FOLDER, KIT_RELEASE_NOTES_OUTPUT_FOLDER, KIT_RELEASE_NOTES_TEMPLATE_PATH);
 }
