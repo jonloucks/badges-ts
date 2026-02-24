@@ -59,6 +59,7 @@ jobs:
 
       - name: Test with coverage gate
         run: npm run test:coverage-gate
+        working-directory: main-project
 
       - name: Generate documentation
         run: npm run docs
