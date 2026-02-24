@@ -1,18 +1,12 @@
 import { Coverage } from "@jonloucks/badges-ts/api/Coverage";
+import { getCoverageSummaryFilePath, getLcovInfoPath, getLcovReportIndexPath, KIT_CODE_COVERAGE_PERCENT } from "@jonloucks/badges-ts/api/Variances";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { DiscoverCoverage } from "@jonloucks/badges-ts/auxiliary/DiscoverCoverage";
 import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
 import { isPresent, OptionalType } from "@jonloucks/contracts-ts/api/Types";
-import {
-  KIT_CODE_COVERAGE_PERCENT,
-  KIT_COVERAGE_SUMMARY_PATH,
-  KIT_LCOV_INFO_PATH,
-  KIT_LCOV_REPORT_INDEX_PATH,
-  KIT_PROJECT_FOLDER
-} from "@jonloucks/badges-ts/api/Variances";
 import { readFile } from "fs";
 import { Internal } from "./Internal.impl.js";
-import { resolve } from "path";
+import { used } from "../auxiliary/Checks.js";
 
 /**
  * Configuration for creating a DiscoverCoverage instance
@@ -43,7 +37,10 @@ class DiscoverCoverageImpl implements DiscoverCoverage {
       getCodeCoveragePercentFromLcovInfo(context),
       getCodeCoveragePercentFromCoverageSummary(context),
       getCodeCoveragePercentFromLcovReport(context)
-    ]);
+    ]).catch((errors) => {
+      used(errors);
+      throw new Error("Unable to determine code coverage percentage");
+    });
   }
 
   static internalCreate(config: Config): DiscoverCoverage {
@@ -194,23 +191,4 @@ function readPercentageFromCoverageSummary(data: Buffer): Coverage {
   const text: string = data.toString('utf8');
   const jsonData = JSON.parse(text);
   return { percentage: jsonData.total.lines.pct };
-}
-
-function getProjectFolder(context: Context): string {
-  return context.environment.getVariance(KIT_PROJECT_FOLDER);
-}
-
-function getCoverageSummaryFilePath(context: Context): string {
-  return resolve(getProjectFolder(context),
-    context.environment.getVariance(KIT_COVERAGE_SUMMARY_PATH));
-}
-
-function getLcovReportIndexPath(context: Context): string {
-  return resolve(getProjectFolder(context),
-    context.environment.getVariance(KIT_LCOV_REPORT_INDEX_PATH));
-}
-
-function getLcovInfoPath(context: Context): string {
-  return resolve(getProjectFolder(context),
-    context.environment.getVariance(KIT_LCOV_INFO_PATH));
 }

@@ -1,13 +1,12 @@
-import { readFile } from "fs/promises";
-import { Project } from "@jonloucks/badges-ts/api/Project";
-import { DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
-import { isNonEmptyString, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { BadgeException } from "@jonloucks/badges-ts/api/BadgeException";
+import { Project } from "@jonloucks/badges-ts/api/Project";
 import { isNotPresent } from "@jonloucks/badges-ts/api/Types";
-import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
+import { getPackageJsonPath } from "@jonloucks/badges-ts/api/Variances";
+import { isNonEmptyString, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
-import { KIT_PACKAGE_JSON_PATH, KIT_PROJECT_FOLDER } from "@jonloucks/badges-ts/api/Variances";
-import { resolve } from "path";
+import { DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
+import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
+import { readFile } from "fs/promises";
 
 export interface Config {
   contracts: Contracts;
@@ -53,7 +52,7 @@ class DiscoverProjectImpl implements DiscoverProject {
   async detectPackageJson(context: Context): Promise<Project> {
     return await new Promise<Project>(async (deliver, reject) => {
       try {
-        const fileName: string = this.#getPackageJsonPath(context);
+        const fileName: string = getPackageJsonPath(context);
         const fileContent: string = await readFile(fileName, 'utf8');
         const packageJson: PackageJson = JSON.parse(fileContent) as PackageJson;
         if (isNonEmptyString(packageJson.name) && isNonEmptyString(packageJson.version)) {
@@ -67,12 +66,6 @@ class DiscoverProjectImpl implements DiscoverProject {
       }
     });
   };
-
-  #getPackageJsonPath(context: Context): string {
-    const projectFolder: string = context.environment.getVariance(KIT_PROJECT_FOLDER);
-    const fileName: string = context.environment.getVariance(KIT_PACKAGE_JSON_PATH);
-    return resolve(projectFolder, fileName);
-  }
 
   private constructor(config: Config) {
     this.#contracts = config.contracts;

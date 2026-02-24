@@ -12,12 +12,10 @@ import { Badge } from "@jonloucks/badges-ts/api/Badge";
 import { CONTRACT as BADGE_FACTORY, BadgeFactory } from "@jonloucks/badges-ts/api/BadgeFactory";
 import { Project } from "@jonloucks/badges-ts/api/Project";
 import {
-  KIT_BADGES_FOLDER,
-  KIT_COVERAGE_SUMMARY_BADGE_PATH,
-  KIT_NPM_BADGE_PATH,
-  KIT_PROJECT_FOLDER,
-  KIT_TEMPLATE_BADGE_PATH,
-  KIT_TYPEDOC_BADGE_PATH
+  getCodeCoverageBadgePath,
+  getNpmBadgePath,
+  getTemplateBadgePath,
+  getTypedocBadgePath
 } from "@jonloucks/badges-ts/api/Variances";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { CONTRACT as DISCOVER_PROJECT } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
@@ -25,7 +23,6 @@ import { CONTRACT as DISCOVER_COVERAGE } from "@jonloucks/badges-ts/auxiliary/Di
 import { CONTRACTS } from "@jonloucks/contracts-ts";
 import { Coverage } from "@jonloucks/badges-ts/api/Coverage";
 import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
-import { resolve } from "path";
 import { Internal } from "./Internal.impl.js";
 
 export const COMMAND: Command<Badge[]> = {
@@ -124,31 +121,3 @@ async function generateTypedocBadge(context: Context): Promise<Badge> {
 }
 
 
-function getProjectFolder(context: Context): string {
-  return context.environment.getVariance(KIT_PROJECT_FOLDER);
-}
-
-function getTemplateBadgePath(context: Context): string {
-  return resolve(getProjectFolder(context),
-    context.environment.getVariance(KIT_TEMPLATE_BADGE_PATH));
-}
-
-function getBadgesFolder(context: Context): string {
-  return resolve(getProjectFolder(context),
-    context.environment.getVariance(KIT_BADGES_FOLDER));
-}
-
-function getCodeCoverageBadgePath(context: Context): string {
-  return resolve(getBadgesFolder(context),
-    context.environment.getVariance(KIT_COVERAGE_SUMMARY_BADGE_PATH));
-}
-
-function getTypedocBadgePath(context: Context): string {
-  return resolve(getBadgesFolder(context),
-    context.environment.getVariance(KIT_TYPEDOC_BADGE_PATH));
-}
-
-function getNpmBadgePath(context: Context): string {
-  return resolve(getBadgesFolder(context),
-    context.environment.getVariance(KIT_NPM_BADGE_PATH));
-}

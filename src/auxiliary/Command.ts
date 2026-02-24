@@ -1,5 +1,4 @@
-import { Display, Flags } from "@jonloucks/badges-ts/api/Types";
-import { Environment } from "@jonloucks/variants-ts/api/Environment";
+import { type Context } from "@jonloucks/badges-ts/api/Types";
 
 /**
  * Command interface representing an executable action within the badges-ts CLI.
@@ -16,21 +15,5 @@ export interface Command<T> {
   execute(context: Context): Promise<T>;
 }
 
-/**
- * Context interface representing the execution context for a command within the badges-ts CLI.
- * It includes the command-line arguments, display functions for logging, flags for command options, and the environment for accessing variances and other contextual information.
- */
-export interface Context {
+export { Context };
 
-  /* The command-line arguments passed to the command, typically from process.argv.slice(2). */
-  arguments: string[];
-
-  /* The display functions for logging and output within the command. */
-  display: Display;
-
-  /* The flags for command options, typically parsed from the command-line arguments. */
-  flags: Flags;
-
-  /* The environment for accessing variances and other contextual information. */
-  environment: Environment;
-}

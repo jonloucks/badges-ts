@@ -11,7 +11,8 @@ import {
   KIT_ABOVE_60_PERCENT_COLOR,
   KIT_ABOVE_70_PERCENT_COLOR,
   KIT_ABOVE_90_PERCENT_COLOR
-} from "../api/Variances.js";
+} from "@jonloucks/badges-ts/api/Variances";
+import { mkdirSync } from "fs";
 
 /**
  * Helper functions for internal implementations.
@@ -84,5 +85,9 @@ export const Internal = {
     } else {
       return 0;
     }
+  },
+
+  createFoldersIfNotExist(path: string): void {
+      mkdirSync(path, { recursive: true });
   }
-}
+};

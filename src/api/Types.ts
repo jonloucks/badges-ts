@@ -1,3 +1,5 @@
+import { Environment } from "@jonloucks/variants-ts/api/Environment";
+
 export type { OptionalType, RequiredType } from "@jonloucks/contracts-ts/api/Types";
 
 export { guardFunctions, isNotPresent, isNumber, isPresent, isString } from "@jonloucks/contracts-ts/api/Types";
@@ -84,4 +86,23 @@ export interface Flags {
 
   /* Indicates whether verbose logging should be enabled, providing more detailed output about the command execution process. This may include additional informational messages, warnings, and trace-level details to help the user understand what is happening during the execution of a command. */
   verbose: boolean;
+}
+
+/**
+ * Context interface representing the execution context for a command within the badges-ts CLI.
+ * It includes the command-line arguments, display functions for logging, flags for command options, and the environment for accessing variances and other contextual information.
+ */
+export interface Context {
+
+  /* The command-line arguments passed to the command, typically from process.argv.slice(2). */
+  arguments: string[];
+
+  /* The display functions for logging and output within the command. */
+  display: Display;
+
+  /* The flags for command options, typically parsed from the command-line arguments. */
+  flags: Flags;
+
+  /* The environment for accessing variances and other contextual information. */
+  environment: Environment;
 }
