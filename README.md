@@ -48,6 +48,8 @@ This updates `src/version.ts` and creates release notes for the current package 
 - `badges-ts discover` — Reads project metadata from `package.json`.
 - `badges-ts generate` — Generates npm, coverage, and typedoc badges.
 - `badges-ts apply-version` — Writes `src/version.ts` and creates release-notes file from template.
+- `badges-ts badges-ts coverage-report` — Generates code coverage report.
+- `badges-ts badges-ts coverage-gate` — Validates code coverage gates.
 - `badges-ts version` — Prints CLI version.
 - `badges-ts help` — Prints usage.
 
