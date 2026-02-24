@@ -1,7 +1,7 @@
-import { createVariant, ofNumber, ofString } from "@jonloucks/variants-ts/auxiliary/Convenience";
 import { Variant } from "@jonloucks/variants-ts/api/Variant";
-import { resolveDataPath } from "../data/Resolver.js";
+import { createVariant, Environment, ofNumber, ofString } from "@jonloucks/variants-ts/auxiliary/Convenience";
 import { resolve } from "node:path";
+import { resolveDataPath } from "../data/Resolver.js";
 
 /**
  *  Only resolving KIT_PROJECT_FOLDER to an absolute path at the point of initialization allows it to be set to a 
@@ -33,20 +33,20 @@ export const KIT_PACKAGE_JSON_PATH: Variant<string> = createVariant<string>({
   fallback: 'package.json'
 });
 
-export const KIT_COVERAGE_SUMMARY_PATH: Variant<string> = createVariant<string>({
-  name: 'Coverage Summary Path',
-  keys: ['KIT_COVERAGE_SUMMARY_PATH', 'kit.coverage.summary.path'],
-  description: 'The file path to the coverage summary JSON file.',
-  of: ofString(),
-  fallback: 'coverage/coverage-summary.json'
-});
-
 export const KIT_CODE_COVERAGE_PERCENT: Variant<number> = createVariant<number>({
   name: 'Code Coverage Percent',
   keys: ['KIT_CODE_COVERAGE_PERCENT', 'kit.code.coverage.percent'],
   description: 'The code coverage percentage.',
   of: ofNumber(),
   fallback: undefined
+});
+
+export const KIT_REQUIRED_CODE_COVERAGE: Variant<number> = createVariant<number>({
+  name: 'Code Coverage Gate',
+  keys: ['KIT_REQUIRED_CODE_COVERAGE', 'kit.required.code.coverage'],
+  description: 'The code coverage gate percentage.',
+  of: ofNumber(),
+  fallback: 0.0
 });
 
 export const KIT_COVERAGE_SUMMARY_BADGE_PATH: Variant<string> = createVariant<string>({
@@ -102,7 +102,23 @@ export const KIT_RELEASE_NOTES_TEMPLATE_PATH: Variant<string> = createVariant<st
   keys: ['KIT_RELEASE_NOTES_TEMPLATE_PATH', 'kit.release.notes.template.path'],
   description: 'The file path to the release notes template file.',
   of: ofString(),
-  fallback: 'notes/release-notes-template.md'
+  fallback: 'release-notes-template.md'
+});
+
+export const KIT_COVERAGE_FOLDER: Variant<string> = createVariant<string>({
+  name: 'Coverage Folder',
+  keys: ['KIT_COVERAGE_FOLDER', 'kit.coverage.folder'],
+  description: 'The folder path to output the coverage.',
+  of: ofString(),
+  fallback: 'coverage'
+});
+
+export const KIT_COVERAGE_REPORT_FOLDER: Variant<string> = createVariant<string>({
+  name: 'Coverage Report Folder',
+  keys: ['KIT_COVERAGE_REPORT_FOLDER', 'kit.coverage.report.folder'],
+  description: 'The folder path to output the generated coverage report files.',
+  of: ofString(),
+  fallback: 'lcov-report'
 });
 
 export const KIT_LCOV_REPORT_INDEX_PATH: Variant<string> = createVariant<string>({
@@ -110,7 +126,15 @@ export const KIT_LCOV_REPORT_INDEX_PATH: Variant<string> = createVariant<string>
   keys: ['KIT_LCOV_REPORT_INDEX_PATH', 'kit.lcov.report.index.path'],
   description: 'The file path to the LCOV report index.html file.',
   of: ofString(),
-  fallback: 'coverage/lcov-report/index.html'
+  fallback: 'index.html'
+});
+
+export const KIT_COVERAGE_SUMMARY_PATH: Variant<string> = createVariant<string>({
+  name: 'Coverage Summary Path',
+  keys: ['KIT_COVERAGE_SUMMARY_PATH', 'kit.coverage.summary.path'],
+  description: 'The file path to the coverage summary JSON file.',
+  of: ofString(),
+  fallback: 'coverage/coverage-summary.json'
 });
 
 export const KIT_LCOV_INFO_PATH: Variant<string> = createVariant<string>({
@@ -118,7 +142,7 @@ export const KIT_LCOV_INFO_PATH: Variant<string> = createVariant<string>({
   keys: ['KIT_LCOV_INFO_PATH', 'kit.lcov.info.path'],
   description: 'The file path to the LCOV info file.',
   of: ofString(),
-  fallback: 'coverage/lcov.info'
+  fallback: 'lcov.info'
 });
 
 export const KIT_VERSION_TS_PATH: Variant<string> = createVariant<string>({
@@ -184,3 +208,9 @@ export const KIT_0_PERCENT_COLOR: Variant<string> = createVariant<string>({
   of: ofString(),
   fallback: '#ff0000'
 });
+
+
+export function resolveVariant(environment: Environment, ...keys: Variant<string>[]): string {
+  const parts: string[] = keys.map(key => environment.getVariance(key));
+  return resolve(...parts);
+}

@@ -1,18 +1,20 @@
 import { Coverage } from "@jonloucks/badges-ts/api/Coverage";
+import {
+  KIT_CODE_COVERAGE_PERCENT,
+  KIT_COVERAGE_FOLDER,
+  KIT_COVERAGE_REPORT_FOLDER,
+  KIT_COVERAGE_SUMMARY_PATH,
+  KIT_LCOV_INFO_PATH,
+  KIT_LCOV_REPORT_INDEX_PATH,
+  KIT_PROJECT_FOLDER,
+  resolveVariant
+} from "@jonloucks/badges-ts/api/Variances";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { DiscoverCoverage } from "@jonloucks/badges-ts/auxiliary/DiscoverCoverage";
 import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
 import { isPresent, OptionalType } from "@jonloucks/contracts-ts/api/Types";
-import {
-  KIT_CODE_COVERAGE_PERCENT,
-  KIT_COVERAGE_SUMMARY_PATH,
-  KIT_LCOV_INFO_PATH,
-  KIT_LCOV_REPORT_INDEX_PATH,
-  KIT_PROJECT_FOLDER
-} from "@jonloucks/badges-ts/api/Variances";
 import { readFile } from "fs";
 import { Internal } from "./Internal.impl.js";
-import { resolve } from "path";
 
 /**
  * Configuration for creating a DiscoverCoverage instance
@@ -196,21 +198,14 @@ function readPercentageFromCoverageSummary(data: Buffer): Coverage {
   return { percentage: jsonData.total.lines.pct };
 }
 
-function getProjectFolder(context: Context): string {
-  return context.environment.getVariance(KIT_PROJECT_FOLDER);
-}
-
 function getCoverageSummaryFilePath(context: Context): string {
-  return resolve(getProjectFolder(context),
-    context.environment.getVariance(KIT_COVERAGE_SUMMARY_PATH));
+  return resolveVariant(context.environment, KIT_PROJECT_FOLDER, KIT_COVERAGE_FOLDER, KIT_COVERAGE_SUMMARY_PATH);
 }
 
 function getLcovReportIndexPath(context: Context): string {
-  return resolve(getProjectFolder(context),
-    context.environment.getVariance(KIT_LCOV_REPORT_INDEX_PATH));
+  return resolveVariant(context.environment, KIT_PROJECT_FOLDER, KIT_COVERAGE_FOLDER, KIT_COVERAGE_REPORT_FOLDER, KIT_LCOV_REPORT_INDEX_PATH);
 }
 
 function getLcovInfoPath(context: Context): string {
-  return resolve(getProjectFolder(context),
-    context.environment.getVariance(KIT_LCOV_INFO_PATH));
+  return resolveVariant(context.environment, KIT_PROJECT_FOLDER, KIT_COVERAGE_FOLDER, KIT_LCOV_INFO_PATH);
 }

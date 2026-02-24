@@ -106,6 +106,7 @@ class SandboxImpl implements Sandbox {
     }
     this.#deployPackageJson();
     this.#deploySourceFiles();
+    this.#deploySummary();
     this.#deployCoverageSummary();
     this.#deployLcovReport();
     this.#deployReleaseNotes();
@@ -138,6 +139,15 @@ class SandboxImpl implements Sandbox {
     writeFileSync(templatePath, '# {{NAME}} v{{VERSION}}', 'utf8');
     this.setVariance('KIT_RELEASE_NOTES_OUTPUT_FOLDER', this.#folder!);
     this.setVariance('KIT_RELEASE_NOTES_TEMPLATE_PATH', templatePath);
+  }
+  
+  #deploySummary(): void {
+    mkdirSync(resolve(this.#folder!, 'coverage'));
+    // lcov.info
+        const fromFile: string = resolveDataPath("lcov.info.dat");
+    const toFile: string = resolve(this.#folder!, "coverage", "lcov.info");
+    copyFileSync(fromFile, toFile);
+    this.setVariance('KIT_LCOV_INFO_PATH', toFile);
   }
 
   #deployCoverageSummary(): void {

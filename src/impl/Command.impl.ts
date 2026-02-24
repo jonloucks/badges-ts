@@ -8,9 +8,10 @@ import { resolve } from "node:path";
 import { existsSync, readFileSync } from "node:fs";
 
 export function toContext(args: string[]): Context {
-  const environment: Environment = toEnvironment();
   const flags: Flags = parseFlags({ args });
   const display: Display = flagsToDisplay(flags);
+  const environment: Environment = toEnvironment(display);
+
   return {
     arguments: args,
     display: display,
@@ -44,12 +45,12 @@ function flagsToDisplay(flags: Flags): Display {
   };
 }
 
-function toEnvironment(): Environment {
+function toEnvironment(display: Display): Environment {
   const processSource: Source = createProcessSource();
   const processEnvironment: Environment = createEnvironment({
     sources: [processSource]
   });
-  const fileSource: Source | undefined = createFileSource(processEnvironment);
+  const fileSource: Source | undefined = createFileSource(display, processEnvironment);
   if (isPresent(fileSource)) {
     return createEnvironment({
       sources: [processSource, fileSource]
@@ -59,7 +60,7 @@ function toEnvironment(): Environment {
   }
 };
 
-function createFileSource(environment: Environment): Source | undefined {
+function createFileSource(display: Display, environment: Environment): Source | undefined {
   // in the future we could support multiple config files and merge them together, but for now we'll just support one
   // in the future we could check if file changes and reload the config, but for now we'll just read it once at startup
   const configFilePath: string = getFileSourcePath(environment);
@@ -69,9 +70,10 @@ function createFileSource(environment: Environment): Source | undefined {
       const record = JSON.parse(fileContents);
       return createRecordSource(record);
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.warn(`Failed to read or parse config file at "${configFilePath}": ${message}`);
-      return undefined;
+      const cause:string = error instanceof Error ? error.message : String(error);
+      const message = `Failed to read or parse config file at "${configFilePath}": ${cause}`;
+      display.error(message);
+      throw new Error(message);
     }
   }
   return undefined;

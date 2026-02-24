@@ -47,7 +47,9 @@
     "build": "tsc",
     "test": "tsx --test $(find src -name '*.test.ts')",
     "test:watch": "tsx --test --watch $(find src -name '*.test.ts')",
-    "test:coverage": "npx c8 --check-coverage --lines 95 --functions 95 --branches 95 --statements 95 --reporter=lcov npx tsx --test $(find src -name '*.test.ts')",
+    "test:coverage": "mkdir -p coverage && tsx --test --experimental-test-coverage --experimental-specifier-resolution=node --test-reporter=lcov $(find src -name '*.test.ts') > coverage/lcov.info",
+    "test:coverage-report": "npx tsx ./src/bin/badges-ts.js coverage-report",
+    "test:coverage-gate": "npx tsx ./src/bin/badges-ts.js coverage-gate",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prepublishOnly": "npm run build",
@@ -81,11 +83,15 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
+  
+  "overrides": {
+    "minimatch": "10.2.1"
+  },
+
   "devDependencies": {
     "@types/node": "^25.3.0",
     "@typescript-eslint/eslint-plugin": "^8.56.0",
     "@typescript-eslint/parser": "^8.56.0",
-    "c8": "^10.1.3",
     "eslint": "^9.39.2",
     "tsx": "^4.19.2",
     "typedoc": "^0.28.17",

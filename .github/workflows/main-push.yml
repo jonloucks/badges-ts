@@ -53,6 +53,13 @@ jobs:
         run: npm run test:coverage
         working-directory: main-project
 
+      - name: Test with coverage report
+        run: npm run test:coverage-report
+        working-directory: main-project
+
+      - name: Test with coverage gate
+        run: npm run test:coverage-gate
+
       - name: Generate documentation
         run: npm run docs
         working-directory: main-project
@@ -68,10 +75,11 @@ jobs:
           KIT_TYPEDOC_BADGE_PATH: ${{ github.workspace }}/.artifacts/badges/${{ env.SIMPLE_BRANCH_NAME }}-typedoc.svg
           KIT_NPM_BADGE_PATH: ${{ github.workspace }}/.artifacts/badges/${{ env.SIMPLE_BRANCH_NAME }}-npm.svg
 
-      - name: Upload Jest Code Coverage report
+      - name: Upload Test Coverage report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: jest-coverage-report
+          name: test-coverage-report
           path: main-project/coverage/lcov-report/
 
       - name: Stage publish artifacts

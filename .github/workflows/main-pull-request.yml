@@ -53,8 +53,17 @@ jobs:
         run: npm run test:coverage
         working-directory: main-project
 
-      - name: Upload Jest Code Coverage report
+      - name: Test with coverage report
+        run: npm run test:coverage-report
+        working-directory: main-project
+
+      - name: Test with coverage gate
+        run: npm run test:coverage-gate
+        working-directory: main-project
+
+      - name: Upload Test Coverage report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: jest-coverage-report
+          name: test-coverage-report
           path: main-project/coverage/lcov-report/

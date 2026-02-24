@@ -1,13 +1,12 @@
-import { readFile } from "fs/promises";
-import { Project } from "@jonloucks/badges-ts/api/Project";
-import { DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
-import { isNonEmptyString, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { BadgeException } from "@jonloucks/badges-ts/api/BadgeException";
+import { Project } from "@jonloucks/badges-ts/api/Project";
 import { isNotPresent } from "@jonloucks/badges-ts/api/Types";
-import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
+import { KIT_PACKAGE_JSON_PATH, KIT_PROJECT_FOLDER, resolveVariant } from "@jonloucks/badges-ts/api/Variances";
+import { isNonEmptyString, used } from "@jonloucks/badges-ts/auxiliary/Checks";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
-import { KIT_PACKAGE_JSON_PATH, KIT_PROJECT_FOLDER } from "@jonloucks/badges-ts/api/Variances";
-import { resolve } from "path";
+import { DiscoverProject } from "@jonloucks/badges-ts/auxiliary/DiscoverProject";
+import { Contracts } from "@jonloucks/contracts-ts/api/Contracts";
+import { readFile } from "fs/promises";
 
 export interface Config {
   contracts: Contracts;
@@ -69,9 +68,7 @@ class DiscoverProjectImpl implements DiscoverProject {
   };
 
   #getPackageJsonPath(context: Context): string {
-    const projectFolder: string = context.environment.getVariance(KIT_PROJECT_FOLDER);
-    const fileName: string = context.environment.getVariance(KIT_PACKAGE_JSON_PATH);
-    return resolve(projectFolder, fileName);
+    return resolveVariant(context.environment, KIT_PROJECT_FOLDER, KIT_PACKAGE_JSON_PATH);
   }
 
   private constructor(config: Config) {

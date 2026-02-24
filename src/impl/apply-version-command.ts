@@ -95,6 +95,8 @@ function getReleaseNotesOutputFolder(context: Context): string {
 }
 
 function getReleaseNotesTemplatePath(context: Context): string {
-  return resolve(getProjectFolder(context), 
+  return resolve(
+    context.environment.getVariance(KIT_PROJECT_FOLDER), 
+    context.environment.getVariance(KIT_RELEASE_NOTES_OUTPUT_FOLDER),
     context.environment.getVariance(KIT_RELEASE_NOTES_TEMPLATE_PATH));
 }
