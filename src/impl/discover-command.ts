@@ -22,23 +22,25 @@ export const COMMAND: Command<void> = {
   }
 };
 
-async function discoverProject(context: Context): Promise<Project|undefined> {
-  return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject(context).then((project) => {
-    context.display.info(`Discovered project: ${project.name}, version: ${project.version}`);
-    return project;
-  }).catch((error: Error) => {
-    context.display.error(error instanceof Error ? error.message : String(error));
-    return undefined;
-  });
+async function discoverProject(context: Context): Promise<Project | undefined> {
+  return CONTRACTS.enforce(DISCOVER_PROJECT).discoverProject(context)
+    .then((project) => {
+      context.display.info(`Discovered project: ${project.name}, version: ${project.version}`);
+      return project;
+    }).catch((error: Error) => {
+      context.display.error(error instanceof Error ? error.message : String(error));
+      return undefined;
+    });
 }
 
-async function discoverCoverage(context: Context): Promise<Coverage|undefined> {
-  return CONTRACTS.enforce(DISCOVER_COVERAGE).discoverCoverage(context).then((coverage) => {
-    context.display.info(`Discovered code coverage: ${Internal.formatPercent(coverage.percentage)}`);
-    return coverage;
-  }).catch((error: Error) => {
-    context.display.error(error instanceof Error ? error.message : String(error));
-    return undefined;
-  });
+async function discoverCoverage(context: Context): Promise<Coverage | undefined> {
+  return CONTRACTS.enforce(DISCOVER_COVERAGE).discoverCoverage(context)
+    .then((coverage) => {
+      context.display.info(`Discovered code coverage: ${Internal.formatPercent(coverage.percentage)}`);
+      return coverage;
+    }).catch((error: Error) => {
+      context.display.error(error instanceof Error ? error.message : String(error));
+      return undefined;
+    });
 }
 
