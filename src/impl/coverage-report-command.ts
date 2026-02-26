@@ -302,7 +302,7 @@ function folderCoverage(files: FileCoverage[], folder: string): { lines: number;
   return { lines: totalLines / folderFiles.length, functions: totalFunctions / folderFiles.length, branches: totalBranches / folderFiles.length };
 }
 
-function generateTablePerFile(context: Context, files: FileCoverage[]) {
+function generateTablePerFile(context: Context, files: FileCoverage[]):string {
   return `<h2>Coverage Per File</h2>
   <table id="perFileTable">
     <thead>
