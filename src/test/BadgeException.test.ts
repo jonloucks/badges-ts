@@ -77,14 +77,14 @@ describe('BadgeException Tests', () => {
     });
   });
 
-  it('gaurd should return true for BadgeException instances', () => {
+  it('guard should return true for BadgeException instances', () => {
     const exception = new BadgeException("Test message");
     if (!guard(exception)) {
       throw new Error("Guard should recognize BadgeException instance");
     }
   });
 
-  it('gaurd should return false for non-BadgeException instances', () => {
+  it('guard should return false for non-BadgeException instances', () => {
     const notAnException = { name: "NotBadgeException", message: "I am not a BadgeException" };
     if (guard(notAnException)) {
       throw new Error("Guard should not recognize non-BadgeException instance");

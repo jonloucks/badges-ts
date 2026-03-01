@@ -8,10 +8,9 @@ import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
 
 export const COMMAND: Command<void> = {
   execute: async function (context: Context): Promise<void> {
-    context.display.trace(`Running discover with: ${context.arguments.join(' ')}`);
-    const lcovPath: string = getLcovInfoPath(context);
-    const { totals, files } = parseFile(lcovPath);
-    const html: string = generateHtmlReport(context, totals, files);
+    context.display.trace(`Running coverage-report with: ${context.arguments.join(' ')}`);
+    const analysis: Analysis = analyze(getLcovInfoPath(context));
+    const html: string = generateHtmlReport(context, analysis);
     const outputFolder: string = getCoverageReportFolder(context);
     Internal.createFoldersIfNotExist(outputFolder);
     const indexHtmlFile = resolve(outputFolder, "index.html");
@@ -30,9 +29,20 @@ interface FileCoverage {
   coverage: Coverage;
   folder: string;
   file: string;
-  missedBranches: string;
-  missedLines: string;
-  missedFunctions: string;
+  missedBranchesHtml: string;
+  missedLinesHtml: string;
+  missedFunctionsHtml: string;
+}
+
+interface FolderCoverage {
+  coverage: Coverage;
+  folder: string;
+}
+
+interface Analysis {
+  totals: Coverage;
+  files: FileCoverage[];
+  folders: Map<string, FolderCoverage>;
 }
 
 const HTML_LINE_BREAK: string = '<br />';
@@ -50,24 +60,45 @@ function percent(part: number, total: number): number {
   return Internal.normalizePercent(total > 0 ? (part / total) * 100 : 100);
 }
 
-function parseFile(lcovPath: string): { totals: Coverage; files: FileCoverage[] } {
+function analyze(lcovPath: string): Analysis {
   // change to async if we want to read the file asynchronously, but for now we'll keep it simple and synchronous since the file is typically small and this is a CLI tool
   const content: string = readFileSync(lcovPath, "utf8");
-  const totals: Coverage = newCoverage();
-  const files: FileCoverage[] = [];
+
+  const analysis: Analysis = {
+    totals: newCoverage(),
+    files: [],
+    folders: new Map<string, FolderCoverage>()
+  };
 
   for (const record of content.split("end_of_record")) {
     if (isEmptyRecord(record)) {
       continue;
     }
     const fileCoverage: FileCoverage = parseRecord(record);
-    tally(totals, fileCoverage.coverage);
-    files.push(fileCoverage);
+    tally(analysis.totals, fileCoverage.coverage);
+    analysis.files.push(fileCoverage);
   }
 
-  calculatePercentages(totals);
-  return { totals, files };
+  calculatePercentages(analysis.totals);
+
+  updateFolderCoverages(analysis);
+
+  return analysis;
 }
+
+function updateFolderCoverages(analysis: Analysis): void {
+  for (const file of analysis.files) {  
+    const existingFolderCoverage: FolderCoverage | undefined = analysis.folders.get(file.folder);
+    if (isPresent(existingFolderCoverage)) {
+      tally(existingFolderCoverage.coverage, file.coverage);
+    } else {
+      analysis.folders.set(file.folder, {
+        folder: file.folder,
+        coverage: { ...file.coverage }
+      });
+    }
+  }
+};
 
 function tally(totals: Coverage, fileCoverage: Coverage): void {
   totals.lines.found += fileCoverage.lines.found;
@@ -97,8 +128,8 @@ function isEmptyRecord(record: string): boolean {
 }
 
 function parseRecord(record: string): FileCoverage {
-  const fileCoverage: FileCoverage = intializeFileConverage();
-  const nameToLineMap: Record<string, string> = {};
+  const fileCoverage: FileCoverage = initializeFileCoverage();
+  const nameToLineMap: Record<string, number> = {};
   const missedLines: number[] = [];
 
   for (const entry of record.split(ENTRY_SEPARATOR)) {
@@ -135,16 +166,16 @@ function parseRecord(record: string): FileCoverage {
 
   calculatePercentages(fileCoverage.coverage);
 
-  fileCoverage.missedLines = toRanges(missedLines);
+  fileCoverage.missedLinesHtml = toRanges(missedLines);
 
   return fileCoverage;
 }
 
 // FN:{line number},{function name}
-function parse_FN(entry: string, fileCoverage: FileCoverage, nameToLineMap: Record<string, string>): void {
+function parse_FN(entry: string, fileCoverage: FileCoverage, nameToLineMap: Record<string, number>): void {
   used(fileCoverage);
   const parts: string[] = entry.split(':')[1].split(',');
-  nameToLineMap[parts[1]] = parts[0];
+  nameToLineMap[parts[1]] = toNumber(parts[0]);
 }
 
 // BRDA:{line number},{block number},{branch number},{taken}
@@ -152,17 +183,17 @@ function parse_BRDA(entry: string, fileCoverage: FileCoverage): void {
   const parts: string[] = entry.split(':')[1].split(',');
   const hits: string = parts[3];
   if (hits === '0' || hits === '-') {
-    fileCoverage.missedBranches += `line ${Number(parts[0])}, block ${Number(parts[1])}${HTML_LINE_BREAK}`;
+    fileCoverage.missedBranchesHtml += `line ${Number(parts[0])}, block ${Number(parts[1])}${HTML_LINE_BREAK}`;
   }
 }
 
 //FNDA:{execution count},{function name}
-function parse_FNDA(entry: string, fileCoverage: FileCoverage, nameToLineMap: Record<string, string>): void {
+function parse_FNDA(entry: string, fileCoverage: FileCoverage, nameToLineMap: Record<string, number>): void {
   const parts: string[] = entry.split(':')[1].split(',');
   const hits: number = toNumber(parts[0]);
   const name: string = parts[1];
   if (hits === 0) {
-    fileCoverage.missedFunctions += `${escapeHtml(name)} @ ${nameToLineMap[name] ?? 'UNKNOWN LINE'}${HTML_LINE_BREAK}`;
+    fileCoverage.missedFunctionsHtml += `${escapeHtml(name)} @ ${nameToLineMap[name] ?? 'UNKNOWN LINE'}${HTML_LINE_BREAK}`;
   }
 }
 
@@ -219,14 +250,14 @@ function parse_BRH(entry: string, fileCoverage: FileCoverage): void {
   fileCoverage.coverage.branches.hit += toNumber(entry.substring("BRH:".length));
 }
 
-function intializeFileConverage(): FileCoverage {
+function initializeFileCoverage(): FileCoverage {
   return {
     coverage: newCoverage(),
     folder: '',
     file: 'unknown',
-    missedLines: '',
-    missedFunctions: '',
-    missedBranches: ''
+    missedLinesHtml: '',
+    missedFunctionsHtml: '',
+    missedBranchesHtml: ''
   };
 }
 
@@ -257,7 +288,7 @@ function toRanges(numbers: number[]): string {
   return ranges.join(HTML_LINE_BREAK);
 }
 
-function generateHtmlReport(context: Context, totals: Coverage, files: FileCoverage[]): string {
+function generateHtmlReport(context: Context, analysis: Analysis): string {
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -297,8 +328,8 @@ function generateHtmlReport(context: Context, totals: Coverage, files: FileCover
 </head>
 <body>
   <h1>Coverage Report</h1>
-  ${generateSummaryTable(context, totals, files)}
-  ${generateTablePerFile(context, files)}
+  ${generateSummaryTable(context, analysis)}
+  ${generateTablePerFile(context, analysis)}
 </body>
 <script>
 document.querySelectorAll('#perFileTable th').forEach((headerCell, index) => {
@@ -352,7 +383,7 @@ function generatePercentCell(context: Context, percent: number, tooltipContent: 
 function generateLabelCell(context: Context, label: string, percent: number, tooltipContent: string): string {
   return `
     <td class="tooltip-cell" style="color: white; background-color: ${Internal.colorFromPercentComplete(context, percent)}">
-      ${escapeHtml(label)}
+      ${label}
       ${generateTooltip(tooltipContent)}
     </td>
   `;
@@ -365,8 +396,8 @@ function generateTooltip(content: string): string {
   return `<span class="tooltip-content">${content}</span>`;
 }
 
-function generateSummaryTable(context: Context, totals: Coverage, files: FileCoverage[]): string {
-  const uniqueFolders = Array.from(new Set(files.map(f => f.folder))).sort();
+function generateSummaryTable(context: Context, analysis: Analysis): string {
+  const uniqueFolders = Array.from(new Set(analysis.files.map(f => f.folder))).sort();
 
   return `<h2>Summary</h2>
   <table id="summaryTable" width="400px">
@@ -380,9 +411,9 @@ function generateSummaryTable(context: Context, totals: Coverage, files: FileCov
       </tr>
     </thead>
     <tbody>
-        ${generateSummaryRow(context, "All Files", totals)}
+        ${generateSummaryRow(context, "All Files", analysis.totals)}
         ${uniqueFolders.map(folder => {
-    return generateSummaryRow(context, folder, calculateFolderCoverage(files, folder));
+    return generateSummaryRow(context, folder, calculateFolderCoverage(analysis.files, folder));
   }).join("")}
     </tbody>
   </table>`
@@ -392,7 +423,7 @@ function generateSummaryRow(context: Context, label: string, coverage: Coverage)
   const averagePercent: number = average(coverage);
   return `
   <tr>
-    ${generateLabelCell(context, label, averagePercent, Internal.formatPercent(averagePercent))}
+    ${generateLabelCell(context, escapeHtml(label), averagePercent, Internal.formatPercent(averagePercent))}
     ${generatePercentCell(context, averagePercent, "")}
     ${generatePercentCell(context, coverage.lines.percent, "")}
     ${generatePercentCell(context, coverage.functions.percent, "")}
@@ -420,11 +451,11 @@ function calculateFolderCoverage(files: FileCoverage[], folder: string): Coverag
 }
 
 function average(coverage: Coverage): number {
-  let totalPercent: number = coverage.lines.percent + coverage.functions.percent + coverage.branches.percent;
+  const totalPercent: number = coverage.lines.percent + coverage.functions.percent + coverage.branches.percent;
   return totalPercent / 3;
 }
 
-function generateTablePerFile(context: Context, files: FileCoverage[]): string {
+function generateTablePerFile(context: Context, analysis: Analysis): string {
   return `<h2>Coverage Per File</h2>
   <table id="perFileTable">
     <thead>
@@ -438,22 +469,22 @@ function generateTablePerFile(context: Context, files: FileCoverage[]): string {
       </tr>
     </thead>
     <tbody>
-      ${files.map(f => generatePerFileRow(context, f, files)).join("")}
+      ${analysis.files.map(f => generatePerFileRow(context, analysis, f)).join("")}
     </tbody>
   </table>`
 }
 
-function generatePerFileRow(context: Context, fileCoverage: FileCoverage, files: FileCoverage[]): string {
-  const folderCoverage: Coverage = calculateFolderCoverage(files, fileCoverage.folder);  
+function generatePerFileRow(context: Context, analysis: Analysis, fileCoverage: FileCoverage): string {
+  const folderCoverage: Coverage = analysis.folders.get(fileCoverage.folder)?.coverage ?? newCoverage();
   const averagePercent: number = average(fileCoverage.coverage);
   return `
   <tr>
-    ${generateLabelCell(context, fileCoverage.file, averagePercent, Internal.formatPercent(averagePercent))}
-    ${generateLabelCell(context, fileCoverage.folder, average(folderCoverage), Internal.formatPercent(average(folderCoverage)))}
+    ${generateLabelCell(context, escapeHtml(fileCoverage.file), averagePercent, Internal.formatPercent(averagePercent))}
+    ${generateLabelCell(context, escapeHtml(fileCoverage.folder), average(folderCoverage), Internal.formatPercent(average(folderCoverage)))}
     ${generatePercentCell(context, averagePercent, "")}
-    ${generatePercentCell(context, fileCoverage.coverage.lines.percent, fileCoverage.missedLines)}
-    ${generatePercentCell(context, fileCoverage.coverage.functions.percent, fileCoverage.missedFunctions)}
-    ${generatePercentCell(context, fileCoverage.coverage.branches.percent, fileCoverage.missedBranches)}
+    ${generatePercentCell(context, fileCoverage.coverage.lines.percent, fileCoverage.missedLinesHtml)}
+    ${generatePercentCell(context, fileCoverage.coverage.functions.percent, fileCoverage.missedFunctionsHtml)}
+    ${generatePercentCell(context, fileCoverage.coverage.branches.percent, fileCoverage.missedBranchesHtml)}
   </tr>`;
 }
 
