@@ -160,7 +160,7 @@ function parseRecord(context: Context,record: string): FileCoverage {
     } else if (entry.startsWith('FN:')) {
       parse_FN(entry, fileCoverage, nameToLineMap);
     } else {
-      context.display.warn(`Unrecognized entry in lcov info: ${entry}`);
+      context.display.trace(`Unrecognized entry in lcov info: ${entry}`);
     }
   }
 
