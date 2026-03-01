@@ -44,6 +44,10 @@ describe('Main module', () => {
     ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('discover')) !== undefined, 'info should be called with discover command in usage');
     ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('generate')) !== undefined, 'info should be called with generate command in usage');
     ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('apply-version')) !== undefined, 'info should be called with apply-version command in usage');
+    ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('version')) !== undefined, 'info should be called with version command in usage');
+    ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('coverage-report')) !== undefined, 'info should be called with coverage-report command in usage');
+    ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('coverage-gate')) !== undefined, 'info should be called with coverage-gate command in usage');
+    ok(mockInfoFn.mock.calls.find(call => call.arguments[0].includes('help')) !== undefined, 'info should be called with help command in usage');
   }
 
   function assertNoErrors(): void {

@@ -210,12 +210,20 @@ export const KIT_BELOW_60_PERCENT_COLOR: Variant<string> = createVariant<string>
   fallback: 'darkred'
 });
 
+export const KIT_FAILED_PERCENT_COLOR: Variant<string> = createVariant<string>({
+  name: 'Failed Required Percent Color',
+  keys: ['KIT_FAILED_PERCENT_COLOR', 'kit.failed.percent.color'],
+  description: 'The color to use for badges that have failed the required percentage.',
+  of: ofString(),
+  fallback: '#ff0000'
+});
+
 export const KIT_0_PERCENT_COLOR: Variant<string> = createVariant<string>({
   name: '0% Color',
   keys: ['KIT_0_PERCENT_COLOR', 'kit.0.percent.color'],
   description: 'The color to use for badges that are at 0% complete.',
   of: ofString(),
-  fallback: '#ff0000'
+  link: KIT_FAILED_PERCENT_COLOR
 });
 
 function resolveVariant(context: Context, ...keys: Variant<string>[]): string {

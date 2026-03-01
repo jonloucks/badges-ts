@@ -1,4 +1,5 @@
-import { Display, Flags, isPresent } from "@jonloucks/badges-ts/api/Types";
+import { isPresent } from "@jonloucks/contracts-ts/api/Types";
+import { Display, Flags } from "@jonloucks/badges-ts/api/Types";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { Environment } from "@jonloucks/variants-ts/api/Environment";
 import { createEnvironment, createProcessSource, createRecordSource, Source } from "@jonloucks/variants-ts/auxiliary/Convenience";
@@ -66,6 +67,7 @@ function createFileSource(display: Display, environment: Environment): Source | 
   const configFilePath: string = getFileSourcePath(environment);
   if (existsSync(configFilePath)) {
     try {
+      // in the future async read and parse with streaming and support for larger config files, but for now we'll just read it all at once
       const fileContents: string = readFileSync(configFilePath, "utf8");
       const record = JSON.parse(fileContents);
       return createRecordSource(record);

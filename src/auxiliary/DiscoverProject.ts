@@ -1,7 +1,7 @@
 import { Project } from "@jonloucks/badges-ts/api/Project";
 import { RequiredType, guardFunctions } from "@jonloucks/contracts-ts/api/Types";
 import { Contract, createContract } from "@jonloucks/contracts-ts";
-import { Context } from "./Command.js";
+import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 
 /**
  * Interface for discovering project information
