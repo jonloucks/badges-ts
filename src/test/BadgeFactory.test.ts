@@ -3,9 +3,9 @@ import { ok, strictEqual } from "node:assert";
 import { afterEach, beforeEach, describe, it } from "node:test";
 import { resolve } from "path";
 
+import { isPresent } from "@jonloucks/contracts-ts/api/Types";
 import { Badge, Config as BadgeConfig } from "@jonloucks/badges-ts/api/Badge";
 import { BadgeFactory, CONTRACT as BADGE_FACTORY, guard } from "@jonloucks/badges-ts/api/BadgeFactory";
-import { isPresent } from "@jonloucks/badges-ts/api/Types";
 import { CONTRACTS } from "@jonloucks/contracts-ts";
 import { AutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { createInstaller } from "@jonloucks/badges-ts";

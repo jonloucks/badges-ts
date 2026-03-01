@@ -13,9 +13,9 @@ import {
   isThrowable,
   MAX_TIMEOUT,
   MIN_TIMEOUT,
-  OptionalType,
-  RequiredType,
-  Throwable
+  type OptionalType,
+  type RequiredType,
+  type Throwable
 } from "@jonloucks/badges-ts/api/Types";
 
 describe("Types", () => {

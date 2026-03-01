@@ -10,7 +10,9 @@ import {
   KIT_BELOW_60_PERCENT_COLOR,
   KIT_ABOVE_60_PERCENT_COLOR,
   KIT_ABOVE_70_PERCENT_COLOR,
-  KIT_ABOVE_90_PERCENT_COLOR
+  KIT_ABOVE_90_PERCENT_COLOR,
+  KIT_REQUIRED_CODE_COVERAGE,
+  KIT_FAILED_PERCENT_COLOR
 } from "@jonloucks/badges-ts/api/Variances";
 import { mkdirSync } from "fs";
 
@@ -34,9 +36,12 @@ export const Internal = {
     return CONTRACTS;
   },
 
-  getColorVariant(percent: number): Variant<string> {
+  getColorVariant(context: Context, percent: number): Variant<string> {
     const normalizedPercent = Internal.normalizePercent(percent);
-    if (normalizedPercent === 100) {
+    const requiredPercent = context.environment.getVariance(KIT_REQUIRED_CODE_COVERAGE);
+    if (requiredPercent > 0 && normalizedPercent < requiredPercent) {
+      return KIT_FAILED_PERCENT_COLOR;
+    } else if (normalizedPercent === 100) {
       return KIT_100_PERCENT_COLOR;
     } else if (normalizedPercent >= 90) {
       return KIT_ABOVE_90_PERCENT_COLOR;
@@ -54,7 +59,7 @@ export const Internal = {
   },
 
   colorFromPercentComplete(context: Context, percent: number): string {
-    return context.environment.getVariance(Internal.getColorVariant(percent));
+    return context.environment.getVariance(Internal.getColorVariant(context, percent));
   },
 
   formatPercent(percent: number): string {

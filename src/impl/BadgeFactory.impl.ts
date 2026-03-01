@@ -24,7 +24,6 @@ import { readFile, writeFile } from "fs";
  *   value: "95%",
  *   color: "#4bc124"
  * });
- * console.log(`Badge created at ${badge.outputPath}`);
  * ```
  */
 

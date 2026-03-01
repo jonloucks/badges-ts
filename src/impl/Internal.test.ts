@@ -5,15 +5,17 @@ import { CONTRACTS } from "@jonloucks/contracts-ts";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { Internal } from "./Internal.impl.js";
 import { toContext } from "./Command.impl.js";
-import { 
-  KIT_0_PERCENT_COLOR, 
-  KIT_100_PERCENT_COLOR, 
-  KIT_ABOVE_60_PERCENT_COLOR, 
+import {
+  KIT_0_PERCENT_COLOR,
+  KIT_100_PERCENT_COLOR,
+  KIT_ABOVE_60_PERCENT_COLOR,
   KIT_ABOVE_70_PERCENT_COLOR,
-  KIT_ABOVE_80_PERCENT_COLOR, 
-  KIT_ABOVE_90_PERCENT_COLOR, 
-  KIT_BELOW_60_PERCENT_COLOR 
+  KIT_ABOVE_80_PERCENT_COLOR,
+  KIT_ABOVE_90_PERCENT_COLOR,
+  KIT_BELOW_60_PERCENT_COLOR,
+  KIT_FAILED_PERCENT_COLOR
 } from "@jonloucks/badges-ts/api/Variances";
+import { createEnvironment, createKeySource } from "@jonloucks/variants-ts/auxiliary/Convenience";
 
 describe("Internal resolveContracts", () => {
 
@@ -164,21 +166,38 @@ describe("Internal resolveContracts", () => {
   });
 
   it("colorFromPercentComplete should return correct colors based on percent", () => {
-    const context: Context = toContext([]);
+    const context: Context = toTestContext(0);
     ok(Internal.colorFromPercentComplete(context, 100), "Should return success color for 100%");
   });
 
   it("getColorVariant should return correct color variants based on percent", () => {
-    strictEqual(Internal.getColorVariant(100), KIT_100_PERCENT_COLOR, "Should return 100% color variant for 100%");
-    strictEqual(Internal.getColorVariant(95), KIT_ABOVE_90_PERCENT_COLOR, "Should return above 90% color variant for 95%");
-    strictEqual(Internal.getColorVariant(89.9), KIT_ABOVE_80_PERCENT_COLOR, "Should return above 80% color variant for 89.9%");
-    strictEqual(Internal.getColorVariant(85), KIT_ABOVE_80_PERCENT_COLOR, "Should return above 80% color variant for 85%");
-    strictEqual(Internal.getColorVariant(79.9), KIT_ABOVE_70_PERCENT_COLOR, "Should return above 70% color variant for 79.9%");
-    strictEqual(Internal.getColorVariant(75), KIT_ABOVE_70_PERCENT_COLOR, "Should return above 70% color variant for 75%");
-    strictEqual(Internal.getColorVariant(69.9), KIT_ABOVE_60_PERCENT_COLOR, "Should return above 60% color variant for 69.9%");
-    strictEqual(Internal.getColorVariant(65), KIT_ABOVE_60_PERCENT_COLOR, "Should return above 60% color variant for 65%");
-    strictEqual(Internal.getColorVariant(59.9), KIT_BELOW_60_PERCENT_COLOR, "Should return below 60% color variant for 59.9%");
-    strictEqual(Internal.getColorVariant(50), KIT_BELOW_60_PERCENT_COLOR, "Should return below 60% color variant for 50%");
-    strictEqual(Internal.getColorVariant(0), KIT_0_PERCENT_COLOR, "Should return 0% color variant for 0%"); 
+    const context: Context = toTestContext(0);
+    strictEqual(Internal.getColorVariant(context, 100), KIT_100_PERCENT_COLOR, "Should return 100% color variant for 100%");
+    strictEqual(Internal.getColorVariant(context, 95), KIT_ABOVE_90_PERCENT_COLOR, "Should return above 90% color variant for 95%");
+    strictEqual(Internal.getColorVariant(context, 89.9), KIT_ABOVE_80_PERCENT_COLOR, "Should return above 80% color variant for 89.9%");
+    strictEqual(Internal.getColorVariant(context, 85), KIT_ABOVE_80_PERCENT_COLOR, "Should return above 80% color variant for 85%");
+    strictEqual(Internal.getColorVariant(context, 79.9), KIT_ABOVE_70_PERCENT_COLOR, "Should return above 70% color variant for 79.9%");
+    strictEqual(Internal.getColorVariant(context, 75), KIT_ABOVE_70_PERCENT_COLOR, "Should return above 70% color variant for 75%");
+    strictEqual(Internal.getColorVariant(context, 69.9), KIT_ABOVE_60_PERCENT_COLOR, "Should return above 60% color variant for 69.9%");
+    strictEqual(Internal.getColorVariant(context, 65), KIT_ABOVE_60_PERCENT_COLOR, "Should return above 60% color variant for 65%");
+    strictEqual(Internal.getColorVariant(context, 59.9), KIT_BELOW_60_PERCENT_COLOR, "Should return below 60% color variant for 59.9%");
+    strictEqual(Internal.getColorVariant(context, 50), KIT_BELOW_60_PERCENT_COLOR, "Should return below 60% color variant for 50%");
+    strictEqual(Internal.getColorVariant(context, 0), KIT_0_PERCENT_COLOR, "Should return 0% color variant for 0%");
+  });
+
+  it("getColorVariant required percent", () => {
+    strictEqual(Internal.getColorVariant(toTestContext(90), 95), KIT_ABOVE_90_PERCENT_COLOR, "Should return above 90% color variant for 95%");
+    strictEqual(Internal.getColorVariant(toTestContext(90), 90), KIT_ABOVE_90_PERCENT_COLOR, "Should return above 90% color variant for 95%");
+    strictEqual(Internal.getColorVariant(toTestContext(90), 80), KIT_FAILED_PERCENT_COLOR, "Should return above 90% color variant for 95%");
   });
 });
+
+function toTestContext(requiredPercent: number): Context {
+  const context: Context = toContext([]);
+  context.environment = createEnvironment({
+    sources: [
+      createKeySource('KIT_REQUIRED_CODE_COVERAGE', requiredPercent.toString())
+    ]
+  });
+  return context;
+};

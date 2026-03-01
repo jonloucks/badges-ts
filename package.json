@@ -45,9 +45,9 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "tsx --test $(find src -name '*.test.ts')",
-    "test:watch": "tsx --test --watch $(find src -name '*.test.ts')",
-    "test:coverage": "mkdir -p coverage && tsx --test --experimental-test-coverage --experimental-specifier-resolution=node --test-reporter=lcov $(find src -name '*.test.ts') > coverage/lcov.info",
+    "test": "npx tsx --test --enable-source-maps --experimental-specifier-resolution=node $(find src -name '*.test.ts')",
+    "test:watch": "npx tsx --test --watch --enable-source-maps --experimental-specifier-resolution=node $(find src -name '*.test.ts')",
+    "test:coverage": "mkdir -p coverage && npx tsx --test --enable-source-maps --experimental-test-coverage --experimental-specifier-resolution=node --test-reporter=lcov $(find src -name '*.test.ts') > coverage/lcov.info",
     "test:coverage-report": "npx tsx ./src/bin/badges-ts.js coverage-report",
     "test:coverage-gate": "npx tsx ./src/bin/badges-ts.js coverage-gate",
     "lint": "eslint . --ext .ts",
@@ -84,12 +84,12 @@
     "registry": "https://registry.npmjs.org/"
   },
   "overrides": {
-    "minimatch": "10.2.1"
+    "minimatch": "10.2.4"
   },
   "devDependencies": {
     "@types/node": "^25.3.1",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
-    "@typescript-eslint/parser": "^8.56.0",
+    "@typescript-eslint/parser": "^8.56.1",
     "eslint": "^10.0.2",
     "tsx": "^4.19.2",
     "typedoc": "^0.28.17",

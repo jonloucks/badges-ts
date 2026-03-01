@@ -1,5 +1,5 @@
 import { Coverage } from "@jonloucks/badges-ts/api/Coverage";
-import { isPresent } from "@jonloucks/badges-ts/api/Types";
+import { isPresent } from "@jonloucks/contracts-ts/api/Types";
 import { KIT_REQUIRED_CODE_COVERAGE } from "@jonloucks/badges-ts/api/Variances";
 import { Command, Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { CONTRACT as DISCOVER_COVERAGE } from "@jonloucks/badges-ts/auxiliary/DiscoverCoverage";

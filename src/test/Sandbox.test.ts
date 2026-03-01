@@ -1,4 +1,4 @@
-import { isNotPresent, isPresent } from "@jonloucks/badges-ts/api/Types";
+import { isNotPresent, isPresent } from "@jonloucks/contracts-ts/api/Types";
 import { Context } from "@jonloucks/badges-ts/auxiliary/Command";
 import { AutoClose, inlineAutoClose } from "@jonloucks/contracts-ts/api/AutoClose";
 import { Open } from "@jonloucks/contracts-ts/api/Open";
@@ -143,7 +143,7 @@ class SandboxImpl implements Sandbox {
 
   #deploySummary(): void {
     mkdirSync(resolve(this.#folder!, 'coverage'));
-    const fromFile: string = resolveDataPath("lcov.info.dat");
+    const fromFile: string = resolveDataPath("lcov.info");
     const toFile: string = resolve(this.#folder!, "coverage", "lcov.info");
     copyFileSync(fromFile, toFile);
     this.setVariance('KIT_LCOV_INFO_PATH', toFile);

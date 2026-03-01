@@ -1,5 +1,5 @@
 import { Badge, Config as BadgeConfig } from "@jonloucks/badges-ts/api/Badge";
-import { guardFunctions, RequiredType } from "@jonloucks/badges-ts/api/Types";
+import { guardFunctions, RequiredType } from "@jonloucks/contracts-ts/api/Types";
 import { Contract, createContract } from "@jonloucks/contracts-ts";
 
 /**
