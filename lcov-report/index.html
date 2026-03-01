@@ -24,7 +24,7 @@
       z-index: 10; /* Ensure it appears above other elements */
       right: 0;
     /*  left: 100%; *//* Position to the right of the cell */
-      top: 0;
+     /* top: 0; */
       white-space: nowrap; /* Prevents text from wrapping (optional) */
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
@@ -42,144 +42,207 @@
     <thead>
       <tr>
         <th>Category</th>
+        <th style="width: 120px;">Average</th>
         <th style="width: 120px;">Lines</th>
         <th style="width: 120px;">Functions</th>
         <th style="width: 120px;">Branches</th>
       </tr>
     </thead>
     <tbody>
-        <tr>
-         <td>All Files</td>
-          
+        
+  <tr>
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      99.3%
-      
+      All Files
+      <span class="tooltip-content">96.7%</span>
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      99.0%
+      96.7%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      96.5%
+      95.1%
       
     </td>
   
-        </tr>
-              
-        <tr>
-          <td>src</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>src/api</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>src/auxiliary</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>src/data</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>src/impl</td>
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      99.1%
+      98.9%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      98.7%
+      96.1%
       
     </td>
   
-          
+  </tr>
+        
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      src
+      <span class="tooltip-content">92.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      92.7%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      78.0%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      96.9%
+      src/api
+      <span class="tooltip-content">96.1%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      96.1%
       
     </td>
   
-        </tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      88.3%
       
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/auxiliary
+      <span class="tooltip-content">98.2%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      98.2%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      94.6%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      src/data
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.2%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.2%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.6%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      98.6%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      95.3%
+      
+    </td>
+  
+  </tr>
     </tbody>
   </table>
   <h2>Coverage Per File</h2>
@@ -188,6 +251,7 @@
       <tr>
         <th>File</th>
         <th>Folder</th>
+        <th style="width: 120px;">Average</th>
         <th style="width: 120px;">Lines</th>
         <th style="width: 120px;">Functions</th>
         <th style="width: 120px;">Branches</th>
@@ -195,558 +259,918 @@
     </thead>
     <tbody>
       
-        <tr>
-          <td>BadgeException.ts</td>
-          <td>src/api</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>BadgeFactory.ts</td>
-          <td>src/api</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>Types.ts</td>
-          <td>src/api</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>Variances.ts</td>
-          <td>src/api</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>Checks.ts</td>
-          <td>src/auxiliary</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>DiscoverCoverage.ts</td>
-          <td>src/auxiliary</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>DiscoverProject.ts</td>
-          <td>src/auxiliary</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>cli.ts</td>
-          <td>src</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>Resolver.ts</td>
-          <td>src/data</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>apply-version-command.ts</td>
-          <td>src/impl</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
+  <tr>
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      94.7%
-      <span class="tooltip-content">46</span>
+      BadgeException.ts
+      <span class="tooltip-content">99.4%</span>
     </td>
   
-        </tr>
-      
-        <tr>
-          <td>BadgeFactory.impl.ts</td>
-          <td>src/impl</td>
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      98.2%
-      <span class="tooltip-content">37-38</span>
+      src/api
+      <span class="tooltip-content">99.4%</span>
     </td>
   
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #377526">
-      96.0%
-      <span class="tooltip-content">36</span>
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>Command.impl.ts</td>
-          <td>src/impl</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #377526">
-      95.3%
-      <span class="tooltip-content">52-55</span>
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #377526">
-      96.8%
-      <span class="tooltip-content">51</span>
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>coverage-gate-command.ts</td>
-          <td>src/impl</td>
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
-        <tr>
-          <td>coverage-report-command.ts</td>
-          <td>src/impl</td>
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
       99.4%
-      <span class="tooltip-content">58-59</span>
+      
     </td>
   
-          
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      98.2%
+      <span class="tooltip-content">52</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
+      BadgeFactory.ts
+      <span class="tooltip-content">99.1%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/api
+      <span class="tooltip-content">99.4%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      99.1%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.2%
+      <span class="tooltip-content">1</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      Types.ts
+      <span class="tooltip-content">84.6%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/api
+      <span class="tooltip-content">99.4%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      84.6%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      53.7%
+      <span class="tooltip-content">1<br />3<br />45-50<br />52-53<br />55-56<br />58-59<br />61-62<br />64-66<br />68-73<br />75-76<br />78-79<br />81-82<br />84-85<br />87-89<br />91-95<br />97-98<br />100-101<br />103-104<br />106-108</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      Variances.ts
+      <span class="tooltip-content">99.8%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/api
+      <span class="tooltip-content">99.4%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      99.8%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      99.3%
+      <span class="tooltip-content">1<br />282</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      Checks.ts
+      <span class="tooltip-content">98.4%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/auxiliary
+      <span class="tooltip-content">98.4%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      98.4%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      95.2%
+      <span class="tooltip-content">1<br />40</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      DiscoverCoverage.ts
+      <span class="tooltip-content">97.3%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/auxiliary
+      <span class="tooltip-content">98.4%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.3%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      91.9%
+      <span class="tooltip-content">1-3</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      DiscoverProject.ts
+      <span class="tooltip-content">99.0%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/auxiliary
+      <span class="tooltip-content">98.4%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      99.0%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.1%
+      <span class="tooltip-content">1</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      cli.ts
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      src
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      Resolver.ts
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      src/data
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      apply-version-command.ts
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.7%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      98.8%
+      <span class="tooltip-content">1</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      94.4%
+      <span class="tooltip-content">line 55, block 10<br /></span>
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      BadgeFactory.impl.ts
+      <span class="tooltip-content">98.3%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      98.3%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      99.1%
+      <span class="tooltip-content">92</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      95.8%
+      <span class="tooltip-content">line 91, block 20<br /></span>
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      Command.impl.ts
+      <span class="tooltip-content">97.0%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.0%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
       94.3%
-      <span class="tooltip-content">16</br>42</br>57</br>101</span>
+      <span class="tooltip-content">75-79</span>
     </td>
   
-        </tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
       
-        <tr>
-          <td>discover-command.ts</td>
-          <td>src/impl</td>
-          
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      97.8%
-      <span class="tooltip-content">27</span>
+      96.7%
+      <span class="tooltip-content">line 74, block 28<br /></span>
     </td>
   
-          
-    <td class="tooltip-cell" style="color: white; background-color: red">
-      87.5%
-      <span class="tooltip-content">anonymous_7 @ 26</span>
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      coverage-gate-command.ts
+      <span class="tooltip-content">99.5%</span>
     </td>
   
-          
-    <td class="tooltip-cell" style="color: white; background-color: red">
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      99.5%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      98.4%
+      <span class="tooltip-content">1</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      coverage-report-command.ts
+      <span class="tooltip-content">97.9%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.9%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      99.0%
+      <span class="tooltip-content">163-164<br />218-220</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      100%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      94.8%
+      <span class="tooltip-content">line 56, block 3<br />line 162, block 46<br />line 196, block 53<br />line 217, block 57<br />line 478, block 90<br /></span>
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      discover-command.ts
+      <span class="tooltip-content">88.9%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
       88.9%
-      <span class="tooltip-content">16</span>
+      
     </td>
   
-        </tr>
-      
-        <tr>
-          <td>DiscoverCoverage.impl.ts</td>
-          <td>src/impl</td>
-          
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      93.5%
+      <span class="tooltip-content">1<br />42-43</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      85.7%
+      <span class="tooltip-content">anonymous_6 @ 41<br /></span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      87.5%
+      <span class="tooltip-content">line 31, block 6<br /></span>
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      DiscoverCoverage.impl.ts
+      <span class="tooltip-content">92.9%</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      97.4%
-      <span class="tooltip-content">55-56</br>94-96</span>
+      src/impl
+      <span class="tooltip-content">97.7%</span>
     </td>
   
-          
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      92.9%
+      
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #377526">
-      95.5%
-      <span class="tooltip-content">anonymous_14 @ 20</span>
+      96.4%
+      <span class="tooltip-content">41-42<br />72<br />89<br />94-95<br />152</span>
     </td>
   
-          
-    <td class="tooltip-cell" style="color: white; background-color: red">
-      89.3%
-      <span class="tooltip-content">67</br>67</br>93</br>38</br>54</br>57</span>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      95.2%
+      <span class="tooltip-content">anonymous_13 @ 40<br /></span>
     </td>
   
-        </tr>
-      
-        <tr>
-          <td>DiscoverProject.impl.ts</td>
-          <td>src/impl</td>
-          
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      87.0%
+      <span class="tooltip-content">line 111, block 28<br />line 113, block 29<br />line 144, block 30<br />line 71, block 45<br />line 88, block 48<br />line 93, block 49<br />line 151, block 53<br /></span>
+    </td>
+  
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      DiscoverProject.impl.ts
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-        </tr>
-      
-        <tr>
-          <td>generate-command.ts</td>
-          <td>src/impl</td>
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      generate-command.ts
+      <span class="tooltip-content">97.0%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.0%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      91.1%
+      <span class="tooltip-content">1-11</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-        </tr>
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      help-command.ts
+      <span class="tooltip-content">98.8%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      98.8%
       
-        <tr>
-          <td>help-command.ts</td>
-          <td>src/impl</td>
-          
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      96.3%
+      <span class="tooltip-content">1</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      Installer.impl.ts
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-        </tr>
-      
-        <tr>
-          <td>Installer.impl.ts</td>
-          <td>src/impl</td>
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-        </tr>
-      
-        <tr>
-          <td>Internal.impl.ts</td>
-          <td>src/impl</td>
-          
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      Internal.impl.ts
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-        </tr>
-      
-        <tr>
-          <td>version-command.ts</td>
-          <td>src/impl</td>
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      version-command.ts
+      <span class="tooltip-content">97.9%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      src/impl
+      <span class="tooltip-content">97.7%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #377526">
+      97.9%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      93.8%
+      <span class="tooltip-content">1</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-        </tr>
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      index.ts
+      <span class="tooltip-content">79.6%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      src
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      79.6%
       
-        <tr>
-          <td>index.ts</td>
-          <td>src</td>
-          
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      38.9%
+      <span class="tooltip-content">8-18</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
+  </tr>
+  <tr>
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      version.ts
+      <span class="tooltip-content">88.9%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
+      src
+      <span class="tooltip-content">100%</span>
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      88.9%
+      
+    </td>
+  
+    
+    <td class="tooltip-cell" style="color: white; background-color: #ff0000">
+      66.7%
+      <span class="tooltip-content">1</span>
+    </td>
+  
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-        </tr>
-      
-        <tr>
-          <td>version.ts</td>
-          <td>src</td>
-          
+    
     <td class="tooltip-cell" style="color: white; background-color: #4bc124">
       100%
       
     </td>
   
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-          
-    <td class="tooltip-cell" style="color: white; background-color: #4bc124">
-      100%
-      
-    </td>
-  
-        </tr>
-      
+  </tr>
     </tbody>
   </table>
 </body>
