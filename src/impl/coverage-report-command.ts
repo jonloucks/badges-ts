@@ -9,13 +9,13 @@ import { used } from "@jonloucks/contracts-ts/auxiliary/Checks";
 export const COMMAND: Command<void> = {
   execute: async function (context: Context): Promise<void> {
     context.display.trace(`Running coverage-report with: ${context.arguments.join(' ')}`);
-    const analysis: Analysis = analyze(getLcovInfoPath(context));
+    const analysis: Analysis = analyze(context, getLcovInfoPath(context));
     const html: string = generateHtmlReport(context, analysis);
     const outputFolder: string = getCoverageReportFolder(context);
     Internal.createFoldersIfNotExist(outputFolder);
     const indexHtmlFile = resolve(outputFolder, "index.html");
     writeFileSync(indexHtmlFile, html, "utf8");
-    console.log(`Coverage report generated: ${indexHtmlFile}`);
+    context.display.info(`Coverage report generated: ${indexHtmlFile}`);
   }
 };
 
@@ -60,7 +60,7 @@ function percent(part: number, total: number): number {
   return Internal.normalizePercent(total > 0 ? (part / total) * 100 : 100);
 }
 
-function analyze(lcovPath: string): Analysis {
+function analyze(context: Context, lcovPath: string): Analysis {
   // change to async if we want to read the file asynchronously, but for now we'll keep it simple and synchronous since the file is typically small and this is a CLI tool
   const content: string = readFileSync(lcovPath, "utf8");
 
@@ -74,7 +74,7 @@ function analyze(lcovPath: string): Analysis {
     if (isEmptyRecord(record)) {
       continue;
     }
-    const fileCoverage: FileCoverage = parseRecord(record);
+    const fileCoverage: FileCoverage = parseRecord(context, record);
     tally(analysis.totals, fileCoverage.coverage);
     analysis.files.push(fileCoverage);
   }
@@ -127,7 +127,7 @@ function isEmptyRecord(record: string): boolean {
   return record.length === 0 || (record.length === 1 && record[0] === '\n');
 }
 
-function parseRecord(record: string): FileCoverage {
+function parseRecord(context: Context,record: string): FileCoverage {
   const fileCoverage: FileCoverage = initializeFileCoverage();
   const nameToLineMap: Record<string, number> = {};
   const missedLines: number[] = [];
@@ -160,7 +160,7 @@ function parseRecord(record: string): FileCoverage {
     } else if (entry.startsWith('FN:')) {
       parse_FN(entry, fileCoverage, nameToLineMap);
     } else {
-      console.warn(`Unrecognized entry in lcov info: ${entry}`);
+      context.display.warn(`Unrecognized entry in lcov info: ${entry}`);
     }
   }
 
