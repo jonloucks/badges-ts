@@ -33,11 +33,6 @@ interface Coverage {
   average: number;
 }
 
-interface Range {
-  start: number;
-  end?: number;
-}
-
 interface Branch {
   line: number;
   block: number;
@@ -49,7 +44,7 @@ interface FileCoverage {
   coverage: Coverage;
   folder: string;
   file: string;
-  missedLines: Range[];
+  missedLines: number[];
   functionLocations: Map<string, number>;
   missedFunctions: string[];
   missedBranches: Branch[];
@@ -241,7 +236,7 @@ function parse_DA(entry: string, fileCoverage: FileCoverage): void {
   const lineNumber: number = toNumber(parts[0]);
   const hits: number = toNumber(parts[1]);
   if (hits === 0) {
-    addMissingLine(fileCoverage.missedLines, lineNumber);
+    fileCoverage.missedLines.push(lineNumber);
   }
 }
 
@@ -299,30 +294,35 @@ function initializeFileCoverage(): FileCoverage {
   };
 }
 
-function addMissingLine(ranges: Range[], line: number): void {
-  if (ranges.length === 0) {
-    ranges.push({ start: line });
-    return;
-  }
-
-  const lastRange: Range = ranges[ranges.length - 1];
-  const lastCovered = lastRange.end ?? lastRange.start;
-
-  // Ignore duplicates or out-of-order lines that would move backwards
-  if (line <= lastCovered) {
-    return;
-  }
-
-  // Only extend the current range when the new line is exactly consecutive
-  if (line === lastCovered + 1) {
-    lastRange.end = line;
-  } else {
-    ranges.push({ start: line });
-  }
+function formatMissingLines(fileCoverage: FileCoverage): string {
+  return toRanges(fileCoverage.missedLines.sort((a, b) => a - b));
 }
 
-function formatMissingLines(fileCoverage: FileCoverage): string {
-  return fileCoverage.missedLines.map(range => range.end ? `${range.start}-${range.end}` : `${range.start}`).join(HTML_LINE_BREAK);
+function toRanges(numbers: number[]): string {
+  const ranges: string[] = [];
+  let rangeStart: number | null = null;
+  let previousLine: number | null = null;
+
+  for (const current of numbers) {
+    if (rangeStart === null) {
+      rangeStart = current;
+    } else if (previousLine !== null && current === previousLine + 1) {
+      // Continue the range
+    } else {
+      // End the previous range and start a new one
+      if (rangeStart !== null) {
+        ranges.push(rangeStart === previousLine ? `${rangeStart}` : `${rangeStart}-${previousLine}`);
+      }
+      rangeStart = current;
+    }
+    previousLine = current;
+  }
+
+  // Handle the last range if it exists
+  if (rangeStart !== null && previousLine !== null) {
+    ranges.push(rangeStart === previousLine ? `${rangeStart}` : `${rangeStart}-${previousLine}`);
+  }
+  return ranges.join(HTML_LINE_BREAK);
 }
 
 function generateHtmlReport(context: Context, analysis: Analysis): string {
