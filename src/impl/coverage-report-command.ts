@@ -148,7 +148,7 @@ function newCoverage(): Coverage {
 }
 
 function isEmptyRecord(record: string): boolean {
-  // no need to trim since the main parsing loop will call isEmptyRecord multiple times
+  // Treat empty strings and a single newline as empty records; no trimming is required for this check.
   return record.length === 0 || (record.length === 1 && record[0] === '\n');
 }
 
