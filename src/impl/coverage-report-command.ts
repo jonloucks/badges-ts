@@ -502,7 +502,7 @@ function generatePerFileRow(context: Context, analysis: Analysis, fileCoverage: 
 
 function formatMissingFunctions(fileCoverage: FileCoverage): string {
   return fileCoverage.missedFunctions.map(name => {
-    const location:number|undefined = fileCoverage.functionLocations.get(name);
+    const location: number | undefined = fileCoverage.functionLocations.get(name);
     const lineInfo: string = isPresent(location) ? ` @ ${location}` : '';
     return `${escapeHtml(name)}${lineInfo}${HTML_LINE_BREAK}`;
   }).join("");
