@@ -85,12 +85,32 @@ function analyze(context: Context, fileName: string): Analysis {
       continue;
     }
     const fileCoverage: FileCoverage = parseRecord(context, record);
+
     tally(analysis.totals, fileCoverage.coverage);
     tallyFolder(analysis, fileCoverage);
     analysis.files.push(fileCoverage);
   }
 
+  updateAllPercentages(analysis);
+
   return analysis;
+}
+
+function updateAllPercentages(analysis: Analysis): void {
+  for (const fileCoverage of analysis.files) {
+    updatePercentages(fileCoverage.coverage);
+  }
+  for (const folderCoverage of analysis.folders.values()) {
+    updatePercentages(folderCoverage.coverage);
+  }
+  updatePercentages(analysis.totals);
+}
+
+function updatePercentages(coverage: Coverage): void {
+  coverage.lines.percent = percent(coverage.lines.hit, coverage.lines.found);
+  coverage.functions.percent = percent(coverage.functions.hit, coverage.functions.found);
+  coverage.branches.percent = percent(coverage.branches.hit, coverage.branches.found);
+  coverage.average = (coverage.lines.percent + coverage.functions.percent + coverage.branches.percent) / 3;
 }
 
 function toNumber(text: string | undefined): number {
@@ -113,15 +133,6 @@ function tally(update: Coverage, delta: Readonly<Coverage>): void {
 
   update.branches.found += delta.branches.found;
   update.branches.hit += delta.branches.hit;
-
-  updatePercentages(update);
-}
-
-function updatePercentages(coverage: Coverage): void {
-  coverage.lines.percent = percent(coverage.lines.hit, coverage.lines.found);
-  coverage.functions.percent = percent(coverage.functions.hit, coverage.functions.found);
-  coverage.branches.percent = percent(coverage.branches.hit, coverage.branches.found);
-  coverage.average = (coverage.lines.percent + coverage.functions.percent + coverage.branches.percent) / 3;
 }
 
 function tallyFolder(analysis: Analysis, file: Readonly<FileCoverage>): void {
@@ -186,8 +197,6 @@ function parseRecord(context: Context, record: string): FileCoverage {
       context.display.trace(`Unrecognized entry in lcov info: ${entry}`);
     }
   }
-
-  updatePercentages(fileCoverage.coverage);
 
   return fileCoverage;
 }
