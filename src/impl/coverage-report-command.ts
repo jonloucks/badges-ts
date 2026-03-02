@@ -297,7 +297,15 @@ function addMissingLine(ranges: Range[], line: number): void {
   }
 
   const lastRange: Range = ranges[ranges.length - 1];
-  if (lastRange.end === undefined || line === lastRange.end + 1) {
+  const lastCovered = lastRange.end ?? lastRange.start;
+
+  // Ignore duplicates or out-of-order lines that would move backwards
+  if (line <= lastCovered) {
+    return;
+  }
+
+  // Only extend the current range when the new line is exactly consecutive
+  if (line === lastCovered + 1) {
     lastRange.end = line;
   } else {
     ranges.push({ start: line });
