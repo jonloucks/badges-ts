@@ -154,8 +154,8 @@ function newCoverage(): Coverage {
 }
 
 function isEmptyRecord(record: string): boolean {
-  // Treat empty strings and a single newline as empty records; no trimming is required for this check.
-  return record.length === 0 || (record.length === 1 && record[0] === '\n');
+  // Avoid trimming records with length greater than 1 since whitespace
+  return record.length === 0 || (record.length === 1 && record.trim().length === 0);
 }
 
 function parseRecord(context: Context, record: string): FileCoverage {
