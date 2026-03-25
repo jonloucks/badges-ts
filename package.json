@@ -92,7 +92,7 @@
     "@typescript-eslint/parser": "^8.57.1",
     "eslint": "^10.1.0",
     "tsx": "^4.19.2",
-    "typedoc": "^0.28.17",
+    "typedoc": "^0.28.18",
     "typescript": "^5.9.3"
   },
   "dependencies": {
