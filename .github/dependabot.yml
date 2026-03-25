@@ -6,3 +6,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "typescript"
+        versions:
+          - ">=6.0.0" # This ignores all versions 6.0.0 and above
