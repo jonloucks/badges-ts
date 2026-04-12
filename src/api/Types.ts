@@ -16,7 +16,7 @@ export type Throwable<T> = T | null | undefined;
  * @param value the value to check
  * @return true if the value is Throwable
  */
-export function isThrowable<T>(value: unknown): value is Throwable<T> { return true; }
+export function isThrowable<T>(value: unknown): value is Throwable<T> { void value; return true; }
 
 // review if there is a something better to use here, like Java's Duration
 // candidate for inclusion in api-ts
