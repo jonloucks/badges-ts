@@ -11,10 +11,41 @@ permissions:
 
 jobs:
   publish:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.run_attempt == 1 }}
+    # Security: Only run when the triggering push workflow succeeded, it is the
+    # first attempt, it came from a push event on this repository, and it was not
+    # triggered by a fork. We still check out only trusted repository branches and
+    # then write to the repository's gh-pages and badges branches.
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.run_attempt == 1 &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.head_repository.fork == false
     runs-on: ubuntu-latest
 
     steps:
+      - name: Verify trusted push workflow
+        env:
+          WORKFLOW_EVENT: ${{ github.event.workflow_run.event }}
+          WORKFLOW_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          WORKFLOW_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WORKFLOW_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          echo "Workflow run event: ${WORKFLOW_EVENT}"
+          echo "Workflow run repository: ${WORKFLOW_REPO}"
+          echo "Workflow run branch: ${WORKFLOW_BRANCH}"
+          echo "Workflow run SHA: ${WORKFLOW_SHA}"
+
+          if [ "${WORKFLOW_EVENT}" != "push" ]; then
+            echo "ERROR: This workflow should only run for push events"
+            exit 1
+          fi
+
+          if [ "${WORKFLOW_REPO}" != "${GITHUB_REPOSITORY}" ]; then
+            echo "ERROR: Refusing to publish from a different repository"
+            exit 1
+          fi
+
       - name: Checkout gh-pages branch
         uses: actions/checkout@v4
         with:

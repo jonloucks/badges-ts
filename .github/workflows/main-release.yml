@@ -7,46 +7,60 @@ on:
 
 jobs:
   publish:
-    # Security: Only run if smoke tests succeeded, this is the first attempt, 
-    # and the triggering workflow was initiated by a release event (not a PR)
+    # Security: Only run if the smoke workflow succeeded, it is the first attempt,
+    # it was initiated by a release event from this repository, and we do not
+    # check out the head SHA from the triggering workflow in a privileged job.
     if: |
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.run_attempt == 1 &&
-      github.event.workflow_run.event == 'release'
+      github.event.workflow_run.event == 'release' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.head_repository.fork == false
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: read
       id-token: write
 
     steps:
-      - name: Verify workflow trigger
+      - name: Verify trusted release workflow
         env:
           WORKFLOW_EVENT: ${{ github.event.workflow_run.event }}
+          WORKFLOW_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
           WORKFLOW_BRANCH: ${{ github.event.workflow_run.head_branch }}
           WORKFLOW_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           echo "Workflow run event: ${WORKFLOW_EVENT}"
+          echo "Workflow run repository: ${WORKFLOW_REPO}"
           echo "Workflow run branch: ${WORKFLOW_BRANCH}"
           echo "Workflow run SHA: ${WORKFLOW_SHA}"
-          
-          # Ensure this was triggered by a release event
+
           if [ "${WORKFLOW_EVENT}" != "release" ]; then
             echo "ERROR: This workflow should only run for release events"
             exit 1
           fi
 
-      - uses: actions/checkout@v4
+          if [ "${WORKFLOW_REPO}" != "${GITHUB_REPOSITORY}" ]; then
+            echo "ERROR: Refusing to publish from a different repository"
+            exit 1
+          fi
+
+      - name: Download release package artifact
+        uses: actions/download-artifact@v4
         with:
-          # Checkout the exact commit that triggered the release
-          ref: ${{ github.event.workflow_run.head_sha }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          name: package
+          path: ./packs
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24.x"
           registry-url: "https://registry.npmjs.org"
-      
-      - run: npm ci
-      - run: npm run before:publish
-      - run: cd dist && npm publish --access public --provenance
-      - run: npm run after:publish
+
+      - name: Publish package from artifact
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish ./packs/*.tgz --access public --provenance
