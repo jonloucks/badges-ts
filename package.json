@@ -89,7 +89,7 @@
   "devDependencies": {
     "@types/node": "^26.4.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
-    "@typescript-eslint/parser": "^8.61.1",
+    "@typescript-eslint/parser": "^8.68.0",
     "eslint": "^10.9.1",
     "tsx": "^4.23.12",
     "typedoc": "^0.28.20",
