@@ -91,7 +91,7 @@
     "@typescript-eslint/eslint-plugin": "^8.68.0",
     "@typescript-eslint/parser": "^8.68.0",
     "eslint": "^10.9.1",
-    "tsx": "^4.23.12",
+    "tsx": "^4.23.13",
     "typedoc": "^0.28.20",
     "typescript": "^5.9.3"
   },
